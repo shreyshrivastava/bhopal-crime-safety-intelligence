@@ -66,7 +66,7 @@ st.set_page_config(
     page_title="Bhopal Crime & Safety Intelligence Dashboard",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # Custom Material You (Material 3) Styling & Responsive Framework
