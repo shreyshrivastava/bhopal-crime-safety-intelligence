@@ -26,6 +26,10 @@ See the dedicated 'Production Sourcing Guide' tab in this app for complete code.
 # 1. CORE DEPENDENCY IMPORTS
 # ==============================================================================
 import os
+# Ensure macOS ARM64 / Apple Silicon fork safety for multithreaded servers
+os.environ["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
+os.environ["PROJ_NETWORK"] = "OFF"
+
 import streamlit as st
 import pandas as pd
 import geopandas as gpd

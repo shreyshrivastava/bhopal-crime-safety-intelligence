@@ -1,19 +1,36 @@
 """
 Bhopal Crime & Safety Intelligence Dashboard
 Geospatial Analytics & Proximity Engine
-Calculates spatial proximity, sector risk indices, and GeoPandas buffer metrics.
+Calculates spatial proximity, sector risk indices, and safety metrics.
+Uses vectorized geodesic Haversine distance for 100% thread/fork safety on macOS Apple Silicon.
 """
 
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from shapely.geometry import Point, MultiPoint
+from shapely.geometry import Point
 from data_generator import POLICE_STATIONS, NEIGHBORHOOD_CONFIG
+
+
+def haversine_distance_km(lat1, lon1, lat2, lon2):
+    """
+    Computes high-precision great-circle distance between coordinates on Earth in kilometers.
+    Vectorized with NumPy for maximum performance and fork-safety.
+    """
+    R = 6371.0  # Earth radius in kilometers
+    dlat = np.radians(lat2 - lat1)
+    dlon = np.radians(lon2 - lon1)
+    a = (
+        np.sin(dlat / 2.0) ** 2
+        + np.cos(np.radians(lat1)) * np.cos(np.radians(lat2)) * np.sin(dlon / 2.0) ** 2
+    )
+    c = 2.0 * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0)))
+    return R * c
 
 
 def get_police_stations_gdf() -> gpd.GeoDataFrame:
     """
-    Creates a GeoDataFrame of Bhopal Police Stations in WGS84 and projected coordinates.
+    Creates a GeoDataFrame of Bhopal Police Stations in WGS84 CRS (EPSG:4326).
     """
     df_ps = pd.DataFrame(POLICE_STATIONS)
     geometry = [Point(xy) for xy in zip(df_ps["lon"], df_ps["lat"])]
@@ -23,32 +40,34 @@ def get_police_stations_gdf() -> gpd.GeoDataFrame:
 
 def calculate_station_proximity(crime_gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
-    Calculates the distance in kilometers from each crime incident to the closest
-    Bhopal Police Station using projected coordinates (EPSG:32643 - UTM Zone 43N for Bhopal).
+    Calculates the geodesic distance in kilometers from each crime incident to the closest
+    Bhopal Police Station using vectorized Haversine formula.
+    
+    Fork-safe & thread-safe across all platforms (macOS Apple Silicon & Linux Cloud).
     """
     if crime_gdf.empty:
+        crime_gdf = crime_gdf.copy()
         crime_gdf["nearest_station"] = None
         crime_gdf["distance_to_station_km"] = 0.0
         return crime_gdf
 
-    ps_gdf = get_police_stations_gdf()
+    ps_df = pd.DataFrame(POLICE_STATIONS)
+    ps_lats = ps_df["lat"].values
+    ps_lons = ps_df["lon"].values
+    ps_names = ps_df["name"].values
 
-    # Project to metric coordinate reference system for Bhopal (UTM zone 43N)
-    crime_proj = crime_gdf.to_crs(epsg=32643)
-    ps_proj = ps_gdf.to_crs(epsg=32643)
+    crime_lats = crime_gdf["latitude"].values[:, np.newaxis]
+    crime_lons = crime_gdf["longitude"].values[:, np.newaxis]
 
-    nearest_names = []
-    distances_km = []
-
-    for _, crime_row in crime_proj.iterrows():
-        dists = ps_proj.distance(crime_row.geometry)
-        min_idx = dists.idxmin()
-        nearest_names.append(ps_gdf.loc[min_idx, "name"])
-        distances_km.append(round(dists[min_idx] / 1000.0, 2))
+    # Matrix of distances between N incidents and M stations (shape: N x M)
+    dists = haversine_distance_km(crime_lats, crime_lons, ps_lats, ps_lons)
+    min_indices = np.argmin(dists, axis=1)
 
     crime_gdf = crime_gdf.copy()
-    crime_gdf["nearest_station"] = nearest_names
-    crime_gdf["distance_to_station_km"] = distances_km
+    crime_gdf["nearest_station"] = ps_names[min_indices]
+    crime_gdf["distance_to_station_km"] = np.round(
+        dists[np.arange(len(crime_gdf)), min_indices], 2
+    )
     return crime_gdf
 
 
