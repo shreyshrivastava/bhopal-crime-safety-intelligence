@@ -69,145 +69,329 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom High-Aesthetic Styling (Glassmorphism, Clean Cards, Responsive Typography)
+# Custom Material You (Material 3) Styling & Responsive Framework
 CUSTOM_CSS = """
 <style>
-    /* Global Typography & Palette */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    /* Google Fonts: Plus Jakarta Sans & Roboto Flex for Material You Typography */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Flex:wght@400;500;600;700&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    :root {
+        /* Material You (M3) Tonal Color Roles */
+        --md-sys-color-primary: #0061A4;
+        --md-sys-color-on-primary: #FFFFFF;
+        --md-sys-color-primary-container: #D1E4FF;
+        --md-sys-color-on-primary-container: #001D36;
+        --md-sys-color-surface: #F8F9FA;
+        --md-sys-color-surface-container: #EEF2F6;
+        --md-sys-color-surface-container-high: #E2E8F0;
+        --md-sys-color-surface-container-highest: #D7DFE9;
+        --md-sys-color-outline: #73777F;
+        --md-sys-color-outline-variant: #E2E8F0;
+        --md-sys-color-text-main: #191C1E;
+        --md-sys-color-text-muted: #535F70;
+        
+        /* M3 Radii */
+        --md-shape-corner-small: 8px;
+        --md-shape-corner-medium: 16px;
+        --md-shape-corner-large: 24px;
+        --md-shape-corner-full: 9999px;
     }
 
-    /* Metric Card Styling */
-    .metric-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 16px 20px;
-        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.06);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        color: var(--md-sys-color-text-main);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Clean Streamlit App Container */
+    .block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 3rem !important;
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        max-width: 1380px !important;
+    }
+    @media (max-width: 768px) {
+        .block-container {
+            padding-top: 0.8rem !important;
+            padding-left: 0.8rem !important;
+            padding-right: 0.8rem !important;
+            padding-bottom: 2rem !important;
+        }
+    }
+
+    /* M3 Top App Bar Banner */
+    .m3-top-app-bar {
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 55%, #0B192C 100%);
+        color: #FFFFFF;
+        border-radius: var(--md-shape-corner-large);
+        padding: 22px 26px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         position: relative;
         overflow: hidden;
     }
-    .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px -3px rgba(15, 23, 42, 0.10);
-    }
-    .metric-card-accent {
+    .m3-top-app-bar::after {
+        content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
+        bottom: -50px;
+        right: -50px;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
     }
-    .metric-title {
-        font-size: 0.82rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #64748B;
-        margin-bottom: 6px;
+    .m3-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
     }
-    .metric-value {
-        font-size: 1.85rem;
+    .m3-app-title {
+        margin: 0;
+        font-size: 1.75rem;
         font-weight: 800;
-        color: #0F172A;
-        line-height: 1.1;
-    }
-    .metric-subtitle {
-        font-size: 0.80rem;
-        color: #94A3B8;
-        margin-top: 6px;
-        font-weight: 500;
-    }
-
-    /* Header Banner Styling */
-    .dashboard-header {
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F2847 100%);
+        letter-spacing: -0.025em;
+        line-height: 1.2;
         color: #FFFFFF;
-        border-radius: 16px;
-        padding: 24px 28px;
-        margin-bottom: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
     }
-    .dashboard-tagline {
+    .m3-app-subtitle {
         color: #94A3B8;
-        font-size: 0.95rem;
+        font-size: 0.90rem;
         margin-top: 4px;
+        font-weight: 400;
     }
-    .live-badge {
+    .m3-chip-live {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         background: rgba(16, 185, 129, 0.18);
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        border: 1px solid rgba(16, 185, 129, 0.35);
         color: #34D399;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 700;
         padding: 3px 10px;
-        border-radius: 20px;
+        border-radius: var(--md-shape-corner-full);
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
-    .pulse-dot {
-        width: 8px;
-        height: 8px;
+    .m3-pulse {
+        width: 7px;
+        height: 7px;
         background-color: #10B981;
         border-radius: 50%;
         box-shadow: 0 0 8px #10B981;
     }
+    .m3-emergency-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.10);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        padding: 6px 14px;
+        border-radius: var(--md-shape-corner-full);
+        font-size: 0.85rem;
+        color: #E2E8F0;
+        backdrop-filter: blur(8px);
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+    .m3-emergency-pill:hover {
+        background: rgba(255, 255, 255, 0.18);
+    }
 
-    /* Custom Category Badges */
-    .badge-property {
-        background-color: #FFF7ED;
-        color: #C2410C;
-        border: 1px solid #FDBA74;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.78rem;
+    /* M3 Responsive Metrics Grid */
+    .m3-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
     }
-    .badge-assault {
-        background-color: #FEF2F2;
-        color: #B91C1C;
-        border: 1px solid #FCA5A5;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.78rem;
+    @media (max-width: 1024px) {
+        .m3-metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
     }
-    .badge-harassment {
-        background-color: #FAF5FF;
-        color: #7E22CE;
+    @media (max-width: 540px) {
+        .m3-metrics-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+    }
+
+    /* M3 Tonal Surface Cards */
+    .m3-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: var(--md-shape-corner-large);
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+    }
+    .m3-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.08);
+    }
+    .m3-card-pill-accent {
+        width: 36px;
+        height: 4px;
+        border-radius: var(--md-shape-corner-full);
+        margin-bottom: 10px;
+    }
+    .m3-card-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--md-sys-color-text-muted);
+        margin-bottom: 4px;
+    }
+    .m3-card-value {
+        font-size: 1.85rem;
+        font-weight: 800;
+        color: var(--md-sys-color-text-main);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+    }
+    .m3-card-subtext {
+        font-size: 0.78rem;
+        color: #64748B;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    /* M3 Pill Chips for Crime Categories */
+    .m3-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        font-size: 0.80rem;
+        padding: 4px 12px;
+        border-radius: var(--md-shape-corner-full);
+        white-space: nowrap;
+    }
+    .m3-chip-property {
+        background-color: #FFDBCB;
+        color: #8F3900;
+        border: 1px solid #FFB691;
+    }
+    .m3-chip-assault {
+        background-color: #FFDAD6;
+        color: #93000A;
+        border: 1px solid #FFB4AB;
+    }
+    .m3-chip-harassment {
+        background-color: #EEDBFF;
+        color: #602D94;
         border: 1px solid #D8B4FE;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.78rem;
     }
-    .badge-vandalism {
-        background-color: #FEFCE8;
-        color: #A16207;
-        border: 1px solid #FDE047;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.78rem;
+    .m3-chip-vandalism {
+        background-color: #FFE08B;
+        color: #694D00;
+        border: 1px solid #F0C43D;
+    }
+    .m3-chip-police {
+        background-color: #D1E4FF;
+        color: #004B82;
+        border: 1px solid #A2C9FF;
+    }
+    .m3-chip-corridor {
+        background-color: #CFF7FF;
+        color: #005E72;
+        border: 1px solid #84EAFF;
     }
 
-    /* Streamlit overrides */
-    div[data-testid="stMetricValue"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+    /* M3 Tabs Navigation Bar */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
+        background: #F1F4F9;
+        padding: 6px;
+        border-radius: var(--md-shape-corner-full);
+        border: 1px solid #E2E8F0;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        padding: 8px 16px;
+        border-radius: var(--md-shape-corner-full);
+        padding: 8px 18px;
         font-weight: 600;
+        font-size: 0.88rem;
+        color: #475569;
+        background: transparent;
+        border: none;
+        transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        min-height: 42px;
+    }
+    .stTabs [aria-selected="true"] {
+        background: #FFFFFF !important;
+        color: #0F172A !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* M3 Touch-Optimized Buttons */
+    .stButton > button {
+        border-radius: var(--md-shape-corner-full) !important;
+        min-height: 44px !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        transition: transform 0.15s ease, background 0.15s ease !important;
+        border: 1px solid #CBD5E1 !important;
+    }
+    .stButton > button:hover {
+        transform: scale(0.98);
+        border-color: #94A3B8 !important;
+    }
+    .stButton > button:active {
+        transform: scale(0.95);
+    }
+
+    /* M3 Form Controls & Selectboxes */
+    div[data-baseweb="select"] > div {
+        border-radius: var(--md-shape-corner-medium) !important;
+        border-color: #E2E8F0 !important;
+        min-height: 44px !important;
+    }
+    div[data-baseweb="input"] > div {
+        border-radius: var(--md-shape-corner-medium) !important;
+        min-height: 44px !important;
+    }
+
+    /* Mobile Responsive Header Breakpoints */
+    @media (max-width: 768px) {
+        .m3-top-app-bar {
+            padding: 16px 18px;
+            border-radius: var(--md-shape-corner-medium);
+            margin-bottom: 14px;
+        }
+        .m3-app-title {
+            font-size: 1.35rem;
+        }
+        .m3-app-subtitle {
+            font-size: 0.80rem;
+        }
+        .m3-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .m3-card-value {
+            font-size: 1.5rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            padding: 6px 14px;
+            font-size: 0.80rem;
+        }
     }
 </style>
 """
@@ -376,37 +560,62 @@ if isinstance(selected_date_range, tuple) and len(selected_date_range) == 2:
 # ==============================================================================
 # 6. HEADER & METRIC KPI DASHBOARD
 # ==============================================================================
-# Top Header Banner
+# Top Material You App Bar
 st.markdown(
     """
-    <div class="dashboard-header">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+    <div class="m3-top-app-bar">
+        <div class="m3-header-content">
             <div>
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
-                    <h1 style="margin:0; font-size:1.85rem; font-weight:800; letter-spacing:-0.02em;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+                    <h1 class="m3-app-title">
                         Bhopal City Crime & Safety Intelligence Portal
                     </h1>
-                    <span class="live-badge">
-                        <span class="pulse-dot"></span> Active Feed
+                    <span class="m3-chip-live">
+                        <span class="m3-pulse"></span> Active Feed
                     </span>
                 </div>
-                <div class="dashboard-tagline">
-                    Geospatial risk mapping, law enforcement proximity, and predictive urban safety telemetry for Bhopal, MP.
+                <div class="m3-app-subtitle">
+                    Geospatial risk mapping, law enforcement coverage, and predictive urban safety telemetry for Bhopal, MP.
                 </div>
             </div>
-            <div style="text-align:right;">
-                <div style="font-size:0.75rem; color:#94A3B8; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;">
-                    Emergency Response
-                </div>
-                <div style="font-size:1.25rem; font-weight:800; color:#38BDF8;">
-                    Dial 112 / 1090 (Women)
-                </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <a href="tel:112" class="m3-emergency-pill" title="Tap to call Bhopal Emergency Services">
+                    🛡️ <b>Dial 112</b> (Police)
+                </a>
+                <a href="tel:1090" class="m3-emergency-pill" title="Tap to call MP Women Helpline">
+                    👩 <b>Dial 1090</b> (Women Helpline)
+                </a>
             </div>
         </div>
     </div>
     """,
     unsafe_allow_html=True
 )
+
+# Mobile Quick Filter Chips Row (High accessibility for Touch / Phones / Tablets)
+st.markdown("<div style='font-size:0.80rem; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;'>⚡ Quick Filter Chips</div>", unsafe_allow_html=True)
+q_col1, q_col2, q_col3, q_col4 = st.columns(4)
+with q_col1:
+    if st.button("🌙 Night Focus", key="mob_night", use_container_width=True, help="Show incidents after 10 PM"):
+        st.session_state["time_filter"] = "Nighttime/Post-10 PM"
+        st.rerun()
+with q_col2:
+    if st.button("🚨 High Risk (Lv 4-5)", key="mob_risk", use_container_width=True, help="Show high severity offenses"):
+        st.session_state["min_severity"] = 4
+        st.rerun()
+with q_col3:
+    if st.button("👩 Women Safety", key="mob_women", use_container_width=True, help="Isolate harassment & stalking"):
+        st.session_state["cat_filter"] = ["Public Harassment / Women's Safety"]
+        st.rerun()
+with q_col4:
+    if st.button("🔄 Reset All Filters", key="mob_reset", use_container_width=True):
+        st.session_state["time_filter"] = "All Day"
+        st.session_state["min_severity"] = 1
+        st.session_state["cat_filter"] = list(CATEGORY_PALETTE.keys())
+        st.session_state["nh_filter"] = "All Bhopal Sectors"
+        st.rerun()
+
+st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 
 # Metric Calculations
 total_incidents = len(filtered_df)
@@ -429,72 +638,47 @@ else:
     avg_severity = 0.0
     high_sev_pct = 0.0
 
-# Render 4 Premium KPI Metric Cards
-kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
+sev_color = "#10B981" if avg_severity < 2.5 else "#F59E0B" if avg_severity < 3.8 else "#EF4444"
+sev_label = "Low Risk" if avg_severity < 2.5 else "Moderate Risk" if avg_severity < 3.8 else "Elevated Risk"
 
-with kpi_col1:
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-card-accent" style="background:#3B82F6;"></div>
-            <div class="metric-title">Filtered Incidents</div>
-            <div class="metric-value">{total_incidents:,}</div>
-            <div class="metric-subtitle">Out of {len(raw_df)} total recorded in period</div>
+# Material You Responsive Grid (Adapts automatically: 4 cols on PC, 2 on Tablets, 1 on Phones)
+st.markdown(
+    f"""
+    <div class="m3-metrics-grid">
+        <div class="m3-card">
+            <div class="m3-card-pill-accent" style="background:#0061A4;"></div>
+            <div class="m3-card-label">Filtered Incidents</div>
+            <div class="m3-card-value">{total_incidents:,}</div>
+            <div class="m3-card-subtext">Out of <b>{len(raw_df)}</b> total in active 90-day window</div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with kpi_col2:
-    badge_style = "color:#FF7A00;"
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-card-accent" style="background:#FF7A00;"></div>
-            <div class="metric-title">Dominant Crime Type</div>
-            <div class="metric-value" style="font-size:1.35rem; line-height:1.3; color:#C2410C;">
+        <div class="m3-card">
+            <div class="m3-card-pill-accent" style="background:#8F3900;"></div>
+            <div class="m3-card-label">Dominant Crime Type</div>
+            <div class="m3-card-value" style="font-size:1.35rem; color:#8F3900;">
                 {peak_category}
             </div>
-            <div class="metric-subtitle">{peak_cat_pct}% of filtered offenses ({peak_cat_count} cases)</div>
+            <div class="m3-card-subtext"><b>{peak_cat_pct}%</b> of current selection ({peak_cat_count} cases)</div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with kpi_col3:
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-card-accent" style="background:#EF4444;"></div>
-            <div class="metric-title">Highest-Risk Sector</div>
-            <div class="metric-value" style="font-size:1.35rem; line-height:1.3; color:#DC2626;">
+        <div class="m3-card">
+            <div class="m3-card-pill-accent" style="background:#BA1A1A;"></div>
+            <div class="m3-card-label">Highest-Risk Sector</div>
+            <div class="m3-card-value" style="font-size:1.35rem; color:#BA1A1A;">
                 {peak_zone}
             </div>
-            <div class="metric-subtitle">{peak_zone_count} reported events in selected sector</div>
+            <div class="m3-card-subtext"><b>{peak_zone_count}</b> reported cases in sector</div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with kpi_col4:
-    sev_color = "#10B981" if avg_severity < 2.5 else "#F59E0B" if avg_severity < 3.8 else "#EF4444"
-    sev_label = "Low" if avg_severity < 2.5 else "Moderate" if avg_severity < 3.8 else "Elevated"
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-card-accent" style="background:{sev_color};"></div>
-            <div class="metric-title">Average Severity</div>
-            <div class="metric-value" style="color:{sev_color};">
-                {avg_severity} <span style="font-size:1rem; font-weight:600; color:#64748B;">/ 5.0</span>
+        <div class="m3-card">
+            <div class="m3-card-pill-accent" style="background:{sev_color};"></div>
+            <div class="m3-card-label">Average Severity</div>
+            <div class="m3-card-value" style="color:{sev_color};">
+                {avg_severity} <span style="font-size:0.95rem; font-weight:600; color:#64748B;">/ 5.0</span>
             </div>
-            <div class="metric-subtitle">Rating: <b>{sev_label}</b> ({high_sev_pct}% rated High/Critical)</div>
+            <div class="m3-card-subtext">Status: <b>{sev_label}</b> ({high_sev_pct}% rated High/Critical)</div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
-
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ==============================================================================
 # 7. INTERACTIVE GEOSPATIAL MAP VIEW (FOLIUM + STREAMLIT-FOLIUM)
@@ -504,19 +688,19 @@ st.markdown("### 🗺️ Interactive Geospatial Incident & Safety Map")
 if filtered_df.empty:
     st.warning("⚠️ No incidents match the selected filter criteria. Please adjust your sidebar settings.")
 else:
-    # Top Map Status & Legend Bar
+    # Material You Tonal Chip Legend Bar
     legend_cols = st.columns([4, 1])
     with legend_cols[0]:
         st.markdown(
             """
-            <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:8px; font-size:0.85rem;">
-                <b>Category Legend:</b>
-                <span class="badge-property">🟠 Property Crime & Theft</span>
-                <span class="badge-assault">🔴 Assault & Physical</span>
-                <span class="badge-harassment">🟣 Women's Safety / Harassment</span>
-                <span class="badge-vandalism">🟡 Vandalism & Mischief</span>
-                <span style="color:#0284C7; font-weight:600;">🔷 Police Thana</span>
-                <span style="color:#0EA5E9; font-weight:600;">── Safe Corridor</span>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; font-size:0.82rem;">
+                <span style="font-weight:700; color:#475569; margin-right:4px;">Legend:</span>
+                <span class="m3-chip m3-chip-property">🟠 Property & Theft</span>
+                <span class="m3-chip m3-chip-assault">🔴 Assault & Physical</span>
+                <span class="m3-chip m3-chip-harassment">🟣 Women's Safety</span>
+                <span class="m3-chip m3-chip-vandalism">🟡 Vandalism</span>
+                <span class="m3-chip m3-chip-police">🔷 Police Station</span>
+                <span class="m3-chip m3-chip-corridor">⚡ Safe Corridor</span>
             </div>
             """,
             unsafe_allow_html=True
