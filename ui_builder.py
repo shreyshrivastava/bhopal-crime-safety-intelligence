@@ -56,9 +56,9 @@ def generate_material_active_html(
     for nh, count in sector_counts.items():
         pct = round((count / max_sector_val) * 100, 1)
         sector_bars_html += f"""
-        <div class="flex items-center gap-3 text-[11px] group cursor-pointer hover:bg-white/5 p-1 rounded-lg transition-all" onclick="filterByZone('{nh}')">
-            <span class="w-36 text-right truncate text-on-surface-variant font-medium group-hover:text-primary transition-colors">{nh}</span>
-            <div class="flex-1 bg-surface-container h-5 rounded-full overflow-hidden p-0.5 border border-white/5">
+        <div class="flex items-center gap-2 sm:gap-3 text-[11px] group cursor-pointer hover:bg-white/5 p-1 rounded-lg transition-all" onclick="filterByZone('{nh}')">
+            <span class="w-28 sm:w-36 text-right truncate text-on-surface-variant font-medium group-hover:text-primary transition-colors shrink-0">{nh}</span>
+            <div class="flex-1 bg-surface-container h-5 rounded-full overflow-hidden p-0.5 border border-white/5 min-w-0">
                 <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 h-full rounded-full flex items-center justify-end pr-2 text-white font-mono font-bold text-[10px] shadow-sm transition-all duration-500" style="width: {pct}%;">{count}</div>
             </div>
         </div>
@@ -75,9 +75,9 @@ def generate_material_active_html(
     for mod, count in modality_counts.items():
         pct = round((count / max_mod) * 100, 1)
         modalities_html += f"""
-        <div class="flex items-center gap-3 text-[11px]">
-            <span class="w-48 text-right truncate text-on-surface-variant font-medium">{mod}</span>
-            <div class="flex-1 bg-surface-container h-5 rounded-full overflow-hidden p-0.5 border border-white/5">
+        <div class="flex items-center gap-2 sm:gap-3 text-[11px]">
+            <span class="w-32 sm:w-48 text-right truncate text-on-surface-variant font-medium shrink-0">{mod}</span>
+            <div class="flex-1 bg-surface-container h-5 rounded-full overflow-hidden p-0.5 border border-white/5 min-w-0">
                 <div class="bg-gradient-to-r from-sky-500 to-blue-600 h-full rounded-full flex items-center justify-end pr-2 text-white font-mono font-bold text-[10px]" style="width: {pct}%;">{count}</div>
             </div>
         </div>
@@ -113,13 +113,13 @@ def generate_material_active_html(
                        "bg-rose-950/50 text-rose-300 border-rose-500/30"
             sector_table_rows += f"""
             <tr class="border-b border-white/5 hover:bg-white/5 transition-colors text-[12px]">
-                <td class="py-2.5 px-3 font-semibold text-on-surface">{r['Neighborhood']}</td>
+                <td class="py-2.5 px-3 font-semibold text-on-surface whitespace-nowrap">{r['Neighborhood']}</td>
                 <td class="py-2.5 px-3 font-mono">{r['Incidents']}</td>
                 <td class="py-2.5 px-3 font-mono">{r['Avg Severity']} / 5.0</td>
                 <td class="py-2.5 px-3 font-mono">{r['Nighttime Ratio (%)']}%</td>
-                <td class="py-2.5 px-3 text-on-surface-variant">{r['Dominant Crime']}</td>
+                <td class="py-2.5 px-3 text-on-surface-variant whitespace-nowrap">{r['Dominant Crime']}</td>
                 <td class="py-2.5 px-3 font-mono font-bold text-primary">{r['Risk Score']}</td>
-                <td class="py-2.5 px-3"><span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold {badge_bg}">{r['Risk Level']}</span></td>
+                <td class="py-2.5 px-3"><span class="px-2.5 py-0.5 rounded-full border text-[10px] font-bold whitespace-nowrap {badge_bg}">{r['Risk Level']}</span></td>
             </tr>
             """
 
@@ -135,10 +135,10 @@ def generate_material_active_html(
     l5_pct = round((l5_count / max_sev) * 100, 1)
 
     html_template = f"""<!DOCTYPE html>
-<html class="dark" lang="en" style="width: 100%; min-height: 100%;">
+<html class="dark" lang="en" style="width: 100%; min-height: 100%; overflow-x: hidden;">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 <meta content="web_dashboard" name="shell-type">
 <title>Bhopal Safety Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
@@ -155,6 +155,9 @@ tailwind.config = {{
   darkMode: "class",
   theme: {{
     extend: {{
+      screens: {{
+        'xs': '400px'
+      }},
       colors: {{
         "tertiary-fixed-dim": "#4edea3",
         "primary-fixed": "#c4e7ff",
@@ -236,11 +239,14 @@ tailwind.config = {{
     background-color: #0b0f17;
     color: #dfe2ee;
     font-family: 'Roboto Flex', sans-serif;
+    overflow-x: hidden !important;
+    width: 100%;
+    max-width: 100vw;
   }}
 }}
 ::-webkit-scrollbar {{
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }}
 ::-webkit-scrollbar-track {{
   background: transparent;
@@ -258,7 +264,7 @@ tailwind.config = {{
   width: 100%;
   height: 100%;
   background: #070b12;
-  border-radius: 24px;
+  border-radius: 20px;
 }}
 .leaflet-popup-content-wrapper {{
   background: #141822 !important;
@@ -279,18 +285,38 @@ tailwind.config = {{
   font-weight: 800 !important;
   font-family: 'Roboto Flex', monospace !important;
 }}
+
+/* Floating Navigation Dock & Responsive Buttons */
+#floating-dock {{
+  box-sizing: border-box;
+}}
+.dock-btn {{
+  color: #94a3b8;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}}
+.dock-btn:hover {{
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+}}
+.dock-btn.active {{
+  background-color: #38bdf8 !important;
+  color: #020617 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+}}
 </style>
 </head>
-<body class="bg-[#0b0f17] text-on-surface antialiased selection:bg-primary selection:text-on-primary min-h-screen relative font-roboto">
+<body class="bg-[#0b0f17] text-on-surface antialiased selection:bg-primary selection:text-on-primary min-h-screen relative font-roboto overflow-x-hidden">
 
 <!-- Main Dashboard Container -->
-<div class="px-4 md:px-8 pt-5 pb-32 min-h-screen flex flex-col gap-5">
+<div class="px-3 sm:px-4 md:px-8 pt-3 sm:pt-5 pb-28 md:pb-32 min-h-screen flex flex-col gap-4 md:gap-5 max-w-full overflow-x-hidden box-border">
 
 <!-- Top Operational Bar -->
-<header class="w-full bg-surface-container-low/85 backdrop-blur-2xl rounded-full px-5 py-2.5 border border-white/10 shadow-m3-card flex items-center justify-between gap-4 sticky top-4 z-40">
+<header class="w-full bg-surface-container-low/85 backdrop-blur-2xl rounded-2xl md:rounded-full px-3 md:px-5 py-2 md:py-2.5 border border-white/10 shadow-m3-card flex items-center justify-between gap-2 md:gap-4 sticky top-2 md:top-4 z-40 box-border">
   <!-- Left: Brand + Search with Sector Jump -->
-  <div class="flex items-center gap-3 flex-1 max-w-2xl">
-    <div class="flex items-center gap-2.5 shrink-0 pr-3 border-r border-white/10 cursor-pointer" onclick="resetAllFilters()">
+  <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+    <div class="flex items-center gap-2 shrink-0 pr-2 border-r border-white/10 cursor-pointer" onclick="resetAllFilters()" title="Reset to Bhopal View">
       <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary-container to-secondary-container p-1.5 flex items-center justify-center shadow-m3-glow shrink-0">
         <span class="material-symbols-outlined text-[18px] text-white">shield</span>
       </div>
@@ -301,18 +327,18 @@ tailwind.config = {{
     </div>
 
     <!-- Connected Global Search Input -->
-    <div class="relative w-full flex items-center">
-      <div class="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center pointer-events-none text-primary">
-        <span class="material-symbols-outlined text-[19px]">search</span>
+    <div class="relative flex-1 min-w-0 flex items-center">
+      <div class="absolute left-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none text-primary">
+        <span class="material-symbols-outlined text-[18px]">search</span>
       </div>
-      <input id="global-search-input" oninput="handleSearch(this.value)" onkeydown="if(event.key==='Enter') executeSearch(this.value)" class="w-full bg-surface-container-lowest/80 text-on-surface placeholder:text-outline/70 pl-10 pr-9 py-2 rounded-full text-[13px] border border-white/5 focus:border-primary/60 focus:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/20 fluid-transition" placeholder="Search Ward 1-85, Sector (e.g. MP Nagar, TT Nagar, Shahpura, Arera)..." type="text">
-      <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface text-[16px] cursor-pointer" title="Clear Search">
-        <span class="material-symbols-outlined text-[16px]">close</span>
+      <input id="global-search-input" oninput="handleSearch(this.value)" onkeydown="if(event.key==='Enter') executeSearch(this.value)" class="w-full bg-surface-container-lowest/80 text-on-surface placeholder:text-outline/70 pl-9 pr-7 py-1.5 md:py-2 rounded-full text-[12px] md:text-[13px] border border-white/5 focus:border-primary/60 focus:bg-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/20 fluid-transition" placeholder="Search Wards, Sector..." type="text">
+      <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface text-[15px] cursor-pointer" title="Clear Search">
+        <span class="material-symbols-outlined text-[15px]">close</span>
       </button>
     </div>
 
-    <!-- Quick Ward Jump Select -->
-    <select id="quick-ward-select" onchange="filterByZone(this.value)" class="hidden xl:flex items-center gap-1.5 bg-surface-container-high/80 px-3 py-1.5 rounded-full text-on-surface-variant text-[11px] font-medium border border-white/10 cursor-pointer hover:bg-surface-bright fluid-transition focus:outline-none">
+    <!-- Quick Ward Jump Select (Desktop / Tablet) -->
+    <select id="quick-ward-select" onchange="filterByZone(this.value)" class="hidden xl:flex items-center gap-1.5 bg-surface-container-high/80 px-3 py-1.5 rounded-full text-on-surface-variant text-[11px] font-medium border border-white/10 cursor-pointer hover:bg-surface-bright fluid-transition focus:outline-none shrink-0">
       <option value="ALL">All Wards</option>
       <option value="MP Nagar">MP Nagar</option>
       <option value="TT Nagar / New Market">TT Nagar</option>
@@ -326,125 +352,121 @@ tailwind.config = {{
     </select>
   </div>
 
-  <!-- Right: Incident Records Badge, SOS Action, Theme Toggle -->
-  <div class="flex items-center gap-2.5">
+  <!-- Right: Incident Records Badge (Desktop) + SOS Action + Theme Toggle -->
+  <div class="flex items-center gap-1.5 md:gap-2.5 shrink-0">
     <div class="hidden md:flex items-center gap-2 bg-surface-container-lowest/80 px-3.5 py-1.5 rounded-full border border-white/10 shadow-sm">
       <span class="material-symbols-outlined text-primary text-[15px]">folder_open</span>
       <span class="text-[11px] font-mono text-on-surface font-semibold">520 Incident Records</span>
     </div>
-    <a class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-4 py-1.5 rounded-full text-[12px] font-bold shadow-m3-error-glow fluid-transition hover:scale-105 active:scale-95 border border-red-400/40" href="tel:112">
-      <span class="material-symbols-outlined text-[16px]">emergency</span>
-      <span>Dial 112 SOS</span>
+    <a class="flex items-center gap-1.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-2.5 md:px-4 py-1.5 rounded-full text-[11px] md:text-[12px] font-bold shadow-m3-error-glow fluid-transition hover:scale-105 active:scale-95 border border-red-400/40 shrink-0 whitespace-nowrap" href="tel:112">
+      <span class="material-symbols-outlined text-[15px] md:text-[16px]">emergency</span>
+      <span class="hidden xs:inline sm:inline">Dial </span><span>112</span>
     </a>
-    <button class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-container-high/80 hover:bg-surface-bright text-on-surface-variant hover:text-on-surface border border-white/10 fluid-transition cursor-pointer" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark / Light Mode" type="button">
-      <span class="material-symbols-outlined text-amber-400 text-[18px]">light_mode</span>
+    <button class="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full bg-surface-container-high/80 hover:bg-surface-bright text-on-surface-variant hover:text-on-surface border border-white/10 fluid-transition cursor-pointer shrink-0" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark / Light Mode" type="button">
+      <span class="material-symbols-outlined text-amber-400 text-[17px] md:text-[18px]">light_mode</span>
     </button>
   </div>
 </header>
 
 <!-- Incident Registry Overview Ribbon -->
-<div class="flex flex-wrap items-center justify-between gap-2 bg-surface-container-low/70 px-4 py-2 rounded-2xl border border-white/5 text-[11px]">
-  <div class="flex items-center gap-2">
-    <span class="material-symbols-outlined text-primary text-[15px]">shield</span>
-    <span class="font-bold text-on-surface uppercase tracking-wider">Bhopal Incident Registry</span>
-    <span class="text-on-surface-variant">•</span>
-    <span class="font-mono text-on-surface-variant">85-Ward Historical Analysis (90-Day Records)</span>
+<div class="flex flex-wrap items-center justify-between gap-2 bg-surface-container-low/70 px-3 md:px-4 py-2 rounded-xl md:rounded-2xl border border-white/5 text-[10px] md:text-[11px]">
+  <div class="flex items-center gap-2 min-w-0">
+    <span class="material-symbols-outlined text-primary text-[15px] shrink-0">shield</span>
+    <span class="font-bold text-on-surface uppercase tracking-wider truncate">Bhopal Incident Registry</span>
+    <span class="text-on-surface-variant hidden sm:inline">•</span>
+    <span class="font-mono text-on-surface-variant hidden sm:inline">85-Ward Historical Analysis (90-Day Records)</span>
   </div>
-  <div class="flex items-center gap-2">
-    <span class="font-mono text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">GRID: 23.2599° N, 77.4126° E</span>
-    <span class="font-mono font-bold text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-full uppercase" id="ribbon-active-zone">Zone: {peak_zone}</span>
+  <div class="flex items-center gap-2 shrink-0">
+    <span class="font-mono text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 text-[9px] md:text-[10px]">GRID: 23.2599° N, 77.4126° E</span>
+    <span class="font-mono font-bold text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-full uppercase text-[9px] md:text-[10px]" id="ribbon-active-zone">Zone: {peak_zone}</span>
   </div>
 </div>
 
 <!-- 4 Fluid Metric Overview Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
   <!-- Card 1: Filtered Incidents -->
-  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[28px] p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-primary/30 fluid-transition flex flex-col justify-between">
-    <div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none group-hover:bg-primary/20 fluid-transition"></div>
+  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-primary/30 fluid-transition flex flex-col justify-between">
     <div class="flex items-start justify-between relative z-10">
       <div class="flex flex-col min-w-0">
-        <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Filtered Incidents</span>
+        <span class="text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Filtered Incidents</span>
         <div class="flex items-baseline gap-2 mt-1">
-          <span class="text-3xl font-extrabold text-on-surface tracking-tight font-mono" id="metric-total-count">{total_incidents}</span>
+          <span class="text-2xl md:text-3xl font-extrabold text-on-surface tracking-tight font-mono" id="metric-total-count">{total_incidents}</span>
           <span class="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Selected</span>
         </div>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-container to-secondary-container text-white flex items-center justify-center shadow-m3-glow shrink-0">
-        <span class="material-symbols-outlined text-[24px]">filter_list</span>
+      <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-tr from-primary-container to-secondary-container text-white flex items-center justify-center shadow-m3-glow shrink-0">
+        <span class="material-symbols-outlined text-[20px] md:text-[24px]">filter_list</span>
       </div>
     </div>
-    <div class="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant relative z-10">
+    <div class="mt-3 md:mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant relative z-10">
       <span class="truncate">Out of {total_incidents} recorded in 90-day window</span>
     </div>
   </div>
 
   <!-- Card 2: Dominant Crime Type -->
-  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[28px] p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-primary/30 fluid-transition flex flex-col justify-between">
-    <div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-purple-500/20 fluid-transition"></div>
+  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-primary/30 fluid-transition flex flex-col justify-between">
     <div class="flex items-start justify-between relative z-10">
       <div class="flex flex-col min-w-0 pr-1">
-        <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Dominant Crime Type</span>
+        <span class="text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Dominant Crime Type</span>
         <div class="mt-1">
-          <span class="text-[15px] font-bold text-purple-300 leading-tight block truncate" id="metric-top-crime">{peak_category}</span>
+          <span class="text-[14px] md:text-[15px] font-bold text-purple-300 leading-tight block truncate" id="metric-top-crime">{peak_category}</span>
         </div>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-surface-container-high border border-purple-500/20 text-purple-300 flex items-center justify-center shadow-m3-1 shrink-0">
-        <span class="material-symbols-outlined text-[24px]">shield_person</span>
+      <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-surface-container-high border border-purple-500/20 text-purple-300 flex items-center justify-center shadow-m3-1 shrink-0">
+        <span class="material-symbols-outlined text-[20px] md:text-[24px]">shield_person</span>
       </div>
     </div>
-    <div class="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant relative z-10">
+    <div class="mt-3 md:mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant relative z-10">
       <span class="truncate" id="metric-top-crime-sub">{peak_cat_pct}% of selection ({peak_cat_count} cases)</span>
       <span class="px-2 py-0.5 rounded-full bg-purple-950/60 text-purple-300 font-mono text-[10px] font-bold shrink-0">{peak_cat_pct}%</span>
     </div>
   </div>
 
   <!-- Card 3: Highest-Risk Sector -->
-  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[28px] p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-error/30 fluid-transition flex flex-col justify-between">
-    <div class="absolute -right-8 -top-8 w-32 h-32 bg-error/10 rounded-full blur-2xl pointer-events-none group-hover:bg-error/20 fluid-transition"></div>
+  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-error/30 fluid-transition flex flex-col justify-between">
     <div class="flex items-start justify-between relative z-10">
       <div class="flex flex-col min-w-0 pr-1">
-        <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Highest-Risk Sector</span>
+        <span class="text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Highest-Risk Sector</span>
         <div class="mt-1 flex items-baseline gap-2">
-          <span class="text-[16px] font-bold text-error leading-tight truncate" id="metric-top-sector">{peak_zone}</span>
+          <span class="text-[15px] md:text-[16px] font-bold text-error leading-tight truncate" id="metric-top-sector">{peak_zone}</span>
         </div>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-surface-container-high border border-error/20 text-error flex items-center justify-center shadow-m3-error-glow shrink-0">
-        <span class="material-symbols-outlined text-[24px]">warning</span>
+      <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-surface-container-high border border-error/20 text-error flex items-center justify-center shadow-m3-error-glow shrink-0">
+        <span class="material-symbols-outlined text-[20px] md:text-[24px]">warning</span>
       </div>
     </div>
-    <div class="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant relative z-10">
+    <div class="mt-3 md:mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant relative z-10">
       <span class="truncate" id="metric-top-sector-sub">{peak_zone_count} reported events</span>
       <span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-mono text-[10px] font-bold shrink-0">Sector Focus</span>
     </div>
   </div>
 
   <!-- Card 4: Average Severity -->
-  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[28px] p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-amber-500/30 fluid-transition flex flex-col justify-between">
-    <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none group-hover:bg-amber-400/20 fluid-transition"></div>
+  <div class="bg-surface-container-low/80 backdrop-blur-xl rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 shadow-m3-card relative overflow-hidden group hover:border-amber-500/30 fluid-transition flex flex-col justify-between">
     <div class="flex items-start justify-between relative z-10">
       <div class="flex flex-col min-w-0">
-        <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Average Severity</span>
+        <span class="text-[10px] md:text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-mono">Average Severity</span>
         <div class="flex items-baseline gap-2 mt-1">
-          <span class="text-3xl font-extrabold text-amber-300 tracking-tight font-mono" id="metric-avg-sev">{avg_severity}</span>
+          <span class="text-2xl md:text-3xl font-extrabold text-amber-300 tracking-tight font-mono" id="metric-avg-sev">{avg_severity}</span>
           <span class="text-base text-on-surface-variant font-mono">/ 5.0</span>
         </div>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-surface-container-high border border-amber-500/30 text-amber-400 flex items-center justify-center shadow-m3-1 shrink-0">
-        <span class="material-symbols-outlined text-[24px]">speed</span>
+      <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-surface-container-high border border-amber-500/30 text-amber-400 flex items-center justify-center shadow-m3-1 shrink-0">
+        <span class="material-symbols-outlined text-[20px] md:text-[24px]">speed</span>
       </div>
     </div>
-    <div class="mt-4 pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant relative z-10">
+    <div class="mt-3 md:mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] md:text-[11px] text-on-surface-variant relative z-10">
       <span class="truncate">Moderate Risk ({high_sev_pct}% rated High/Critical)</span>
     </div>
   </div>
 </div>
 
 <!-- Main Operational Grid: Geospatial Layer & Incident Filter Controls alongside Interactive Map -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-5 items-start">
   <!-- LEFT OPERATIONAL STACK (5 cols on lg) -->
   <div class="lg:col-span-5 flex flex-col gap-4">
     <!-- 1. Geospatial Layer Controls Card -->
-    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[28px] p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
+    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[24px] md:rounded-[28px] p-4 md:p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
       <div class="flex items-center justify-between pb-2 border-b border-white/5">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-[20px]">layers</span>
@@ -492,7 +514,7 @@ tailwind.config = {{
     </div>
 
     <!-- 2. Incident Filter Controls Card -->
-    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[28px] p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
+    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[24px] md:rounded-[28px] p-4 md:p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
       <div class="flex items-center justify-between pb-2 border-b border-white/5">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-secondary text-[20px]">tune</span>
@@ -532,7 +554,7 @@ tailwind.config = {{
       </div>
 
       <!-- Bhopal Zone / Ward selector & Date Range -->
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div class="flex flex-col gap-1">
           <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider font-mono flex items-center gap-1">
             <span class="material-symbols-outlined text-primary text-[13px]">location_city</span> Zone / Sector
@@ -581,7 +603,7 @@ tailwind.config = {{
     </div>
 
     <!-- 3. Threat Layer Quick Toggles -->
-    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[28px] p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
+    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[24px] md:rounded-[28px] p-4 md:p-4.5 border border-white/10 shadow-m3-card flex flex-col gap-3">
       <div class="flex items-center justify-between pb-2 border-b border-white/5">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-tertiary text-[20px]">radar</span>
@@ -623,16 +645,16 @@ tailwind.config = {{
 
   <!-- RIGHT COLUMN (7 cols on lg): Embedded Interactive Leaflet Geospatial Engine -->
   <div class="lg:col-span-7 flex flex-col gap-4">
-    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[32px] p-3.5 border border-white/10 shadow-m3-card flex flex-col overflow-hidden">
+    <div class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[28px] md:rounded-[32px] p-3 md:p-3.5 border border-white/10 shadow-m3-card flex flex-col overflow-hidden">
       <!-- Cartographic Header Controls -->
-      <div class="px-3 pt-2 pb-3 flex flex-col gap-2.5 border-b border-white/5">
+      <div class="px-2 md:px-3 pt-2 pb-3 flex flex-col gap-2.5 border-b border-white/5">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-[14px] font-bold text-on-surface flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-primary text-[20px]">map</span>
-              Interactive Geospatial Incident &amp; Safety Map
+            <span class="text-[13px] md:text-[14px] font-bold text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-[18px] md:text-[20px]">map</span>
+              Interactive Geospatial Safety Map
             </span>
-            <span class="px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-[11px] font-mono flex items-center gap-1" id="map-mode-indicator">
+            <span class="px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-[10px] md:text-[11px] font-mono flex items-center gap-1" id="map-mode-indicator">
               <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
               Mode: 📍 Marker Cluster
             </span>
@@ -651,31 +673,31 @@ tailwind.config = {{
 
         <!-- Filter Pills & Symbology -->
         <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-outline font-bold uppercase tracking-wider text-[10px]">Legend:</span>
-            <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
+          <div class="flex items-center gap-1.5 flex-wrap text-[10px] md:text-[11px]">
+            <span class="text-outline font-bold uppercase tracking-wider text-[9px] md:text-[10px]">Legend:</span>
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-amber-500"></span> Property
             </span>
-            <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-rose-500"></span> Assault
             </span>
-            <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-purple-500"></span> Women Safety
             </span>
-            <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Vandalism
             </span>
-            <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 border border-white/5 text-on-surface flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-sky-400"></span> Thana
             </span>
           </div>
 
           <!-- Layer Toggle Buttons -->
           <div class="flex items-center gap-1 bg-surface-container-lowest/80 p-0.5 rounded-full border border-white/5">
-            <button id="toggle-layer-cluster" onclick="setVizMode('cluster')" class="map-layer-toggle active px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-bold text-[11px] shadow-m3-glow fluid-transition flex items-center gap-1 cursor-pointer" type="button">
+            <button id="toggle-layer-cluster" onclick="setVizMode('cluster')" class="map-layer-toggle active px-2.5 md:px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-bold text-[10px] md:text-[11px] shadow-m3-glow fluid-transition flex items-center gap-1 cursor-pointer" type="button">
               <span class="material-symbols-outlined text-[13px]">layers</span> Clusters
             </button>
-            <button id="toggle-layer-density" onclick="setVizMode('density')" class="map-layer-toggle px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface text-[11px] font-medium fluid-transition cursor-pointer" type="button">
+            <button id="toggle-layer-density" onclick="setVizMode('density')" class="map-layer-toggle px-2.5 md:px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface text-[10px] md:text-[11px] font-medium fluid-transition cursor-pointer" type="button">
               Heatmap
             </button>
           </div>
@@ -683,12 +705,12 @@ tailwind.config = {{
       </div>
 
       <!-- Real Interactive Leaflet Map Viewport Frame -->
-      <div id="map-frame-container" class="relative w-full h-[540px] bg-[#070b12] rounded-[24px] overflow-hidden select-none border border-white/5 shadow-inner mt-2">
+      <div id="map-frame-container" class="relative w-full h-[420px] sm:h-[480px] md:h-[540px] bg-[#070b12] rounded-[20px] md:rounded-[24px] overflow-hidden select-none border border-white/5 shadow-inner mt-2">
         <div id="leaflet-map"></div>
       </div>
 
       <!-- Bottom Map Ribbon -->
-      <div class="px-4 py-2.5 flex flex-wrap items-center justify-between text-on-surface-variant text-[11px] gap-2 border-t border-white/5 mt-2">
+      <div class="px-3 md:px-4 py-2.5 flex flex-wrap items-center justify-between text-on-surface-variant text-[10px] md:text-[11px] gap-2 border-t border-white/5 mt-2">
         <div class="flex items-center gap-2 flex-wrap">
           <span class="material-symbols-outlined text-primary text-[15px]">pin_drop</span>
           <span class="text-on-surface font-semibold">
@@ -707,36 +729,36 @@ tailwind.config = {{
 </div>
 
 <!-- Bottom Civic Analytics & Material Active Visualization Suite -->
-<section id="analytics-section" class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[36px] p-6 border border-white/10 shadow-m3-card flex flex-col gap-5 mt-3">
+<section id="analytics-section" class="bg-surface-container-low/90 backdrop-blur-2xl rounded-[28px] md:rounded-[36px] p-4 md:p-6 border border-white/10 shadow-m3-card flex flex-col gap-4 md:gap-5 mt-2 md:mt-3">
   <!-- Tab Navigation Segment Pill -->
-  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-4">
-    <div class="flex flex-wrap items-center gap-1.5 bg-surface-container-lowest/80 p-1 rounded-full border border-white/5 text-[12px]">
-      <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer" type="button">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3 md:pb-4">
+    <div class="flex flex-wrap items-center gap-1 bg-surface-container-lowest/80 p-1 rounded-xl md:rounded-full border border-white/5 text-[11px] md:text-[12px] w-full sm:w-auto">
+      <button id="tab-btn-analytics" onclick="switchTab('analytics')" class="flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer text-center" type="button">
         Risk Analytics &amp; Trends
       </button>
-      <button id="tab-btn-sectors" onclick="switchTab('sectors')" class="px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer" type="button">
+      <button id="tab-btn-sectors" onclick="switchTab('sectors')" class="flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer text-center" type="button">
         Sector Safety &amp; Proximity
       </button>
-      <button id="tab-btn-records" onclick="switchTab('records')" class="px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer" type="button">
-        Filtered Records Explorer
+      <button id="tab-btn-records" onclick="switchTab('records')" class="flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer text-center" type="button">
+        Records Explorer
       </button>
     </div>
   </div>
 
   <!-- TAB PANE 1: ANALYTICS & TRENDS -->
-  <div id="tab-pane-analytics" class="flex flex-col gap-5">
+  <div id="tab-pane-analytics" class="flex flex-col gap-4 md:gap-5">
     <div>
-      <h2 class="text-xl font-extrabold text-on-surface tracking-tight">Multidimensional Crime Patterns Across Bhopal Sectors</h2>
+      <h2 class="text-lg md:text-xl font-extrabold text-on-surface tracking-tight">Multidimensional Crime Patterns Across Bhopal Sectors</h2>
       <p class="text-xs text-on-surface-variant mt-0.5">Statistical crime &amp; safety analytics synthesized from recorded civic incident registers.</p>
     </div>
 
     <!-- 4 Fluid Material 3 Analytical Cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
       <!-- Chart 1: Crime Category Prevalence by Bhopal Sector -->
-      <div class="bg-surface-container-lowest/80 rounded-[28px] p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
+      <div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
           <h3 class="text-[13px] font-bold text-on-surface">Crime Frequency by Sector</h3>
-          <div class="flex items-center gap-1.5 text-[11px] text-purple-300 font-medium bg-purple-950/50 px-2.5 py-0.5 rounded-full border border-purple-500/20">
+          <div class="flex items-center gap-1.5 text-[10px] md:text-[11px] text-purple-300 font-medium bg-purple-950/50 px-2.5 py-0.5 rounded-full border border-purple-500/20">
             <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
             <span>Bhopal Metro Zones</span>
           </div>
@@ -744,19 +766,19 @@ tailwind.config = {{
         <div class="flex flex-col gap-2 pt-1" id="sector-bar-container">
           {sector_bars_html}
         </div>
-        <div class="text-center text-outline text-[11px] font-mono mt-3 pt-2 border-t border-white/5">Reported Incidents per Sector</div>
+        <div class="text-center text-outline text-[10px] md:text-[11px] font-mono mt-3 pt-2 border-t border-white/5">Reported Incidents per Sector</div>
       </div>
 
       <!-- Chart 2: Daytime vs. Nighttime Distribution -->
-      <div class="bg-surface-container-lowest/80 rounded-[28px] p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
+      <div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
         <div class="flex items-center justify-between mb-2">
           <h3 class="text-[13px] font-bold text-on-surface">Daytime vs. Nighttime Chrono Bias</h3>
           <span class="text-[10px] bg-secondary-container/40 text-secondary border border-secondary/30 px-2.5 py-0.5 rounded-full font-mono font-bold">24H CYCLE</span>
         </div>
         <div class="flex flex-col items-center justify-center my-auto py-3">
-          <div class="relative w-60 h-60 flex items-center justify-center">
+          <div class="relative w-52 h-52 sm:w-60 sm:h-60 flex items-center justify-center">
             <!-- Concentric Soft Depth Rings -->
-            <svg class="w-60 h-60 -rotate-90" viewBox="0 0 100 100">
+            <svg class="w-52 h-52 sm:w-60 sm:h-60 -rotate-90" viewBox="0 0 100 100">
               <defs>
                 <linearGradient id="chronoGradient" x1="0%" x2="100%" y1="0%" y2="100%">
                   <stop offset="0%" stop-color="#38bdf8"></stop>
@@ -768,57 +790,57 @@ tailwind.config = {{
               <circle cx="50" cy="50" fill="none" r="38" stroke="url(#chronoGradient)" stroke-dasharray="238.76" stroke-dashoffset="{round(238.76 * (1 - (night_pct / 100)), 2)}" stroke-linecap="round" stroke-width="14" style="filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));"></circle>
             </svg>
             <!-- Center Badge -->
-            <div class="absolute flex flex-col items-center justify-center text-center px-4 py-3 bg-surface-container-high/90 backdrop-blur-md rounded-[24px] border border-white/10 shadow-2xl pointer-events-none">
-              <span class="material-symbols-outlined text-primary text-[20px] mb-0.5">bedtime</span>
-              <span class="text-[11px] text-white font-bold leading-tight">Nighttime Shift</span>
-              <span class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-300 font-mono">{night_pct}%</span>
-              <span class="text-[9px] text-tertiary font-mono">{night_count} / {total_incidents} Calls</span>
+            <div class="absolute flex flex-col items-center justify-center text-center px-3 sm:px-4 py-2 sm:py-3 bg-surface-container-high/90 backdrop-blur-md rounded-[20px] md:rounded-[24px] border border-white/10 shadow-2xl pointer-events-none">
+              <span class="material-symbols-outlined text-primary text-[18px] sm:text-[20px] mb-0.5">bedtime</span>
+              <span class="text-[10px] sm:text-[11px] text-white font-bold leading-tight">Nighttime Shift</span>
+              <span class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-300 font-mono">{night_pct}%</span>
+              <span class="text-[8.5px] sm:text-[9px] text-tertiary font-mono">{night_count} / {total_incidents} Calls</span>
             </div>
           </div>
         </div>
-        <div class="flex items-center justify-center gap-3 pt-2 border-t border-white/5 text-[11px] text-on-surface-variant">
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Nighttime ({night_pct}%)</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span> Daytime ({round(100 - night_pct, 1)}%)</span>
+        <div class="flex items-center justify-center gap-3 pt-2 border-t border-white/5 text-[10px] md:text-[11px] text-on-surface-variant">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Night ({night_pct}%)</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Day ({round(100 - night_pct, 1)}%)</span>
         </div>
       </div>
 
       <!-- Chart 3: Incidents by Severity Level -->
-      <div class="bg-surface-container-lowest/80 rounded-[28px] p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
+      <div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1 overflow-hidden">
         <div class="flex items-center justify-between mb-2">
           <h3 class="text-[13px] font-bold text-on-surface">Incidents by Severity Level (1 to 5)</h3>
-          <span class="text-[10px] font-mono text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">N = {total_incidents} INCIDENTS</span>
+          <span class="text-[10px] font-mono text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">N = {total_incidents}</span>
         </div>
-        <div class="flex items-end gap-5 h-56 pt-4 px-3">
+        <div class="flex items-end gap-2 sm:gap-4 md:gap-5 h-56 pt-4 px-1 sm:px-3 overflow-hidden">
           <!-- Level 2 -->
-          <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end group">
-            <span class="font-mono font-bold text-tertiary text-[12px] bg-tertiary/10 px-2 py-0.5 rounded-full">{l2_count}</span>
+          <div class="flex flex-col items-center gap-1.5 sm:gap-2 flex-1 h-full justify-end group min-w-0">
+            <span class="font-mono font-bold text-tertiary text-[11px] sm:text-[12px] bg-tertiary/10 px-1.5 sm:px-2 py-0.5 rounded-full">{l2_count}</span>
             <div class="w-full bg-gradient-to-t from-emerald-600 to-teal-400 rounded-full hover:brightness-125 transition-all shadow-m3-glow" style="height: {l2_pct}%;"></div>
-            <span class="text-[11px] text-on-surface-variant text-center whitespace-nowrap mt-1">Level 2 (Low)</span>
+            <span class="text-[10px] sm:text-[11px] text-on-surface-variant text-center leading-tight mt-1 truncate">Lv 2 (Low)</span>
           </div>
           <!-- Level 3 -->
-          <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end group">
-            <span class="font-mono font-bold text-lime-400 text-[12px] bg-lime-400/10 px-2 py-0.5 rounded-full">{l3_count}</span>
+          <div class="flex flex-col items-center gap-1.5 sm:gap-2 flex-1 h-full justify-end group min-w-0">
+            <span class="font-mono font-bold text-lime-400 text-[11px] sm:text-[12px] bg-lime-400/10 px-1.5 sm:px-2 py-0.5 rounded-full">{l3_count}</span>
             <div class="w-full bg-gradient-to-t from-lime-600 to-emerald-400 rounded-full hover:brightness-125 transition-all shadow-m3-glow" style="height: {l3_pct}%;"></div>
-            <span class="text-[11px] text-on-surface font-bold text-center whitespace-nowrap mt-1">Level 3 (Mod)</span>
+            <span class="text-[10px] sm:text-[11px] text-on-surface font-bold text-center leading-tight mt-1 truncate">Lv 3 (Mod)</span>
           </div>
           <!-- Level 4 -->
-          <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end group">
-            <span class="font-mono font-bold text-orange-400 text-[12px] bg-orange-400/10 px-2 py-0.5 rounded-full">{l4_count}</span>
+          <div class="flex flex-col items-center gap-1.5 sm:gap-2 flex-1 h-full justify-end group min-w-0">
+            <span class="font-mono font-bold text-orange-400 text-[11px] sm:text-[12px] bg-orange-400/10 px-1.5 sm:px-2 py-0.5 rounded-full">{l4_count}</span>
             <div class="w-full bg-gradient-to-t from-orange-600 to-amber-400 rounded-full hover:brightness-125 transition-all shadow-m3-glow" style="height: {l4_pct}%;"></div>
-            <span class="text-[11px] text-on-surface-variant text-center whitespace-nowrap mt-1">Level 4 (High)</span>
+            <span class="text-[10px] sm:text-[11px] text-on-surface-variant text-center leading-tight mt-1 truncate">Lv 4 (High)</span>
           </div>
           <!-- Level 5 -->
-          <div class="flex flex-col items-center gap-2 flex-1 h-full justify-end group">
-            <span class="font-mono font-bold text-rose-400 text-[12px] bg-rose-400/10 px-2 py-0.5 rounded-full">{l5_count}</span>
+          <div class="flex flex-col items-center gap-1.5 sm:gap-2 flex-1 h-full justify-end group min-w-0">
+            <span class="font-mono font-bold text-rose-400 text-[11px] sm:text-[12px] bg-rose-400/10 px-1.5 sm:px-2 py-0.5 rounded-full">{l5_count}</span>
             <div class="w-full bg-gradient-to-t from-rose-700 to-red-500 rounded-full hover:brightness-125 transition-all shadow-m3-error-glow" style="height: {l5_pct}%;"></div>
-            <span class="text-[11px] text-on-surface-variant text-center whitespace-nowrap mt-1">Level 5 (Crit)</span>
+            <span class="text-[10px] sm:text-[11px] text-on-surface-variant text-center leading-tight mt-1 truncate">Lv 5 (Crit)</span>
           </div>
         </div>
-        <div class="text-center text-outline text-[11px] font-mono pt-3 border-t border-white/5 mt-3">Severity Scale Matrix</div>
+        <div class="text-center text-outline text-[10px] md:text-[11px] font-mono pt-3 border-t border-white/5 mt-3">Severity Scale Matrix</div>
       </div>
 
       <!-- Chart 4: Most Frequent Offense Modalities -->
-      <div class="bg-surface-container-lowest/80 rounded-[28px] p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
+      <div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1">
         <div class="flex items-center justify-between mb-2">
           <h3 class="text-[13px] font-bold text-on-surface">Most Frequent Offense Modalities</h3>
           <span class="text-[10px] font-mono text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">TOP SUBTYPES</span>
@@ -826,7 +848,7 @@ tailwind.config = {{
         <div class="flex flex-col gap-2 pt-1">
           {modalities_html}
         </div>
-        <div class="text-center text-outline text-[11px] font-mono mt-3 pt-2 border-t border-white/5">Incident Subtype Distribution</div>
+        <div class="text-center text-outline text-[10px] md:text-[11px] font-mono mt-3 pt-2 border-t border-white/5">Incident Subtype Distribution</div>
       </div>
     </div>
   </div>
@@ -834,20 +856,20 @@ tailwind.config = {{
   <!-- TAB PANE 2: SECTOR SAFETY & PROXIMITY RANKING -->
   <div id="tab-pane-sectors" class="hidden flex-col gap-4">
     <div>
-      <h2 class="text-xl font-extrabold text-on-surface tracking-tight">Bhopal Neighborhood Safety Index &amp; Sector Safety Analysis</h2>
+      <h2 class="text-lg md:text-xl font-extrabold text-on-surface tracking-tight">Bhopal Neighborhood Safety Index &amp; Sector Safety Analysis</h2>
       <p class="text-xs text-on-surface-variant mt-0.5">Composite risk evaluations computed using geodesic distance metrics to nearest safety posts.</p>
     </div>
-    <div class="overflow-x-auto rounded-2xl border border-white/10 bg-surface-container-lowest/80">
+    <div class="overflow-x-auto rounded-2xl border border-white/10 bg-surface-container-lowest/80 max-w-full">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-white/10 bg-surface-container-high/60 text-[11px] uppercase tracking-wider text-on-surface-variant font-mono">
-            <th class="py-3 px-3">Neighborhood</th>
-            <th class="py-3 px-3">Incidents</th>
-            <th class="py-3 px-3">Avg Severity</th>
-            <th class="py-3 px-3">Nighttime Ratio</th>
-            <th class="py-3 px-3">Dominant Crime</th>
-            <th class="py-3 px-3">Risk Score</th>
-            <th class="py-3 px-3">Safety Tier</th>
+          <tr class="border-b border-white/10 bg-surface-container-high/60 text-[10px] md:text-[11px] uppercase tracking-wider text-on-surface-variant font-mono">
+            <th class="py-2.5 md:py-3 px-3">Neighborhood</th>
+            <th class="py-2.5 md:py-3 px-3">Incidents</th>
+            <th class="py-2.5 md:py-3 px-3">Avg Severity</th>
+            <th class="py-2.5 md:py-3 px-3">Nighttime Ratio</th>
+            <th class="py-2.5 md:py-3 px-3">Dominant Crime</th>
+            <th class="py-2.5 md:py-3 px-3">Risk Score</th>
+            <th class="py-2.5 md:py-3 px-3">Safety Tier</th>
           </tr>
         </thead>
         <tbody>
@@ -861,26 +883,26 @@ tailwind.config = {{
   <div id="tab-pane-records" class="hidden flex-col gap-4">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h2 class="text-xl font-extrabold text-on-surface tracking-tight">Filtered Crime Records Explorer</h2>
+        <h2 class="text-lg md:text-xl font-extrabold text-on-surface tracking-tight">Filtered Crime Records Explorer</h2>
         <p class="text-xs text-on-surface-variant mt-0.5">Search and inspect active dataset incidents.</p>
       </div>
-      <button onclick="downloadCSV()" class="px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-bold text-[12px] flex items-center gap-1.5 shadow-m3-glow hover:brightness-110 transition-all cursor-pointer">
+      <button onclick="downloadCSV()" class="px-3.5 md:px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-bold text-[11px] md:text-[12px] flex items-center gap-1.5 shadow-m3-glow hover:brightness-110 transition-all cursor-pointer">
         <span class="material-symbols-outlined text-[16px]">download</span>
         Download CSV
       </button>
     </div>
-    <div class="overflow-x-auto max-h-96 rounded-2xl border border-white/10 bg-surface-container-lowest/80">
-      <table class="w-full text-left border-collapse text-[11px]" id="records-table">
+    <div class="overflow-x-auto max-h-96 rounded-2xl border border-white/10 bg-surface-container-lowest/80 max-w-full">
+      <table class="w-full text-left border-collapse text-[10px] md:text-[11px]" id="records-table">
         <thead class="sticky top-0 bg-surface-container-high z-10 border-b border-white/10 text-on-surface-variant font-mono">
           <tr>
-            <th class="py-2.5 px-3">Incident ID</th>
-            <th class="py-2.5 px-3">Date</th>
-            <th class="py-2.5 px-3">Sector</th>
-            <th class="py-2.5 px-3">Category</th>
-            <th class="py-2.5 px-3">Offense Detail</th>
-            <th class="py-2.5 px-3">Time</th>
-            <th class="py-2.5 px-3">Severity</th>
-            <th class="py-2.5 px-3">Nearest Thana</th>
+            <th class="py-2 px-2.5 md:px-3">Incident ID</th>
+            <th class="py-2 px-2.5 md:px-3">Date</th>
+            <th class="py-2 px-2.5 md:px-3">Sector</th>
+            <th class="py-2 px-2.5 md:px-3">Category</th>
+            <th class="py-2 px-2.5 md:px-3">Offense Detail</th>
+            <th class="py-2 px-2.5 md:px-3">Time</th>
+            <th class="py-2 px-2.5 md:px-3">Severity</th>
+            <th class="py-2 px-2.5 md:px-3">Nearest Thana</th>
           </tr>
         </thead>
         <tbody id="records-table-body">
@@ -892,22 +914,21 @@ tailwind.config = {{
 </section>
 
 <!-- Bottom Helpline Banner -->
-<footer class="bg-gradient-to-r from-surface-container to-surface-container-high p-5 md:p-6 rounded-[28px] shadow-xl flex flex-col md:flex-row items-center justify-between gap-4 border border-white/5 relative overflow-hidden mt-3">
-  <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+<footer class="bg-gradient-to-r from-surface-container to-surface-container-high p-4 md:p-6 rounded-[24px] md:rounded-[28px] shadow-xl flex flex-col md:flex-row items-center justify-between gap-4 border border-white/5 relative overflow-hidden mt-2 md:mt-3">
   <div class="flex flex-col w-full gap-4 relative z-10">
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0 shadow-md">
-          <span class="material-symbols-outlined text-[28px]">shield</span>
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-4">
+      <div class="flex items-center gap-3 md:gap-4">
+        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0 shadow-md">
+          <span class="material-symbols-outlined text-[24px] md:text-[28px]">shield</span>
         </div>
         <div class="flex flex-col">
-          <span class="text-lg font-bold text-on-surface mt-0.5">Need assistance or witnessed an incident in Bhopal?</span>
-          <span class="text-xs text-on-surface-variant">Emergency helpline and citizen assistance portal.</span>
+          <span class="text-base md:text-lg font-bold text-on-surface mt-0.5">Need assistance or witnessed an incident in Bhopal?</span>
+          <span class="text-[11px] md:text-xs text-on-surface-variant">Emergency helpline and citizen assistance portal.</span>
         </div>
       </div>
       <div class="flex items-center gap-3 w-full md:w-auto shrink-0">
-        <a class="flex-1 md:flex-initial flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-5 py-2.5 rounded-full text-[12px] font-bold shadow-m3-error-glow fluid-transition hover:scale-105 active:scale-95 border border-red-400/40 shrink-0" href="tel:112">
-          <span class="material-symbols-outlined text-[17px]">emergency</span>
+        <a class="flex-1 md:flex-initial flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-[12px] font-bold shadow-m3-error-glow fluid-transition hover:scale-105 active:scale-95 border border-red-400/40 shrink-0" href="tel:112">
+          <span class="material-symbols-outlined text-[16px] md:text-[17px]">emergency</span>
           <span>Dial 112 SOS</span>
         </a>
       </div>
@@ -917,33 +938,33 @@ tailwind.config = {{
 
 </div>
 
-<!-- Floating Navigation Dock -->
-<nav id="floating-dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full px-5 py-2.5 bg-[#0b1329]/95 backdrop-blur-2xl border border-sky-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_25px_rgba(56,189,248,0.2)] flex items-center gap-2.5 md:gap-4">
+<!-- Floating Responsive Navigation Dock -->
+<nav id="floating-dock" class="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-20px)] max-w-[430px] md:w-auto md:max-w-none rounded-2xl md:rounded-full p-1.5 md:px-5 md:py-2.5 bg-[#0b1329]/95 backdrop-blur-2xl border border-sky-500/30 shadow-[0_12px_36px_rgba(0,0,0,0.8),0_0_20px_rgba(56,189,248,0.2)] flex items-center justify-between md:justify-center gap-1 md:gap-3 transition-all box-border">
   <!-- Map -->
-  <button id="nav-btn-map" onclick="navigateToMap()" class="dock-btn bg-sky-400 text-slate-950 font-bold px-4 py-1.5 rounded-full flex items-center gap-2 text-sm shadow-md shadow-sky-500/30 transition-all cursor-pointer">
-    <span class="material-symbols-outlined text-[18px]">map</span>
+  <button id="nav-btn-map" onclick="navigateToMap()" class="dock-btn active flex-1 md:flex-initial flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 px-1.5 py-1.5 md:px-4 md:py-1.5 rounded-xl md:rounded-full text-[10px] md:text-sm font-semibold tracking-tight cursor-pointer">
+    <span class="material-symbols-outlined text-[19px] md:text-[18px]">map</span>
     <span>Map</span>
   </button>
   <!-- Analyze -->
-  <button id="nav-btn-analytics" onclick="navigateToAnalytics()" class="dock-btn text-slate-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm transition-all cursor-pointer">
-    <span class="material-symbols-outlined text-[18px]">insights</span>
-    <span class="font-medium">Analyze</span>
+  <button id="nav-btn-analytics" onclick="navigateToAnalytics()" class="dock-btn flex-1 md:flex-initial flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 px-1.5 py-1.5 md:px-4 md:py-1.5 rounded-xl md:rounded-full text-[10px] md:text-sm font-semibold tracking-tight cursor-pointer">
+    <span class="material-symbols-outlined text-[19px] md:text-[18px]">insights</span>
+    <span>Analyze</span>
   </button>
   <!-- Hotspots -->
-  <button id="nav-btn-hotspots" onclick="navigateToHotspots()" class="dock-btn text-slate-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm transition-all cursor-pointer">
-    <span class="material-symbols-outlined text-[18px]">radar</span>
-    <span class="font-medium">Hotspots</span>
+  <button id="nav-btn-hotspots" onclick="navigateToHotspots()" class="dock-btn flex-1 md:flex-initial flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 px-1.5 py-1.5 md:px-4 md:py-1.5 rounded-xl md:rounded-full text-[10px] md:text-sm font-semibold tracking-tight cursor-pointer">
+    <span class="material-symbols-outlined text-[19px] md:text-[18px]">radar</span>
+    <span>Hotspots</span>
   </button>
   <!-- Records -->
-  <button id="nav-btn-records" onclick="navigateToRecords()" class="dock-btn text-slate-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm transition-all cursor-pointer">
-    <span class="material-symbols-outlined text-[18px]">table_chart</span>
-    <span class="font-medium">Records</span>
+  <button id="nav-btn-records" onclick="navigateToRecords()" class="dock-btn flex-1 md:flex-initial flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 px-1.5 py-1.5 md:px-4 md:py-1.5 rounded-xl md:rounded-full text-[10px] md:text-sm font-semibold tracking-tight cursor-pointer">
+    <span class="material-symbols-outlined text-[19px] md:text-[18px]">table_chart</span>
+    <span>Records</span>
   </button>
-  <div class="h-5 w-px bg-white/15"></div>
+  <div class="hidden md:block h-5 w-px bg-white/15"></div>
   <!-- SOS -->
-  <a id="nav-btn-sos" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-1.5 rounded-full flex items-center gap-2 text-sm shadow-lg shadow-red-600/40 tracking-wide transition-all" href="tel:112">
-    <span class="material-symbols-outlined text-[18px]">emergency</span>
-    <span>SOS 112</span>
+  <a id="nav-btn-sos" class="flex-1 md:flex-initial flex flex-col md:flex-row items-center justify-center gap-0.5 md:gap-2 px-1.5 py-1.5 md:px-4 md:py-1.5 rounded-xl md:rounded-full bg-red-600 hover:bg-red-500 text-white font-bold text-[10px] md:text-sm shadow-md shadow-red-600/40 tracking-tight transition-all cursor-pointer" href="tel:112">
+    <span class="material-symbols-outlined text-[19px] md:text-[18px]">emergency</span>
+    <span class="whitespace-nowrap">SOS 112</span>
   </a>
 </nav>
 
@@ -1337,7 +1358,7 @@ tailwind.config = {{
     const bRecords = document.getElementById('tab-btn-records');
 
     [bAnalytics, bSectors, bRecords].forEach(b => {{
-      b.className = 'px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer';
+      b.className = 'flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high fluid-transition cursor-pointer text-center';
     }});
 
     pAnalytics.classList.add('hidden');
@@ -1346,13 +1367,13 @@ tailwind.config = {{
 
     if (tabName === 'analytics') {{
       pAnalytics.classList.remove('hidden');
-      bAnalytics.className = 'px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer';
+      bAnalytics.className = 'flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer text-center';
     }} else if (tabName === 'sectors') {{
       pSectors.classList.remove('hidden');
-      bSectors.className = 'px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer';
+      bSectors.className = 'flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer text-center';
     }} else {{
       pRecords.classList.remove('hidden');
-      bRecords.className = 'px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer';
+      bRecords.className = 'flex-1 sm:flex-initial px-3 md:px-4 py-1.5 rounded-lg md:rounded-full bg-primary-container text-on-primary-container font-bold shadow-m3-glow fluid-transition cursor-pointer text-center';
     }}
   }}
 
@@ -1361,14 +1382,14 @@ tailwind.config = {{
     if (!tbody) return;
     const rows = currentFiltered.slice(0, 30).map(c => `
       <tr class="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" onclick="zoomToRecord(${{c.lat}}, ${{c.lon}})">
-        <td class="py-2 px-3 font-mono font-bold text-primary">${{c.id}}</td>
-        <td class="py-2 px-3 text-on-surface-variant">${{c.date}}</td>
-        <td class="py-2 px-3 font-medium">${{c.neighborhood}}</td>
-        <td class="py-2 px-3">${{c.category}}</td>
-        <td class="py-2 px-3 text-on-surface-variant">${{c.subtype}}</td>
-        <td class="py-2 px-3 text-on-surface-variant">${{c.time_of_day}}</td>
-        <td class="py-2 px-3 font-mono font-bold text-amber-400">Lv ${{c.severity}}/5</td>
-        <td class="py-2 px-3 text-sky-400 font-mono">${{c.nearest_ps}} (${{c.dist_km}}km)</td>
+        <td class="py-2 px-2.5 md:px-3 font-mono font-bold text-primary whitespace-nowrap">${{c.id}}</td>
+        <td class="py-2 px-2.5 md:px-3 text-on-surface-variant whitespace-nowrap">${{c.date}}</td>
+        <td class="py-2 px-2.5 md:px-3 font-medium whitespace-nowrap">${{c.neighborhood}}</td>
+        <td class="py-2 px-2.5 md:px-3 whitespace-nowrap">${{c.category}}</td>
+        <td class="py-2 px-2.5 md:px-3 text-on-surface-variant whitespace-nowrap">${{c.subtype}}</td>
+        <td class="py-2 px-2.5 md:px-3 text-on-surface-variant whitespace-nowrap">${{c.time_of_day}}</td>
+        <td class="py-2 px-2.5 md:px-3 font-mono font-bold text-amber-400 whitespace-nowrap">Lv ${{c.severity}}/5</td>
+        <td class="py-2 px-2.5 md:px-3 text-sky-400 font-mono whitespace-nowrap">${{c.nearest_ps}} (${{c.dist_km}}km)</td>
       </tr>
     `).join('');
     tbody.innerHTML = rows;
@@ -1396,13 +1417,9 @@ tailwind.config = {{
 
   // Connected Navigation Bar Actions
   function setDockActive(btnId) {{
-    document.querySelectorAll('.dock-btn').forEach(b => {{
-      b.className = 'dock-btn text-slate-300 hover:text-white hover:bg-white/10 px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm transition-all cursor-pointer';
-    }});
+    document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
     const active = document.getElementById(btnId);
-    if (active) {{
-      active.className = 'dock-btn bg-sky-400 text-slate-950 font-bold px-4 py-1.5 rounded-full flex items-center gap-2 text-sm shadow-md shadow-sky-500/30 transition-all cursor-pointer';
-    }}
+    if (active) active.classList.add('active');
   }}
 
   function navigateToMap() {{

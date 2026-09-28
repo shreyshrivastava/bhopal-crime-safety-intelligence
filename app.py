@@ -60,19 +60,23 @@ STREAMLIT_CONTAINER_STYLE = """
     #MainMenu {visibility: hidden;}
     header {visibility: hidden; height: 0 !important; margin: 0 !important; padding: 0 !important;}
     footer {visibility: hidden; height: 0 !important;}
-    .block-container {
-        padding-top: 0rem !important;
-        padding-bottom: 0rem !important;
-        padding-left: 0rem !important;
-        padding-right: 0rem !important;
+    html, body, [data-testid="stAppViewContainer"], section.main, .block-container {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
         max-width: 100% !important;
     }
     div[data-testid="stSidebarCollapsedControl"] {
         display: none !important;
     }
-    iframe {
-        width: 100% !important;
+    div[data-testid="stCustomComponentV1"], .stCustomComponentV1, iframe {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
         border: none !important;
+        display: block !important;
         background-color: #0b0f17;
     }
 </style>
