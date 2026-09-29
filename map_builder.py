@@ -68,12 +68,11 @@ def build_bhopal_map(
         prefer_canvas=True
     )
 
-    # 1. CartoDB Voyager Tile Layer (Modern, clean, unrestricted public tiles)
+    # 1. OpenStreetMap Tile Layer (100% Free, Unrestricted, No API key)
     folium.TileLayer(
-        tiles="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        name="Carto Voyager (Clean & Modern)",
-        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains='abcd',
+        tiles="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        name="OpenStreetMap (Standard)",
+        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         control=True
     ).add_to(m)
 

@@ -30,3 +30,10 @@ Thumbs.db
 .env
 .env.local
 secrets.toml
+
+# Temporary data & screenshots
+.cache/
+*.png
+scratch_temp.py
+verify_*.py
+test_and_screenshot.py

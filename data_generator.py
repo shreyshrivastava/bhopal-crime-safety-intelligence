@@ -208,13 +208,19 @@ SAFE_CORRIDORS = [
 ]
 
 
-def generate_crime_dataset(n_samples: int = 480, seed: int = 42) -> pd.DataFrame:
+def generate_crime_dataset(n_samples: int = 480, seed: int = 42, reference_date: datetime = None) -> pd.DataFrame:
     """
     Generates a realistic, statistically calibrated crime dataset for Bhopal.
     Includes incident ID, geo coordinates, neighborhood, crime category,
     specific subtype, time of day, datetime, severity score, and resolution status.
+    Refreshes daily anchored to reference_date (defaults to current date).
     """
-    np.random.seed(seed)
+    if reference_date is None:
+        reference_date = datetime.now()
+    
+    # Daily deterministic seed: maintains stability within the day, rolls automatically tomorrow
+    daily_seed = seed + (reference_date.toordinal() % 10000)
+    np.random.seed(daily_seed)
     
     neighborhood_names = list(NEIGHBORHOOD_CONFIG.keys())
     weights = [NEIGHBORHOOD_CONFIG[n]["base_weight"] for n in neighborhood_names]
@@ -224,7 +230,7 @@ def generate_crime_dataset(n_samples: int = 480, seed: int = 42) -> pd.DataFrame
     chosen_neighborhoods = np.random.choice(neighborhood_names, size=n_samples, p=weights)
     
     records = []
-    base_date = datetime.now() - timedelta(days=90)
+    base_date = reference_date - timedelta(days=90)
     
     for i, nh_name in enumerate(chosen_neighborhoods):
         cfg = NEIGHBORHOOD_CONFIG[nh_name]

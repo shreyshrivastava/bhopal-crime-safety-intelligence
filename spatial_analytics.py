@@ -85,14 +85,22 @@ def compute_sector_risk_index(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame()
 
     summary = []
-    for neighborhood, group in df.groupby("neighborhood"):
+    sector_col = "sector" if "sector" in df.columns else ("neighborhood" if "neighborhood" in df.columns else df.columns[0])
+    sev_col = "severity" if "severity" in df.columns else "severity_score"
+    cat_col = "category" if "category" in df.columns else "crime_category"
+
+    for neighborhood, group in df.groupby(sector_col):
         count = len(group)
-        avg_sev = group["severity_score"].mean()
-        high_sev_count = (group["severity_score"] >= 4).sum()
-        night_ratio = (group["time_of_day"] == "Nighttime/Post-10 PM").mean()
+        avg_sev = group[sev_col].mean() if sev_col in group.columns else 3.0
+        high_sev_count = (group[sev_col] >= 4).sum() if sev_col in group.columns else 0
+        
+        if "time_of_day" in group.columns:
+            night_ratio = group["time_of_day"].str.lower().str.contains("night").mean()
+        else:
+            night_ratio = 0.35
         
         # Primary crime type
-        top_crime = group["crime_category"].mode()[0] if not group.empty else "N/A"
+        top_crime = group[cat_col].mode()[0] if cat_col in group.columns and not group.empty else "N/A"
         
         # Composite score normalized
         # Weights: 40% incident volume (scaled), 35% severity, 25% night ratio

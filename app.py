@@ -42,6 +42,9 @@ from spatial_analytics import (
     calculate_station_proximity,
     compute_sector_risk_index
 )
+import importlib
+import ui_builder
+importlib.reload(ui_builder)
 from ui_builder import generate_material_active_html
 
 # ==============================================================================
@@ -60,13 +63,15 @@ STREAMLIT_CONTAINER_STYLE = """
     #MainMenu {visibility: hidden;}
     header {visibility: hidden; height: 0 !important; margin: 0 !important; padding: 0 !important;}
     footer {visibility: hidden; height: 0 !important;}
-    html, body, [data-testid="stAppViewContainer"], section.main, .block-container {
+    html, body, .stApp, [data-testid="stApp"], [data-testid="stAppViewContainer"], section.main, .main, .block-container {
         height: 100vh !important;
         max-height: 100vh !important;
         overflow: hidden !important;
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
+        background-color: #0b0f17 !important;
+        background: #0b0f17 !important;
     }
     div[data-testid="stSidebarCollapsedControl"] {
         display: none !important;
@@ -77,7 +82,8 @@ STREAMLIT_CONTAINER_STYLE = """
         max-height: 100vh !important;
         border: none !important;
         display: block !important;
-        background-color: #0b0f17;
+        background-color: #0b0f17 !important;
+        background: #0b0f17 !important;
     }
 </style>
 """
@@ -85,11 +91,14 @@ st.markdown(STREAMLIT_CONTAINER_STYLE, unsafe_allow_html=True)
 
 
 # ==============================================================================
-# DATA INGESTION & CACHING PIPELINE
+# DATA INGESTION & CACHING PIPELINE (24h Daily Rolling Synchronization)
 # ==============================================================================
-@st.cache_data(show_spinner=False)
-def load_bhopal_data(num_samples: int = 520, random_seed: int = 101):
-    raw_df = generate_crime_dataset(n_samples=num_samples, seed=random_seed)
+@st.cache_data(ttl=86400, show_spinner=False)
+def load_bhopal_data(num_samples: int = 520, random_seed: int = 101, date_str: str = None):
+    if date_str is None:
+        date_str = datetime.now().strftime("%Y-%m-%d")
+    ref_date = datetime.strptime(date_str, "%Y-%m-%d")
+    raw_df = generate_crime_dataset(n_samples=num_samples, seed=random_seed, reference_date=ref_date)
     gdf = to_geodataframe(raw_df)
     gdf_with_prox = calculate_station_proximity(gdf)
     df = pd.DataFrame(gdf_with_prox.drop(columns=["geometry"], errors="ignore"))
@@ -97,11 +106,13 @@ def load_bhopal_data(num_samples: int = 520, random_seed: int = 101):
     return df, risk_df
 
 
-# Load primary dataset
-df, risk_df = load_bhopal_data(num_samples=520, random_seed=101)
+# Load primary dataset anchored to current calendar date
+today_str = datetime.now().strftime("%Y-%m-%d")
+display_refresh_str = datetime.now().strftime("%d %b %Y")
+df, risk_df = load_bhopal_data(num_samples=520, random_seed=101, date_str=today_str)
 
-# Generate Material Active HTML with data connections
-html_content = generate_material_active_html(df, risk_df)
+# Generate Material Active HTML with data connections & daily refresh badge
+html_content = generate_material_active_html(df, risk_df, refresh_date=display_refresh_str)
 
 # Sync standalone index.html for direct browser access
 try:
