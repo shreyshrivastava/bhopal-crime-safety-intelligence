@@ -1,5 +1,11 @@
 # 🛡️ Bhopal Safety Intelligence
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bhopal-crime-safety.streamlit.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopal--crime--safety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopal-crime-safety.streamlit.app)
+[![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+> 🚀 **Live Production Application:** **[https://bhopal-crime-safety.streamlit.app](https://bhopal-crime-safety.streamlit.app)**
+
 An engineering-grade, geospatial civic safety intelligence platform designed to map, analyze, and visualize recorded crime patterns, safety infrastructure, and station proximity across Bhopal, Madhya Pradesh (23.2599° N, 77.4126° E).
 
 Built with a high-performance hybrid architecture combining **Python (Streamlit, NumPy, GeoPandas)** on the analytics backend and an interactive **Leaflet.js / Material You (M3)** client-side geospatial engine.
@@ -30,18 +36,19 @@ Traditional crime statistics and First Information Report (FIR) logs in Indian m
 
 | Feature | User Interaction | Internal Processing | Implementation Details |
 | :--- | :--- | :--- | :--- |
-| **Interactive Leaflet Cartography** | Pan, zoom, click clustered markers, switch between Marker Cluster and Kernel Density views. | Evaluates geospatial coordinates in WGS84 (`EPSG:4326`), applies dynamic color-coding, and renders custom HTML popup capsules. | Built with Leaflet.js v1.9.4, `leaflet.markercluster` v1.5.3, and `leaflet-heat` v0.2.0. Rendered via HTML5 Canvas (`preferCanvas: true`). |
-| **Zero-Key Multi-Basemap Suite** | Click **Civic**, **OSM**, or **Satellite** in the map header toolbar. | Swaps active Leaflet tile layer dynamically without reloading incident data. Dark mode loads Esri World Dark Gray Base; light mode loads Esri World Street Map; OSM provides street geography; Satellite streams HD aerial imagery. | 100% free, zero-key, zero-token, watermark-free architecture utilizing Esri Public REST Services and OpenStreetMap Standard. |
-| **Adaptive Dark / Light Theme Engine** | Click the theme toggle icon in the top header bar. | Toggles `dark` class on root HTML, swaps CSS custom properties, updates chart text/border colors, and synchronizes the Civic basemap layer. Persists user preference across sessions. | Client-side `localStorage` state tracking with smooth CSS variable transitions (`transition: 0.25s ease`). |
-| **Connected Global Search** | Type in the top search bar (by sector, offense, category, or incident ID) or select from the quick ward dropdown. | Evaluates query against the in-memory JavaScript dataset (`ALL_CRIMES`), updates all 4 KPI cards, filters map markers, and triggers Leaflet `flyTo` camera animation. | Event-driven debounced search with automatic regex/substring matching and instant one-click clear button. |
+| **Interactive Leaflet Cartography** | Pan, zoom, click clustered markers, switch between Marker Cluster and Kernel Density views. | Evaluates geospatial coordinates in WGS84 (`EPSG:4326`), applies dynamic color-coding across 6 incident categories (Property `#F59E0B`, Assault `#EF4444`, Women's Safety `#D946EF`, Vandalism `#10B981`, Thanas `#0284C7`, Safe Corridors `#10B981`), and renders custom HTML popup capsules. | Built with Leaflet.js v1.9.4, `leaflet.markercluster` v1.5.3, and `leaflet-heat` v0.2.0. Rendered via HTML5 Canvas (`preferCanvas: true`). |
+| **Inline Map Indicator Toolbar** | Click **Crime Hotspots**, **Crime Trends**, **Unusual Activity**, or **AI Risk Insights** directly above the map. | Filters map layers and synchronizes with lower analytics panes in real time without layout shift. | High-efficiency horizontal segmented toolbar taking only 39px vertical space, styled with Google Material Symbols and rigid pill dimensions. |
+| **3D City Safety Distribution Globe** | Click and drag in 3D to rotate the globe, toggle auto-spin momentum, and hover sector nodes. | Projects 9 municipal sectors onto a 3D spherical coordinate system with geodesic latitude/longitude rings, dynamic node sizes, and real-time area dispersion entropy metrics. | Built with HTML5 3D Canvas engine, trigonometric sphere projection, depth sorting, and Material Design 3 telemetry cards. |
+| **Zero-Key OpenStreetMap Engine** | Recenter view, toggle fullscreen, or pan across high-detail cartography. | Renders OpenStreetMap Standard street geography with optimized tile caching and clear cartographic typography. | 100% free, zero-key, zero-token, watermark-free open cartographic architecture. |
+| **Adaptive Dark / Light Theme Engine** | Click the theme toggle icon in the top header bar. | Toggles `dark` class on root HTML, swaps CSS custom properties, updates chart text/border colors, and synchronizes map styling. Persists user preference across sessions. | Client-side `localStorage` state tracking with smooth CSS variable transitions (`transition: 0.25s ease`). |
+| **Connected Global Search** | Type in the top search bar (by sector, offense, category, or incident ID) or select from the quick ward dropdown. | Evaluates query against the in-memory JavaScript dataset (`ALL_CRIMES`), filters map markers, updates telemetry counters, and triggers Leaflet `flyTo` camera animation. | Event-driven debounced search with automatic regex/substring matching and instant one-click clear button. |
 | **Multi-Parametric Filter Stack** | Select crime category, time of day (All/Night/Day), zone/sector, date window, or adjust the minimum severity slider. | Re-filters active incident subset, recalculates dominant crime types, updates highest-risk sector, and dynamically updates the Leaflet layer groups. | Zero-latency client-side execution; recalculates all statistical aggregates in `< 2 ms`. |
-| **Analyze Filters Workflow** | Click the **Analyze Filters** action button. | Applies all active filter parameters, recalculates risk indicators, activates the **Risk Analytics & Trends** tab, and smoothly scrolls to the visualization section. | Linked via DOM event dispatchers and smooth scroll APIs (`scrollIntoView({ behavior: 'smooth' })`). |
+| **Analyze Filters Workflow** | Click the **Apply Filters** action button. | Applies all active filter parameters, recalculates risk indicators, activates the analytics suite, and smoothly synchronizes the visualization section. | Linked via DOM event dispatchers and smooth scroll APIs (`scrollIntoView({ behavior: 'smooth' })`). |
 | **Station Proximity Engine** | View nearest station names and geodesic distances in popups, tables, and telemetry ribbons. | Calculates exact great-circle distance between incident coordinates and 10 Bhopal Thanas using vectorized Haversine geometry. | Vectorized with NumPy broadcasting in `spatial_analytics.py`; outputs distance in kilometers rounded to 2 decimal places. |
 | **Multidimensional Analytics Suite** | Inspect sector bar distributions, daytime vs. nighttime chrono-bias gauge, severity matrix, and offense modalities. | Renders responsive SVG concentric radial rings, CSS gradient bars, and dynamic metric badges based on the filtered incident subset. | Pure CSS/SVG data visualization adhering to Material Design 3 tokens. |
 | **Sector Safety & Proximity Ranking** | Switch to the **Sector Safety & Proximity** tab. | Evaluates volume, severity, and night ratios to rank all 9 sectors on a 0–100 composite risk score with safety tier badges. | Calculated via `compute_sector_risk_index()` in Python and rendered into formatted HTML tables. |
 | **Records Explorer & CSV Export** | Search within the records tab and click **Download CSV**. | Dynamically generates tabular rows with incident ID, date, category, subtype, and nearest thana; serializes records into CSV Blob. | Client-side `Blob` creation and `window.URL.createObjectURL` trigger for instant download without server latency. |
-| **Floating Navigation Capsule Dock** | Click **Map**, **Analyze**, **Hotspots**, **Records**, or **SOS 112** in the bottom floating dock. | Switches tabs, toggles visualization modes (Cluster vs Heatmap), and smoothly navigates the viewport to target anchors. | Fixed-position backdrop-blur container with active button state tracking. |
-| **Zero-Overflow Mobile Navigation** | Access portal on any smartphone (360px–430px viewports). | Wraps header controls cleanly, enables horizontal touch scrolling for data tables, and provides touch-optimized hit targets without horizontal page overflow. | Fluid flexbox architecture (`flex-wrap`, `min-w-0`), responsive padding scaling, and viewport-constrained containers. |
+| **Zero-Overflow Mobile Navigation** | Access portal on any smartphone (360px–430px viewports). | Wraps header controls cleanly, collapses filters into an accordion drawer, enables horizontal touch scrolling for data tables, and provides touch-optimized hit targets without horizontal page overflow. | Fluid flexbox architecture (`flex-wrap`, `min-w-0`), responsive padding scaling, and viewport-constrained containers. |
 
 ---
 
@@ -55,11 +62,12 @@ graph TD
         UI["Material Active (M3) Web Shell"]
         Search["Connected Search & Ward Selector"]
         Filters["Multi-Parametric Filter Stack"]
+        IndicatorBar["Inline Map Indicator Toolbar (39px)"]
         MapEngine["Leaflet.js Geospatial Engine"]
         Clusters["MarkerCluster Layer"]
         Heatmap["Kernel Density Heat Layer"]
+        SphereGraph["3D City Safety Distribution Globe Engine"]
         Analytics["Analytical SVG/CSS Visualization Suite"]
-        Dock["Floating Navigation Capsule Dock"]
     end
 
     subgraph Server["Application & Middleware Layer (Python / Streamlit)"]
@@ -83,11 +91,13 @@ graph TD
 
     UI --> Search
     UI --> Filters
+    UI --> IndicatorBar
+    IndicatorBar --> MapEngine
     UI --> MapEngine
     MapEngine --> Clusters
     MapEngine --> Heatmap
+    UI --> SphereGraph
     UI --> Analytics
-    UI --> Dock
 
     App --> UIBuilder
     UIBuilder --> UI
@@ -230,21 +240,17 @@ graph TD
     Body["Dashboard Body (bg-[#0b0f17])"]
     Header["Sticky Header App Bar"]
     Ribbon["Incident Registry Overview Ribbon"]
-    MetricCards["4 Fluid Metric Overview Cards"]
     MainGrid["12-Column Responsive Operational Grid"]
-    LeftStack["Left Stack (5 cols): Controls"]
+    LeftStack["Left Stack (5 cols): Filters & Layer Toggles"]
     RightMap["Right Stack (7 cols): Map Frame"]
-    BottomSection["Bottom Analytics Section"]
-    Dock["Floating Navigation Dock"]
+    BottomSection["Bottom Multi-Tab Analytics Section"]
 
     Body --> Header
     Body --> Ribbon
-    Body --> MetricCards
     Body --> MainGrid
     MainGrid --> LeftStack
     MainGrid --> RightMap
     Body --> BottomSection
-    Body --> Dock
 
     Header --> Brand["Brand Title & Logo"]
     Header --> SearchBox["Search Input & Ward Select"]
@@ -252,18 +258,20 @@ graph TD
     Header --> SOSBtn["Dial 112 SOS"]
     Header --> ThemeBtn["Dark/Light Toggle"]
 
-    LeftStack --> LayerCtrl["Geospatial Layer Controls"]
-    LeftStack --> FilterCtrl["Incident Filter Controls"]
-    LeftStack --> QuickToggles["Threat Layer Quick Toggles"]
+    LeftStack --> FilterCtrl["Filters (Category, Time, Sector, Severity)"]
+    LeftStack --> QuickToggles["Quick Layer Toggles (Police Stations, Safe Corridors)"]
 
+    RightMap --> IndicatorBar["Inline Map Indicator Toolbar (#what-to-see-bar)"]
     RightMap --> MapHeader["Cartographic Controls (Basemap Switcher: Civic | OSM | Satellite, Mode Indicator, Recenter)"]
     RightMap --> LeafletMap["Leaflet Map Viewport (#leaflet-map)"]
     RightMap --> MapFooter["Map Telemetry Ribbon"]
 
-    BottomSection --> TabPill["Tab Navigation Bar"]
-    BottomSection --> TabAnalytics["Tab 1: Risk Analytics & Charts"]
-    BottomSection --> TabSectors["Tab 2: Sector Safety Index Table"]
-    BottomSection --> TabRecords["Tab 3: Records Explorer & CSV Export"]
+    BottomSection --> TabPill["Top Navigation Tab Bar"]
+    BottomSection --> TabAnalytics["Tab 1: Crime Overview (3D Safety Globe & Analytics)"]
+    BottomSection --> TabAIRisk["Tab 2: AI Risk Insights"]
+    BottomSection --> TabHotspots["Tab 3: Crime Hotspots"]
+    BottomSection --> TabRecords["Tab 4: Crime Records Explorer & CSV Export"]
+    BottomSection --> TabSources["Tab 5: Data Sources"]
 ```
 
 ---
@@ -300,13 +308,13 @@ The visual design system is derived from **Google Material Design 3 (M3) Adaptiv
 
 ## 8. Responsive Design
 
-The dashboard is built to adapt across standard responsive breakpoints with dedicated mobile viewport optimization:
+The dashboard is built to adapt seamlessly across standard responsive breakpoints with dedicated mobile viewport optimization:
 
 | Breakpoint | Layout Behavior | Component Adaptations |
 | :--- | :--- | :--- |
-| **Desktop (≥ 1280px)** | Standard 12-column grid master layout. | 5 columns for control stack, 7 columns for map. 4 KPI overview cards displayed in a single row. Full header with search and ward select. |
-| **Tablet (768px – 1024px)** | 2-column or stacked grid. | 4 KPI cards reflow into a 2x2 grid. Controls stack appears above or alongside the map. Quick ward selector collapses. |
-| **Mobile (< 768px)** | Single-column linear layout with zero overflow. | **Zero-Overflow Navigation**: Header elements wrap gracefully (`flex-wrap`, `min-w-0`), search bar and action buttons adapt without pushing content offscreen. Map viewport maintains a fixed 420–540px height. Tables enable smooth horizontal swipe scrolling. Floating capsule dock reduces padding while preserving touch targets (min 44px). |
+| **Desktop (≥ 1280px)** | Standard 12-column grid master layout. | 5 columns for streamlined Filters stack, 7 columns for map frame. Inline indicator toolbar (39px) sits directly above the Leaflet viewport. 3D City Safety Distribution globe renders in full 3D interactive mode with auto-spin momentum and node inspection. Full header with search, ward select, and quick SOS button. |
+| **Tablet (768px – 1024px)** | 2-column or stacked grid. | Controls stack reflows gracefully above or alongside the map. Inline indicator bar allows smooth flex wrapping without vertical misalignment. 3D globe and SVG radial charts auto-rescale to canvas bounds. Quick ward selector collapses into header dropdown. |
+| **Mobile (< 768px)** | Single-column linear layout with zero overflow. | **Zero-Overflow Navigation**: Header elements wrap gracefully (`flex-wrap`, `min-w-0`), search bar and SOS action button adapt without pushing content offscreen. Inline indicator bar is horizontally scrollable/panned via touch. Map viewport maintains a fixed 420–540px height with color-coded markers. 3D Globe supports touch rotation. Tables enable smooth horizontal swipe scrolling with no layout blowout. |
 
 ---
 
@@ -363,7 +371,11 @@ bhopal-crime-safety-dashboard/
 
 ---
 
-## 11. Installation
+## 11. Installation & Deployment
+
+### 🌐 Live Hosted Application
+You can interact with the live application instantly without local installation:
+👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://bhopal-crime-safety.streamlit.app)**
 
 ### Prerequisites
 - Python 3.10+ (Python 3.12 recommended)
@@ -534,7 +546,7 @@ To prevent both **high bias (underfitting)** and **high variance (overfitting)**
 - **Temporal Emergence Filter:** Flags clusters where $>45\%$ of incidents occurred within the past 30 days as **"Emerging Hotspots"**, distinguishing newly forming clusters from historically established ones.
 
 ### 5. Active Crime Incident Registry (Full 520 Records)
-The updated platform preserves and enhances the complete incident records registry (accessible under **Tab 5: Incident Records** and via the bottom navigation dock):
+The updated platform preserves and enhances the complete incident records registry (accessible under **Tab 4: Crime Records** in the primary navigation tab bar):
 - **Full Historical Records:** All 520 calibrated incident reports are maintained with complete schema fidelity.
 - **Detailed Attributes:**
   - `Incident ID` (e.g. `BHP-2026-1042`, clickable to zoom and inspect on the map)
@@ -635,7 +647,7 @@ When working with this repository, AI agents (such as Google Antigravity) must s
 8. **Preserve Data Contracts:** The JavaScript array `ALL_CRIMES` expects exact keys (`id`, `lat`, `lon`, `neighborhood`, `category`, `subtype`, `time_of_day`, `severity`, `nearest_ps`, `dist_km`).
 9. **Run Local Verifications:** After modifying frontend logic, run a headless verification script to verify there are zero JavaScript errors.
 10. **Visual Inspection:** Verify screenshots of both desktop (`1400x900`) and mobile (`390x844`) viewports before closing tasks.
-11. **Maintain Responsive Integrity:** Ensure floating docks, headers, and grid columns stack gracefully on smaller viewports.
+11. **Maintain Responsive Integrity:** Ensure headers, inline toolbars, and grid columns stack gracefully on smaller viewports without floating docks or fixed overlays obscuring interactive content.
 12. **Follow Visual Language:** Preserve rounded squircles, M3 color tokens, and smooth transition animations.
 13. **Do Not Reintroduce Deprecated Badges:** Never add back "RTK: 99.8% LIVE", "Real-time CAD", or "MP Police" branding.
 14. **Maintain Offline Export:** Ensure client-side CSV downloads function without external server dependencies.
@@ -684,7 +696,7 @@ The Material Active UI implemented in `ui_builder.py` is the **authoritative vis
 - Full bidirectional Dark / Light theme engine with dynamic map tile synchronization.
 - Zero-overflow responsive mobile navigation engine (tested on 360px–430px viewports).
 - Vectorized Haversine proximity calculations.
-- Connected search, analyze workflow, and floating navigation dock.
+- Connected search, streamlined Filters workflow, 3D City Safety Distribution globe, and inline map indicator toolbar.
 
 ### Planned / Potential
 - [ ] Integration of OpenStreetMap street lamp locations to generate nighttime lighting deficit layers.
