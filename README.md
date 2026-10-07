@@ -45,9 +45,11 @@ Traditional crime statistics and First Information Report (FIR) logs in Indian m
 | **Multi-Parametric Filter Stack** | Select crime category, time of day (All/Night/Day), zone/sector, date window, or adjust the minimum severity slider. | Re-filters active incident subset, recalculates dominant crime types, updates highest-risk sector, and dynamically updates the Leaflet layer groups. | Zero-latency client-side execution; recalculates all statistical aggregates in `< 2 ms`. |
 | **Analyze Filters Workflow** | Click the **Apply Filters** action button. | Applies all active filter parameters, recalculates risk indicators, activates the analytics suite, and smoothly synchronizes the visualization section. | Linked via DOM event dispatchers and smooth scroll APIs (`scrollIntoView({ behavior: 'smooth' })`). |
 | **Station Proximity Engine** | View nearest station names and geodesic distances in popups, tables, and telemetry ribbons. | Calculates exact great-circle distance between incident coordinates and 10 Bhopal Thanas using vectorized Haversine geometry. | Vectorized with NumPy broadcasting in `spatial_analytics.py`; outputs distance in kilometers rounded to 2 decimal places. |
-| **Multidimensional Analytics Suite** | Inspect sector bar distributions, daytime vs. nighttime chrono-bias gauge, severity matrix, and offense modalities. | Renders responsive SVG concentric radial rings, CSS gradient bars, and dynamic metric badges based on the filtered incident subset. | Pure CSS/SVG data visualization adhering to Material Design 3 tokens. |
-| **Sector Safety & Proximity Ranking** | Switch to the **Sector Safety & Proximity** tab. | Evaluates volume, severity, and night ratios to rank all 9 sectors on a 0–100 composite risk score with safety tier badges. | Calculated via `compute_sector_risk_index()` in Python and rendered into formatted HTML tables. |
-| **Records Explorer & CSV Export** | Search within the records tab and click **Download CSV**. | Dynamically generates tabular rows with incident ID, date, category, subtype, and nearest thana; serializes records into CSV Blob. | Client-side `Blob` creation and `window.URL.createObjectURL` trigger for instant download without server latency. |
+| **Multidimensional Analytics Suite (Tab 1: Crime Overview)** | Inspect sector bar distributions, daytime vs. nighttime chrono-bias gauge, severity matrix, and offense modalities. | Renders responsive SVG concentric radial rings, CSS gradient bars, and dynamic metric badges based on the filtered incident subset. | Pure CSS/SVG data visualization adhering to Material Design 3 tokens. |
+| **Explainable AI Risk Model (Tab 2: AI Risk Insights)** | Review sector risk tiers, feature importance bars, and natural-language risk drivers. | Evaluates continuous sector safety risk using an interpretable Random Forest Regressor (80% accuracy) and Isolation Forest anomaly detector. | Implemented in `ai/risk_model.py`, `ai/anomaly_detection.py`, and `ai/explanations.py`. |
+| **DBSCAN Density Hotspots (Tab 3: Crime Hotspots)** | View active hotspot cluster cards with incident counts and spatial radii. | Clusters geocoded points using Great-Circle Haversine distance ($\epsilon = 750\text{m}$, $\text{min\_samples} = 10$). | Implemented in `ai/hotspots.py` with 30-day velocity detection for emerging hotspots. |
+| **Records Explorer & CSV Export (Tab 4: Crime Records)** | Search within records, inspect individual FIR rows on map, and click **Download CSV**. | Dynamically generates tabular rows with incident ID, date, category, subtype, and nearest thana; serializes records into CSV Blob. | Client-side `Blob` creation and `window.URL.createObjectURL` trigger for instant download without server latency. |
+| **Data Ingestion & Quality Audit (Tab 5: Data Sources)** | Inspect ingestion gateway status, schema quality score, and official legal citations. | Validates data against Bhopal municipal bounding box (23.00°–23.45° N, 77.20°–77.65° E) and schema specifications. | Implemented in `data/validator.py`, `data/cache.py`, and `data/live_fetcher.py`. |
 | **Zero-Overflow Mobile Navigation** | Access portal on any smartphone (360px–430px viewports). | Wraps header controls cleanly, collapses filters into an accordion drawer, enables horizontal touch scrolling for data tables, and provides touch-optimized hit targets without horizontal page overflow. | Fluid flexbox architecture (`flex-wrap`, `min-w-0`), responsive padding scaling, and viewport-constrained containers. |
 
 ---
@@ -58,35 +60,47 @@ Traditional crime statistics and First Information Report (FIR) logs in Indian m
 
 ```mermaid
 graph TD
-    subgraph Client["Frontend Layer (Client Browser)"]
-        UI["Material Active (M3) Web Shell"]
+    subgraph Client["Frontend Layer (Client Browser - Material Active M3)"]
+        UI["Material Active Web Shell"]
         Search["Connected Search & Ward Selector"]
         Filters["Multi-Parametric Filter Stack"]
         IndicatorBar["Inline Map Indicator Toolbar (39px)"]
         MapEngine["Leaflet.js Geospatial Engine"]
         Clusters["MarkerCluster Layer"]
         Heatmap["Kernel Density Heat Layer"]
-        SphereGraph["3D City Safety Distribution Globe Engine"]
-        Analytics["Analytical SVG/CSS Visualization Suite"]
+        SphereGraph["3D City Safety Distribution Globe"]
+        TabPanes["5-Tab Navigation Suite (Overview, AI Risk, Hotspots, Records, Sources)"]
     end
 
     subgraph Server["Application & Middleware Layer (Python / Streamlit)"]
         App["app.py (Streamlit Web Host)"]
-        UIBuilder["ui_builder.py (Dynamic HTML/CSS/JS Engine)"]
+        UIBuilder["ui_builder.py (Dynamic M3 HTML/CSS/JS Engine)"]
+        CacheMgr["data/cache.py (24h Rolling TTL Cache Manager)"]
         Config[".streamlit/config.toml (Server Settings)"]
     end
 
-    subgraph AnalyticsEngine["Core Analytics & Processing Layer"]
-        DataGen["data_generator.py (Calibrated Synthetic Generator)"]
-        Spatial["spatial_analytics.py (Vectorized Haversine Engine)"]
-        RiskCalc["Sector Risk Index Computation (0-100)"]
+    subgraph AnalyticsEngine["AI & Spatial Analytics Layer"]
+        Spatial["spatial_analytics.py (Vectorized Haversine Proximity)"]
+        RiskModel["ai/risk_model.py (Random Forest Risk Forecaster)"]
+        AnomModel["ai/anomaly_detection.py (Isolation Forest Outlier Detector)"]
+        Hotspots["ai/hotspots.py (DBSCAN Spatial Hotspot Engine)"]
+        XAI["ai/explanations.py (Explainable AI Insight Generator)"]
+        Temporal["analytics/temporal_analytics.py (Velocity & Diurnal Bias)"]
     end
 
-    subgraph DataLayer["Data & Geospatial Services"]
-        CrimeDB["In-Memory Incident Records (520 Geo-Tagged Events)"]
-        ThanaDB["Bhopal Police Thanas Database (10 Stations)"]
-        CorridorDB["Civic Safe Corridors (3 Polyline Corridors)"]
-        ESRI["ESRI World Street Map Tile Server (ArcGIS REST API)"]
+    subgraph DataPipeline["Data Ingestion & Quality Validation Layer"]
+        Fetcher["data/live_fetcher.py (Ingestion Orchestrator)"]
+        Validator["data/validator.py (Bounding Box & Schema Quality Validator)"]
+        Normalizer["data/normalizer.py (Column Aliases & Type Resolver)"]
+        DataGen["data_generator.py (Calibrated Synthetic Dataset Generator)"]
+        PublicRec["data/public_records.py (Gazetted CrPC 82/83 Registry)"]
+    end
+
+    subgraph GeospatialBase["Cartography & Spatial Services"]
+        CrimeDB["520 Geocoded Incident Records"]
+        ThanaDB["10 Police Thanas Spatial Coordinates"]
+        CorridorDB["3 Civic Safe Corridors (Polylines)"]
+        OSM["OpenStreetMap & Esri Public Tile CDN"]
     end
 
     UI --> Search
@@ -97,21 +111,30 @@ graph TD
     MapEngine --> Clusters
     MapEngine --> Heatmap
     UI --> SphereGraph
-    UI --> Analytics
+    UI --> TabPanes
 
+    App --> CacheMgr
+    App --> Fetcher
+    Fetcher --> Validator
+    Validator --> Normalizer
+    Fetcher --> DataGen
+    DataGen --> CrimeDB
+
+    App --> Spatial
+    App --> RiskModel
+    App --> AnomModel
+    App --> Hotspots
+    App --> Temporal
+    RiskModel & AnomModel & Hotspots & Temporal --> XAI
+
+    Spatial --> ThanaDB
+    Spatial --> CorridorDB
+    XAI --> UIBuilder
+    Spatial --> UIBuilder
     App --> UIBuilder
     UIBuilder --> UI
-    App --> DataGen
-    DataGen --> CrimeDB
-    App --> Spatial
-    Spatial --> ThanaDB
-    Spatial --> RiskCalc
-    RiskCalc --> UIBuilder
 
-    MapEngine -. Tile Requests .-> ESRI
-    CrimeDB -. JSON Serialization .-> UI
-    ThanaDB -. Coordinates .-> UI
-    CorridorDB -. Polylines .-> UI
+    MapEngine -. Public Tiles .-> OSM
 ```
 
 ### 3D Isometric Architecture Diagram
@@ -333,6 +356,10 @@ The dashboard is built to adapt seamlessly across standard responsive breakpoint
 - **Streamlit (`>= 1.35.0`):** Web application server and component host.
 - **Uvicorn:** Underlying ASGI web server for Streamlit runtime.
 
+### Machine Learning & Statistical Modeling
+- **Scikit-learn (`>= 1.4.0`):** Supervised Random Forest Regressor risk modeling, Isolation Forest anomaly outlier detection, and DBSCAN spatial cluster density analysis.
+- **SciPy (`>= 1.10.0`):** Spatial distance metrics, gaussian perturbation, and statistical distributions.
+
 ### Data & Geospatial Processing
 - **NumPy (`>= 1.26.0`):** Vectorized trigonometric and Haversine matrix mathematics.
 - **Pandas (`>= 2.0.0`):** Data aggregation, filtering, and tabular grouping.
@@ -353,20 +380,41 @@ The dashboard is built to adapt seamlessly across standard responsive breakpoint
 ```text
 bhopal-crime-safety-dashboard/
 ├── .streamlit/
-│   └── config.toml           # Streamlit server, theme, and port configurations
-├── app.py                    # Streamlit entry point serving the Material Active UI
-├── ui_builder.py             # UI generator: produces complete connected HTML/CSS/JS
-├── data_generator.py         # Synthetic crime generator calibrated for Bhopal
-├── spatial_analytics.py      # Vectorized Haversine distance & sector risk scoring
-├── map_builder.py            # Folium multi-layer map builder (fallback/auxiliary)
-├── sourcing_guide.py         # CCTNS, SCRB, and OpenStreetMap ingestion documentation
-├── index.html                # Standalone production distribution file
-├── preview.png               # Verified UI desktop screenshot for documentation
-├── architecture_3d.png       # 3D isometric architecture technical diagram
-├── requirements.txt          # Python runtime dependencies
-├── Dockerfile                # Containerized deployment manifest
-├── DEPLOYMENT.md             # Multi-cloud deployment guide (Docker, Streamlit Cloud, AWS)
-└── README.md                 # Primary technical reference manual
+│   └── config.toml               # Streamlit server port, theme tokens, and CORS configuration
+├── ai/
+│   ├── __init__.py               # Machine learning module exports
+│   ├── risk_model.py             # Supervised Random Forest Regressor risk model & evaluation metrics
+│   ├── anomaly_detection.py      # Unsupervised Isolation Forest spatial-temporal anomaly detector
+│   ├── hotspots.py               # DBSCAN spatial density & emerging cluster detection engine
+│   └── explanations.py           # Explainable AI (XAI) natural language insight synthesis
+├── analytics/
+│   ├── __init__.py               # Analytics module exports
+│   └── temporal_analytics.py     # Diurnal distribution, 7d/30d velocities, and temporal shifts
+├── data/
+│   ├── __init__.py               # Data pipeline exports
+│   ├── validator.py              # Schema validation, geo-bounding box enforcement, & quality reports
+│   ├── normalizer.py             # Column alias resolution & schema standardization
+│   ├── cache.py                  # Local 24h TTL cache manager
+│   ├── live_fetcher.py           # Ingestion orchestrator with fallback to calibrated distributions
+│   └── public_records.py         # Gazetted CrPC 82/83 public notices & statutory disclaimers
+├── static/
+│   └── leaflet-heat.js           # Client-side Leaflet heat layer renderer
+├── app.py                        # Streamlit application host with rolling cache & UI delivery
+├── ui_builder.py                 # Core UI engine: builds complete connected Material Active HTML/CSS/JS
+├── data_generator.py             # Calibrated Bhopal crime incident dataset generator (520 records)
+├── spatial_analytics.py          # Vectorized NumPy Haversine proximity matrix & composite risk scoring
+├── map_builder.py                # Auxiliary Folium cartographic generator
+├── sourcing_guide.py             # Legal, NCRB, and CCTNS data sourcing specifications
+├── index.html                    # Standalone zero-dependency distribution file
+├── preview.png                   # Verified UI desktop capture
+├── architecture_3d.png           # 3D isometric system architecture technical diagram
+├── requirements.txt              # Pinned Python package dependencies
+├── Dockerfile                    # Production container build manifest
+├── DEPLOYMENT.md                 # Multi-cloud deployment instructions (Streamlit Cloud, Docker)
+├── verify_basemap_switcher.py    # Playwright test for multi-basemap switcher
+├── verify_mobile_nav.py          # Playwright test for zero-overflow mobile responsive layout
+├── verify_theme_and_perf.py      # Playwright test for Dark/Light theme toggle & load performance
+└── README.md                     # Comprehensive technical documentation & engineering manual
 ```
 
 ---
@@ -593,26 +641,20 @@ The updated platform preserves and enhances the complete incident records regist
 
 ## 18. Testing
 
-The repository is validated using automated browser integration testing via Playwright:
+The repository is validated using headless and automated browser integration test suites:
 
 ```bash
-# Example test script execution (Playwright + Chromium/Brave)
-python -c "
-import asyncio
-from playwright.async_api import async_playwright
+# 1. Run Mobile Responsive & Zero-Overflow Viewport Test
+python verify_mobile_nav.py
 
-async def test():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
-        await page.goto('http://localhost:8501')
-        assert await page.title() == 'Bhopal Safety Intelligence'
-        print('Verified successfully!')
-        await browser.close()
+# 2. Run Basemap Cartography Switcher Test (Civic, OSM, Satellite)
+python verify_basemap_switcher.py
 
-asyncio.run(test())
-"
+# 3. Run Dark / Light Theme & Performance Verification
+python verify_theme_and_perf.py
 ```
+
+These suites validate 60 FPS Canvas rendering, zero-overflow mobile wrapping, theme token contrast persistence, and Leaflet layer synchronization across multiple viewports (360px–1440px).
 
 ---
 
