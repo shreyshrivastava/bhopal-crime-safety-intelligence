@@ -375,7 +375,7 @@ bhopal-crime-safety-dashboard/
 
 ### 🌐 Live Hosted Application
 You can interact with the live application instantly without local installation:
-👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://bhopal-crime-safety.streamlit.app)**
+👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence)**
 
 ### Prerequisites
 - Python 3.10+ (Python 3.12 recommended)
