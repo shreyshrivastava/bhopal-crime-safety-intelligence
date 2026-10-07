@@ -3,6 +3,7 @@
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bhopalcrimesafety.streamlit.app/)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopalcrimesafety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopalcrimesafety.streamlit.app/)
 [![Release](https://img.shields.io/github/v/release/shreyshrivastava/bhopal-crime-safety-intelligence?color=0284c7)](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence/releases/tag/v1.0.0)
+[![GitHub Package](https://img.shields.io/badge/GHCR.io-Package%20Live-24292e?logo=docker&logoColor=white)](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence/pkgs/container/bhopal-crime-safety-intelligence)
 [![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > 🚀 **Live Production Application:** **[https://bhopalcrimesafety.streamlit.app/](https://bhopalcrimesafety.streamlit.app/)**
