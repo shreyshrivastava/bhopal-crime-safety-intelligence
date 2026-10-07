@@ -118,10 +118,10 @@ graph TD
 
 ![3D Isometric System Architecture](architecture_3d.png)
 
-The 3D isometric diagram above illustrates the multi-tier separation of concerns:
-1. **Top Plane (Frontend / UI):** Responsive Leaflet viewport, radar indicators, dynamic metric cards, and mobile/desktop layout engines.
-2. **Middle Plane (Application / Backend Processing):** Vectorized NumPy Haversine distance matrix execution, spatial indexing, and Streamlit application server.
-3. **Bottom Plane (Data Layer):** In-memory 85-ward Bhopal geospatial grid, 10 safety post coordinates, safe corridor vectors, and cached FIR incident records.
+The 3D isometric diagram above illustrates the multi-tier separation of concerns, rendered in the exact dark design system and visual componentry of the live application:
+1. **Top Plane (Frontend / UI Layer):** Responsive Leaflet geospatial viewport (Upper Lake / Bhopal road grid with category pins & cluster counts), 3D City Safety Distribution Globe with geodesic rings, Material Active (M3) filter controls, top search bar with `Dial 112 SOS`, and multi-tab analytics.
+2. **Middle Plane (Application & AI Intelligence Pipeline):** Vectorized NumPy Haversine distance matrix engine (520×10), DBSCAN spatial hotspot clustering, supervised risk model, and reactive Streamlit server runtime.
+3. **Bottom Plane (Data Layer):** In-memory 85-ward Bhopal municipal polygon boundary mesh, 10 Police Thanas (safety posts) spatial markers, safe corridor vectors, and the 520 calibrated FIR incident registry.
 
 ---
 
