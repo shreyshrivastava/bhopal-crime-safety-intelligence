@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bhopal-crime-safety-intelligence"
+version = "1.0.0"
+description = "Interactive geospatial crime mapping, police proximity analysis, and civic safety intelligence platform for Bhopal, MP"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Shrey Shrivastava" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+    "streamlit>=1.35.0",
+    "pandas>=2.0.0",
+    "geopandas>=1.0.0",
+    "folium>=0.17.0",
+    "streamlit-folium>=0.21.0",
+    "plotly>=5.20.0",
+    "shapely>=2.0.0",
+    "pyproj>=3.6.0",
+    "matplotlib>=3.8.0",
+    "scikit-learn>=1.4.0",
+    "scipy>=1.10.0"
+]
+
+[project.urls]
+"Homepage" = "https://bhopalcrimesafety.streamlit.app/"
+"Repository" = "https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence"
+"Documentation" = "https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence#readme"

@@ -380,6 +380,9 @@ The dashboard is built to adapt seamlessly across standard responsive breakpoint
 
 ```text
 bhopal-crime-safety-dashboard/
+├── .github/
+│   └── workflows/
+│       └── publish-package.yml   # GitHub Actions: builds and publishes container to GitHub Packages (ghcr.io)
 ├── .streamlit/
 │   └── config.toml               # Streamlit server port, theme tokens, and CORS configuration
 ├── ai/
@@ -410,7 +413,9 @@ bhopal-crime-safety-dashboard/
 ├── preview.png                   # Verified UI desktop capture
 ├── architecture_3d.png           # 3D isometric system architecture technical diagram
 ├── requirements.txt              # Pinned Python package dependencies
+├── pyproject.toml                # Standard PEP 517/621 Python package configuration
 ├── Dockerfile                    # Production container build manifest
+├── .dockerignore                 # Docker context exclusion filter
 ├── DEPLOYMENT.md                 # Multi-cloud deployment instructions (Streamlit Cloud, Docker)
 ├── verify_basemap_switcher.py    # Playwright test for multi-basemap switcher
 ├── verify_mobile_nav.py          # Playwright test for zero-overflow mobile responsive layout
@@ -661,16 +666,19 @@ These suites validate 60 FPS Canvas rendering, zero-overflow mobile wrapping, th
 
 ## 19. Deployment
 
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t bhopal-safety-intelligence .
+### Docker & GitHub Packages (GHCR) Deployment
+You can pull and launch the container package directly from GitHub Container Registry, or build locally:
 
-# Run container
+```bash
+# Option A: Run directly from GitHub Packages (GHCR)
+docker run -d -p 8501:8501 --name safety-portal ghcr.io/shreyshrivastava/bhopal-crime-safety-intelligence:latest
+
+# Option B: Build and run locally
+docker build -t bhopal-safety-intelligence .
 docker run -d -p 8501:8501 --name safety-portal bhopal-safety-intelligence
 ```
 
-The container exposes port `8501` with an automated healthcheck at `http://localhost:8501/_stcore/health`.
+The container exposes port `8501` with an automated healthcheck at `http://localhost:8501/_stcore/health`. Access the platform at `http://localhost:8501`.
 
 ---
 
