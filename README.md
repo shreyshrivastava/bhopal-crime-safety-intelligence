@@ -4,7 +4,6 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopal--crime--safety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopal-crime-safety.streamlit.app)
 [![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> 🚀 **Live Production Application:** **[https://bhopal-crime-safety.streamlit.app](https://bhopal-crime-safety.streamlit.app)**
 
 An engineering-grade, geospatial civic safety intelligence platform designed to map, analyze, and visualize recorded crime patterns, safety infrastructure, and station proximity across Bhopal, Madhya Pradesh (23.2599° N, 77.4126° E).
 
