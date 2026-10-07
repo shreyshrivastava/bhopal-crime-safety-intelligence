@@ -22,7 +22,7 @@ You can deploy directly to Streamlit Community Cloud using your GitHub repositor
    - **Python version:** Select `3.11` or `3.12`.
 5. Click **Deploy!**
 
-Your dashboard will automatically build and become accessible at a public URL (e.g. `https://bhopal-crime-safety.streamlit.app`). Any future commits pushed to the `main` branch will automatically trigger a zero-downtime redeploy!
+Your dashboard will automatically build and become accessible at a public URL (e.g. `https://bhopalcrimesafety.streamlit.app/`). Any future commits pushed to the `main` branch will automatically trigger a zero-downtime redeploy!
 
 ---
 

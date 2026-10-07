@@ -1,9 +1,10 @@
 # 🛡️ Bhopal Safety Intelligence
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bhopal-crime-safety.streamlit.app)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopal--crime--safety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopal-crime-safety.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bhopalcrimesafety.streamlit.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopalcrimesafety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopalcrimesafety.streamlit.app/)
 [![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+> 🚀 **Live Production Application:** **[https://bhopalcrimesafety.streamlit.app/](https://bhopalcrimesafety.streamlit.app/)**
 
 An engineering-grade, geospatial civic safety intelligence platform designed to map, analyze, and visualize recorded crime patterns, safety infrastructure, and station proximity across Bhopal, Madhya Pradesh (23.2599° N, 77.4126° E).
 
@@ -374,7 +375,7 @@ bhopal-crime-safety-dashboard/
 
 ### 🌐 Live Hosted Application
 You can interact with the live application instantly without local installation:
-👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence)**
+👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://bhopalcrimesafety.streamlit.app/)**
 
 ### Prerequisites
 - Python 3.10+ (Python 3.12 recommended)
