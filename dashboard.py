@@ -9,6 +9,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from data.official_sources import load_snapshot
 from data.reviewed_facts import MAP_CATEGORIES
+from data.update_monitor import load_report
 from ui_builder import generate_material_active_html
 
 FACILITIES = Path(__file__).resolve().parent/'data/official/stations.json'
@@ -126,6 +127,11 @@ def generate_dashboard(payload=None):
         'Incidents Rendered':'Locality reference pins',
 
     }.items(): text_replace(old,new)
+    update_report = load_report()
+    checked_at = payload.get('retrieved_at') or ''
+    pending = len(update_report['pending_review']) if update_report else None
+    status = fragment(f'<div id="official-update-status" role="status" data-checked-at="{html.escape(checked_at,quote=True)}" class="px-4 py-3 rounded-2xl bg-surface-container border border-white/10 text-xs">Daily official-source check · Last successful refresh: {html.escape(checked_at or "Unavailable")} · '+(f'{pending} unreviewed public posts awaiting review.' if pending is not None else 'Discovery status unavailable.')+'</div>')
+    soup.find('header').insert_after(status)
     graph=soup.find(id='spherical-distribution-card')
     located=sum(bool(r['neighborhood']) for r in records)
     if graph: graph.insert(0,fragment(f'<p id="source-locality-coverage" class="text-xs text-on-surface-variant mb-2">{located} of {len(records)} publications have a source-named locality; {len(records)-located} unlocated publication(s) are excluded from area nodes. Percentages use all selected publications.</p>'))
@@ -138,6 +144,9 @@ def generate_dashboard(payload=None):
     sources=soup.find(id='tab-pane-sources')
     links=''.join(f'<li class="py-2"><a class="text-primary underline" target="_blank" rel="noopener noreferrer" href="{html.escape(r["source_url"],quote=True)}">Publication #{r["source_post_id"]} · {r["publication_date"]} · {html.escape(r["reporting_unit"])}</a></li>' for r in rows)
     set_content(sources,f'''<h2 class="text-xl font-bold">Data Sources &amp; Quality</h2><p>{len(rows)} reviewed official publications are selected historical records, not a complete crime register. Related updates retain case-group IDs in CSV export. Locality, occurrence-time and legal-section facts are checked against the original report text on refresh; source inconsistencies stay flagged. Missing data never means zero crime.</p><p>Snapshot fetched: {html.escape(payload.get('retrieved_at') or 'Unavailable')}</p><p>{len(facilities)} real public police facilities from the map embedded by <a class="text-primary underline" href="https://bhopal.mppolice.gov.in/" target="_blank" rel="noopener">Bhopal Police</a>. Facility markers are not incident locations. Some facilities lie outside the urban commissionerate; this is the scope of the published map.</p><p>Contacts: <a class="text-primary underline" href="https://bhopal.mppolice.gov.in/contact/" target="_blank" rel="noopener">Official directory</a>. Safe-corridor claims have no verified source and are not drawn.</p><ul>{links}</ul>''')
+    if update_report:
+        pending_links = ''.join(f'<li class="py-1"><a class="text-primary underline" target="_blank" rel="noopener noreferrer" href="{html.escape(r["source_url"],quote=True)}">Public post #{r["source_post_id"]} · {r["publication_date"]}</a></li>' for r in update_report['pending_review'])
+        sources.append(fragment('<details class="mt-4"><summary>Unreviewed official publications · excluded from crime counts and map</summary><p class="text-xs my-2">Daily discovery stores only public IDs, publication dates and official links. These may include general notices and are not validated crime records. Locality, category and occurrence facts require review before import.</p><ul>'+pending_links+'</ul></details>'))
     # Replace the four existing analytical card contents, retaining their layout and shapes.
     charts=soup.find(id='sector-bar-container')
     if charts:
@@ -222,4 +231,7 @@ def generate_dashboard(payload=None):
     script=soup.new_tag('script')
     script.string=(Path(__file__).resolve().parent/'static/official-dashboard.js').read_text()
     soup.body.append(script)
+    for legacy_script in soup.find_all('script'):
+        if legacy_script.string and '// Nightly Auto-Refresh:' in legacy_script.string:
+            legacy_script.string = legacy_script.string[:legacy_script.string.index('// Nightly Auto-Refresh:')]
     return str(soup)

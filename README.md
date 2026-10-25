@@ -70,7 +70,15 @@ This writes `index.html` from the same official-data dashboard. The app does not
 
 ## Refresh official snapshots
 
-Refreshes are explicit maintenance actions, not background collection jobs:
+A GitHub Actions workflow checks the official public source daily at **12:00 a.m. IST** (18:30 UTC), with a manual **Run workflow** option. Scheduling is best effort; GitHub may delay a run. The dashboard shows the last successful refresh and warns when it is over 48 hours old.
+
+The job revalidates reviewed publications, checks the public index for unreviewed posts, runs source-validation tests and exports the dashboard before publishing the snapshot. Network or evidence-validation failures preserve the deployed snapshot. Unreviewed posts retain only public IDs, dates and source links; they are listed under Data Sources and excluded from crime counts, maps and model input. They require source review before import.
+
+Run the same update locally, or refresh individual snapshots manually:
+
+```bash
+.venv/bin/python scripts/scheduled_refresh.py
+```
 
 ```bash
 .venv/bin/python scripts/refresh_official_data.py
@@ -96,7 +104,7 @@ With the local app running on port 8507, run the browser checks:
 .venv/bin/python tests/browser_official_data.py
 ```
 
-**Validation:** 17 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
+**Validation:** 21 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
 
 See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artifacts/browser-results.json) and [unit-test log](artifacts/unit-tests.txt). Screenshots and downloaded source-review material remain local and are excluded from Git.
 
@@ -108,10 +116,12 @@ See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artif
 | `dashboard.py` | Connects reviewed facts and geographic references to the existing dashboard shell |
 | `ui_builder.py` | Original Material Active HTML/CSS/Leaflet shell |
 | `static/official-dashboard.js` | Official-record rendering, source filters, locality pins and evidence panels |
-| `data/official_sources.py` | Snapshot validation and explicit publication refresh |
+| `data/official_sources.py` | Snapshot validation and reviewed publication refresh |
 | `data/reviewed_facts.py` | Reviewed source facts and map-category tags |
 | `data/official/` | Checked-in publication, facility and geographic-reference snapshots |
-| `scripts/` | Explicit refresh and HTML export commands |
+| `data/update_monitor.py` | Public-index discovery and safe scheduled refresh |
+| `.github/workflows/refresh-official-data.yml` | Daily midnight IST update, validation and snapshot publication |
+| `scripts/` | Refresh and HTML export commands |
 | `tests/` | Automated source/data checks and browser verification |
 
 Preserve the existing interface, search, navigation, responsive layout and CSV export when changing data connections. Keep publication dates, occurrence dates, reporting police units, source localities and reference coordinates separate. Check desktop and mobile screenshots after frontend changes. Do not reintroduce simulated data fallbacks, unsupported live-feed badges, named unverified person profiles or fixed accuracy claims.

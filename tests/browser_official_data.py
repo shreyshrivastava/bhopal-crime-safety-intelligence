@@ -19,6 +19,9 @@ async def verify():
             await page.wait_for_function('typeof map !== "undefined" && map && policeFeatureGroup && policeFeatureGroup.getLayers().length===48')
             await page.locator('#app-preloader').wait_for(state='detached')
             assert await page.locator('.leaflet-tile-loaded').count()>0
+            assert await page.locator('#official-update-status').is_visible()
+            assert '12:00 a.m. IST' in await page.locator('#official-update-status').inner_text()
+            assert await page.evaluate("(()=>{const e=document.getElementById('official-update-status');const saved=e.dataset.checkedAt;e.dataset.checkedAt='2020-01-01T00:00:00Z';updateFreshnessStatus();const overdue=e.textContent.includes('Refresh overdue');e.dataset.checkedAt=saved;updateFreshnessStatus();return overdue;})()")
             assert await page.evaluate('markerClusterGroup.getLayers().length')==8
             assert await page.locator('.official-report-pin').count()==8
             assert await page.evaluate('markerClusterGroup.getLayers().every(l=>map.getBounds().contains(l.getLatLng()))')
