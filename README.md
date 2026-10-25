@@ -128,6 +128,8 @@ It displays a synthetic-demo banner and cannot overwrite the official `index.htm
 
 ## Deployment and next steps
 
+[Open the Streamlit demo](https://bhopalcrimesafety.streamlit.app/). The official-data update was deployed to `main` and verified in the hosted app on October 26, 2026 (IST), at desktop and mobile sizes. Map layers, filters, occurrence/legal evidence, navigation, 3D controls and CSV download passed. See [hosted verification](docs/STREAMLIT_VERIFICATION.md).
+
 The existing repository workflow publishes a container on code pushes to `main`. The deployment guide also identifies `main` as the Streamlit deployment branch. Pushing a feature branch does not demonstrate that the public application has been updated.
 
 See [deployment instructions](DEPLOYMENT.md) and the [real-data migration plan](docs/REAL_DATA_MIGRATION.md). Future work includes independently verified annual SCRB/NCRB statistics, stronger incident-location evidence, and time-based model evaluation against baselines. Aggregate annual totals must never be expanded into fictional individual incidents or map points.
