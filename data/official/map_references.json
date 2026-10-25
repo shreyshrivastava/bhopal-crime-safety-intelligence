@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-25T18:12:29.504899+00:00",
+  "coordinate_kind": "locality_reference_not_incident",
+  "records": {
+    "Khajuri Sadak": {
+      "reference_name": "Khajuri By Pass",
+      "latitude": 23.247939,
+      "longitude": 77.259659,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=102",
+      "source_page": 102,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Wider Khajuri civic reference; not the reported mosque or precise enforcement location."
+    },
+    "Lalwani Gali, KN Market": {
+      "reference_name": "Sarafa Chowk / Kotwali market reference",
+      "latitude": 23.258916,
+      "longitude": 77.401975,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=99",
+      "source_page": 99,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Broader Kotwali market reference; Lalwani Gali itself has not been precisely geocoded."
+    },
+    "Mata Mandir": {
+      "reference_name": "Mata Mandir",
+      "latitude": 23.224633,
+      "longitude": 77.402288,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=96",
+      "source_page": 96,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Published Mata Mandir landmark; the report names Mata Mandir 56 ki line, not this precise point."
+    },
+    "MP Nagar Zone 1": {
+      "reference_name": "Pragati Choraha / MP Nagar reference",
+      "latitude": 23.229155,
+      "longitude": 77.43438,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=98",
+      "source_page": 98,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Broad MP Nagar reference; not the precise metro-bridge enforcement site."
+    },
+    "MP Nagar Zone 2": {
+      "reference_name": "Zone-2 Sargam Talkies reference",
+      "latitude": 23.227918,
+      "longitude": 77.436287,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=103",
+      "source_page": 103,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Published Zone-2 reference; not the private location of the selected theft."
+    },
+    "Near Kilol Park": {
+      "reference_name": "Angithi Chouraha / Shyamla Hills reference",
+      "latitude": 23.247661,
+      "longitude": 77.396654,
+      "precision": "locality_reference",
+      "source_url": "https://www.tcil.net.in/tender/pdf/25f2357_2.pdf#page=99",
+      "source_page": 99,
+      "source_sha256": "ee8010c6e4c60a7dfff5d33eea10ca44e20f47d095f219ce27d2d4b516fe2212",
+      "basis": "Wider Kilol Park / Shyamla Hills road-area reference; not the precise robbery point."
+    },
+    "Danish Kunj": {
+      "reference_name": "Road bridge near Danish Kunj Phase-5",
+      "latitude": 23.1729,
+      "longitude": 77.43183,
+      "precision": "locality_reference",
+      "source_url": "https://mppcb.mp.gov.in/proc/KALIYASOTE%2023.5.19.pdf",
+      "source_page": null,
+      "source_sha256": null,
+      "source_section": "IV. River quality in the stretch, sampling location 2 (printed page 12)",
+      "verification": "Coordinates transcribed from indexed official report; PDF binary could not be fetched with current TLS settings.",
+      "basis": "Published bridge reference near Danish Kunj; not the private burglary location."
+    },
+    "Budhwara, Talaiya": {
+      "reference_name": "Budhwara locality (OpenStreetMap)",
+      "latitude": 23.2523992,
+      "longitude": 77.4056827,
+      "precision": "locality_reference",
+      "source_url": "https://www.openstreetmap.org/way/492560732",
+      "source_page": null,
+      "source_sha256": "6308cbee7655c375c33abd779ab8f3180f00049727daeb143239656587e7db51",
+      "basis": "OSM residential-locality reference reviewed through Photon; not the precise reported shop location."
+    }
+  }
+}

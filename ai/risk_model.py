@@ -174,7 +174,7 @@ def extract_spatial_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]
     return feat_df, feat_df["target_risk_score"]
 
 
-def train_and_evaluate_risk_model(df: pd.DataFrame) -> ModelEvaluationResult:
+def train_and_evaluate_risk_model(df: pd.DataFrame, *, synthetic_demo: bool = False) -> ModelEvaluationResult:
     """
     Trains and evaluates the Random Forest Risk Regressor with explicit guards
     against both overfitting and underfitting:
@@ -184,7 +184,9 @@ def train_and_evaluate_risk_model(df: pd.DataFrame) -> ModelEvaluationResult:
     - Out-of-Bag (OOB) score evaluation with zero data leakage
     - Generalization gap tracking: |Train_R2 - Test_R2| < 0.05
     """
-    logger.info("Initiating Random Forest safety risk model training with regularization...")
+    if not synthetic_demo or "source_post_id" in df.columns:
+        raise ValueError("This model is a synthetic experiment, not a validated production forecaster.")
+    logger.info("Initiating synthetic demonstration training...")
     raw_sample_count = len(df)
     feat_df, y = extract_spatial_features(df)
 

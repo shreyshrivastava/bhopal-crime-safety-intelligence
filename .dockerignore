@@ -17,3 +17,7 @@ secrets.toml
 *.png
 verify_*.py
 test_and_screenshot.py
+
+# Local validation and source-review material
+tmp/
+artifacts/

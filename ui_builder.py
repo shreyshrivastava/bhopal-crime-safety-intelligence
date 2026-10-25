@@ -40,6 +40,8 @@ def generate_material_active_html(
     hotspots: Optional[List[Dict[str, Any]]] = None,
     xai_insights: Optional[Dict[str, Any]] = None,
     public_records: Optional[Dict[str, Any]] = None,
+    police_stations: Optional[List[Dict[str, Any]]] = None,
+    safe_corridors: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     """
     Constructs the complete, self-contained HTML/CSS/JS document implementing
@@ -50,7 +52,7 @@ def generate_material_active_html(
         temporal_metrics = analyze_temporal_trends(df)
 
     if model_results is None:
-        model_res = train_and_evaluate_risk_model(df)
+        model_res = train_and_evaluate_risk_model(df, synthetic_demo=True)
         model_results = model_res.to_dict()
 
     if anomalies is None:
@@ -175,8 +177,8 @@ def generate_material_active_html(
             "dist_km": float(row.get("distance_to_station_km", 0.0))
         })
     crime_json = json.dumps(records)
-    ps_json = json.dumps(POLICE_STATIONS)
-    corridors_json = json.dumps(SAFE_CORRIDORS)
+    ps_json = json.dumps(POLICE_STATIONS if police_stations is None else police_stations)
+    corridors_json = json.dumps(SAFE_CORRIDORS if safe_corridors is None else safe_corridors)
 
     # Sector table rows for Tab 1 / Tab 2
     sector_table_rows = ""
@@ -346,7 +348,7 @@ def generate_material_active_html(
 
     # Ingestion status badge
     is_live = ingestion_metadata.get("is_live", False)
-    status_text = "Live Gateway Connected" if is_live else "Calibrated Municipal Baseline (NCRB/SCRB Benchmark)"
+    status_text = ingestion_metadata.get("status", "Live Gateway Connected" if is_live else "Synthetic demonstration")
     status_dot_color = "bg-emerald-500 animate-pulse" if is_live else "bg-amber-400"
     quality_score = validation_report.get("quality_score", 100.0)
 
@@ -1384,7 +1386,7 @@ tailwind.config = {{
       <div class="sm:col-span-1 bg-sky-500/10 border border-sky-500/25 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
         <span class="material-symbols-outlined text-sky-400 text-[36px] mb-1">smart_toy</span>
         <span class="text-3xl font-extrabold text-primary font-mono">80%</span>
-        <span class="text-[12px] font-bold text-on-surface mt-1">The model is 80% accurate.</span>
+        <span class="text-[12px] font-bold text-on-surface mt-1">Synthetic demonstration; real-world accuracy is unvalidated.</span>
         <span class="text-[10px] text-on-surface-variant mt-0.5">Estimated Predictive Accuracy</span>
       </div>
       <div class="sm:col-span-2 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex flex-col gap-2 justify-center">
@@ -1392,7 +1394,7 @@ tailwind.config = {{
           <span class="material-symbols-outlined text-amber-400 text-[22px] shrink-0 mt-0.5">info</span>
           <div>
             <span class="text-[12px] font-bold text-amber-300 block">Important Note</span>
-            <p class="text-[11px] text-on-surface-variant mt-1 leading-relaxed">This AI safety intelligence feature provides <b class="text-on-surface">estimated risk ratings</b> based on recent incident records across 9 Bhopal areas. The model is 80% accurate. Predictions are guidance estimates and <b class="text-amber-300">should not be used as the sole basis for safety or legal decisions</b>. Always rely on local police and official authorities for verified guidance.</p>
+            <p class="text-[11px] text-on-surface-variant mt-1 leading-relaxed">This AI safety intelligence feature provides <b class="text-on-surface">estimated risk ratings</b> based on recent incident records across 9 Bhopal areas. Synthetic demonstration; real-world accuracy is unvalidated. Predictions are guidance estimates and <b class="text-amber-300">should not be used as the sole basis for safety or legal decisions</b>. Always rely on local police and official authorities for verified guidance.</p>
           </div>
         </div>
       </div>
@@ -1727,7 +1729,7 @@ tailwind.config = {{
     // INDICATOR: hotspots/trends — show filtered crime incidents
     if (currentIndicator === 'hotspots' || currentIndicator === 'trends') {{
       if (currentVizMode === 'heat') {{
-        const heatPoints = currentFiltered.map(c => [c.lat, c.lon, c.severity / 5.0]);
+        const heatPoints = currentFiltered.filter(c => Number.isFinite(c.lat) && Number.isFinite(c.lon)).map(c => [c.lat, c.lon, c.severity / 5.0]);
         heatLayer = L.heatLayer(heatPoints, {{
           radius: 25, blur: 18, maxZoom: 16,
           gradient: {{ 0.2: '#38bdf8', 0.4: '#34d399', 0.6: '#fbbf24', 0.8: '#f97316', 1.0: '#ef4444' }}
@@ -1737,7 +1739,7 @@ tailwind.config = {{
         const textColor = isDark ? '#dfe2ee' : '#0f172a';
         const titleColor = isDark ? '#ffffff' : '#0f172a';
         const borderLine = isDark ? '#334155' : '#e2e8f0';
-        currentFiltered.forEach(c => {{
+        currentFiltered.filter(c => Number.isFinite(c.lat) && Number.isFinite(c.lon)).forEach(c => {{
           const color = getCategoryColor(c.category);
           const sevColor = c.severity <= 2 ? '#10B981' : c.severity === 3 ? '#F59E0B' : '#EF4444';
           const popupHtml = `<div style="font-family:'Roboto Flex',sans-serif;width:230px;font-size:12px;color:${{textColor}};line-height:1.4;">
@@ -1961,7 +1963,7 @@ tailwind.config = {{
       const matchCat = currentCategory === 'ALL' || c.category === currentCategory;
       const matchTime = currentTimeOfDay === 'ALL' || c.time_of_day.toLowerCase().includes(currentTimeOfDay.toLowerCase());
       const matchZone = currentZone === 'ALL' || c.neighborhood === currentZone;
-      const matchSev = c.severity >= minSeverity;
+      const matchSev = minSeverity <= 1 || (Number.isFinite(c.severity) && c.severity >= minSeverity);
       const matchDate = (currentDateRange === 'ALL' || !c.date) ? true : (new Date(c.date).getTime() >= cutoffTime);
       const matchSearch = searchQuery === '' || 
         c.id.toLowerCase().includes(searchQuery) ||

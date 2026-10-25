@@ -9,3 +9,5 @@ pyproj>=3.6.0
 matplotlib>=3.8.0
 scikit-learn>=1.4.0
 scipy>=1.10.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0

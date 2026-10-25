@@ -1,766 +1,133 @@
-# 🛡️ Bhopal Safety Intelligence
+# Bhopal Safety Intelligence
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bhopalcrimesafety.streamlit.app/)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-bhopalcrimesafety.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bhopalcrimesafety.streamlit.app/)
-[![Release](https://img.shields.io/github/v/release/shreyshrivastava/bhopal-crime-safety-intelligence?color=0284c7)](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence/releases/tag/v1.0.0)
-[![GitHub Package](https://img.shields.io/badge/GHCR.io-Package%20Live-24292e?logo=docker&logoColor=white)](https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence/pkgs/container/bhopal-crime-safety-intelligence)
-[![GitHub License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+An interactive Bhopal safety dashboard built with Streamlit, Leaflet and a Material Active interface. The default app uses reviewed public police publications and published geographic references. It does not generate synthetic incidents or run the demonstration forecasting model.
 
-> 🚀 **Live Production Application:** **[https://bhopalcrimesafety.streamlit.app/](https://bhopalcrimesafety.streamlit.app/)**
+**Current snapshot:** 10 official publications, 48 published police-facility locations, and 8 approximate locality-reference pins. These selected historical reports are not a complete crime register or a live police feed.
 
-An engineering-grade, geospatial civic safety intelligence platform designed to map, analyze, and visualize recorded crime patterns, safety infrastructure, and station proximity across Bhopal, Madhya Pradesh (23.2599° N, 77.4126° E).
+## What the dashboard shows
 
-Built with a high-performance hybrid architecture combining **Python (Streamlit, NumPy, GeoPandas)** on the analytics backend and an interactive **Leaflet.js / Material You (M3)** client-side geospatial engine.
+- An interactive map with OpenStreetMap, Civic and Satellite basemaps, dark/light themes, and independent police-facility visibility.
+- Source-linked locality pins, colored by property, assault and other reported offenses/enforcement actions. Related recovery updates share a pin.
+- Women's/girls' safety and vandalism filters that retain missing-data states instead of inventing records.
+- A rotatable 3D chart and bars based on **source-named localities and publication counts**. Police units such as Bhopal Crime Branch are kept as reporting metadata, not area nodes. Chart positions are illustrative layout, not geographic coordinates.
+- Search, category/locality/date filters, source records, and CSV export with provenance and missing values preserved.
+- Occurrence-time evidence distinguishing exact times, reported windows, unspecified times and conflicting chronology.
+- Published offense/legal-section evidence in the severity panel. No numeric severity scores are assigned.
 
-![Bhopal Safety Intelligence Preview](preview.png)
+The original navigation and controls remain available. AI risk estimates, incident-density heatmaps, safe-corridor claims and neighborhood safety ratings await suitable verified data and validation; the production app does not fill these gaps with simulated values.
 
----
+## Understand the map before using it
 
-## 1. Project Overview
+**Pins are approximate locality references, not exact crime-scene GPS coordinates.** The reports do not establish precise incident coordinates. Each popup identifies the reference landmark, its geographic source, the precision limit and the linked official police publication(s).
 
-### Problem Statement
-Traditional crime statistics and First Information Report (FIR) logs in Indian municipal jurisdictions are siloed in tabular databases and static annual compendiums. They lack spatial context, making it difficult for urban planners, municipal authorities, and citizens to:
-- Identify spatial corridors of recurring street offenses.
-- Evaluate the disparity between daytime incidents and nighttime vulnerability shifts.
-- Quantify emergency response accessibility and physical proximity to local safety posts (Thanas).
+The snapshot has nine locatable publications represented by eight grouped pins. Two Kolar publications update the same investigation. One additional girls' safety report has no established publishable occurrence locality and remains unpinned. Victim/informant residential addresses and the reporting police station are not substituted for its crime location.
 
-### Solution
-**Bhopal Safety Intelligence** solves this by unifying calibrated crime records across **85 municipal wards** and **9 primary urban sectors** into an interactive geospatial intelligence portal. The application executes real-time spatial proximity metrics, computes localized risk indices, and provides dual-mode geospatial cartography (Marker Clustering and Kernel Density Heatmaps) within a responsive Google Material You (M3) interface.
+| Map category | Source publications loaded | Coverage |
+| --- | ---: | --- |
+| Property | 5 | Includes a robbery also tagged assault |
+| Assault | 1 | Robbery-with-assault report |
+| Women's/girls' safety | 1 | Location not established; no invented pin |
+| Vandalism | 0 | No verified record loaded; not evidence of zero crime |
+| Other official reports | 4 | Excise, narcotics and weapons enforcement |
+| Police facilities / thana layer | 48 facilities | Published stations, special units and headquarters; some lie outside the urban commissionerate |
 
-### Target Audience
-- **Municipal & Urban Planners:** Assessing street lighting and safe corridor deployments.
-- **Civic Safety Analysts & Researchers:** Evaluating temporal crime patterns and offense modalities.
-- **Citizens & Community Monitors:** Exploring neighborhood safety ratings and verified emergency resources.
+Map category tags can overlap. Publication counts, grouped reference pins and police-facility counts are different quantities; none is a citywide incident count. Approximate reference points are not used to calculate a crime-density heatmap.
 
----
+## Sources and provenance
 
-## 2. Key Features
+Crime/report content comes from the [Commissionerate of Police Bhopal](https://bhopal.mppolice.gov.in/) through its public publication pages and WordPress endpoint. The snapshot covers publications dated April 16–October 10, 2026; selected events can predate publication.
 
-| Feature | User Interaction | Internal Processing | Implementation Details |
-| :--- | :--- | :--- | :--- |
-| **Interactive Leaflet Cartography** | Pan, zoom, click clustered markers, switch between Marker Cluster and Kernel Density views. | Evaluates geospatial coordinates in WGS84 (`EPSG:4326`), applies dynamic color-coding across 6 incident categories (Property `#F59E0B`, Assault `#EF4444`, Women's Safety `#D946EF`, Vandalism `#10B981`, Thanas `#0284C7`, Safe Corridors `#10B981`), and renders custom HTML popup capsules. | Built with Leaflet.js v1.9.4, `leaflet.markercluster` v1.5.3, and `leaflet-heat` v0.2.0. Rendered via HTML5 Canvas (`preferCanvas: true`). |
-| **Inline Map Indicator Toolbar** | Click **Crime Hotspots**, **Crime Trends**, **Unusual Activity**, or **AI Risk Insights** directly above the map. | Filters map layers and synchronizes with lower analytics panes in real time without layout shift. | High-efficiency horizontal segmented toolbar taking only 39px vertical space, styled with Google Material Symbols and rigid pill dimensions. |
-| **3D City Safety Distribution Globe** | Click and drag in 3D to rotate the globe, toggle auto-spin momentum, and hover sector nodes. | Projects 9 municipal sectors onto a 3D spherical coordinate system with geodesic latitude/longitude rings, dynamic node sizes, and real-time area dispersion entropy metrics. | Built with HTML5 3D Canvas engine, trigonometric sphere projection, depth sorting, and Material Design 3 telemetry cards. |
-| **Zero-Key OpenStreetMap Engine** | Recenter view, toggle fullscreen, or pan across high-detail cartography. | Renders OpenStreetMap Standard street geography with optimized tile caching and clear cartographic typography. | 100% free, zero-key, zero-token, watermark-free open cartographic architecture. |
-| **Adaptive Dark / Light Theme Engine** | Click the theme toggle icon in the top header bar. | Toggles `dark` class on root HTML, swaps CSS custom properties, updates chart text/border colors, and synchronizes map styling. Persists user preference across sessions. | Client-side `localStorage` state tracking with smooth CSS variable transitions (`transition: 0.25s ease`). |
-| **Connected Global Search** | Type in the top search bar (by sector, offense, category, or incident ID) or select from the quick ward dropdown. | Evaluates query against the in-memory JavaScript dataset (`ALL_CRIMES`), filters map markers, updates telemetry counters, and triggers Leaflet `flyTo` camera animation. | Event-driven debounced search with automatic regex/substring matching and instant one-click clear button. |
-| **Multi-Parametric Filter Stack** | Select crime category, time of day (All/Night/Day), zone/sector, date window, or adjust the minimum severity slider. | Re-filters active incident subset, recalculates dominant crime types, updates highest-risk sector, and dynamically updates the Leaflet layer groups. | Zero-latency client-side execution; recalculates all statistical aggregates in `< 2 ms`. |
-| **Analyze Filters Workflow** | Click the **Apply Filters** action button. | Applies all active filter parameters, recalculates risk indicators, activates the analytics suite, and smoothly synchronizes the visualization section. | Linked via DOM event dispatchers and smooth scroll APIs (`scrollIntoView({ behavior: 'smooth' })`). |
-| **Station Proximity Engine** | View nearest station names and geodesic distances in popups, tables, and telemetry ribbons. | Calculates exact great-circle distance between incident coordinates and 10 Bhopal Thanas using vectorized Haversine geometry. | Vectorized with NumPy broadcasting in `spatial_analytics.py`; outputs distance in kilometers rounded to 2 decimal places. |
-| **Multidimensional Analytics Suite (Tab 1: Crime Overview)** | Inspect sector bar distributions, daytime vs. nighttime chrono-bias gauge, severity matrix, and offense modalities. | Renders responsive SVG concentric radial rings, CSS gradient bars, and dynamic metric badges based on the filtered incident subset. | Pure CSS/SVG data visualization adhering to Material Design 3 tokens. |
-| **Explainable AI Risk Model (Tab 2: AI Risk Insights)** | Review sector risk tiers, feature importance bars, and natural-language risk drivers. | Evaluates continuous sector safety risk using an interpretable Random Forest Regressor (80% accuracy) and Isolation Forest anomaly detector. | Implemented in `ai/risk_model.py`, `ai/anomaly_detection.py`, and `ai/explanations.py`. |
-| **DBSCAN Density Hotspots (Tab 3: Crime Hotspots)** | View active hotspot cluster cards with incident counts and spatial radii. | Clusters geocoded points using Great-Circle Haversine distance ($\epsilon = 750\text{m}$, $\text{min\_samples} = 10$). | Implemented in `ai/hotspots.py` with 30-day velocity detection for emerging hotspots. |
-| **Records Explorer & CSV Export (Tab 4: Crime Records)** | Search within records, inspect individual FIR rows on map, and click **Download CSV**. | Dynamically generates tabular rows with incident ID, date, category, subtype, and nearest thana; serializes records into CSV Blob. | Client-side `Blob` creation and `window.URL.createObjectURL` trigger for instant download without server latency. |
-| **Data Ingestion & Quality Audit (Tab 5: Data Sources)** | Inspect ingestion gateway status, schema quality score, and official legal citations. | Validates data against Bhopal municipal bounding box (23.00°–23.45° N, 77.20°–77.65° E) and schema specifications. | Implemented in `data/validator.py`, `data/cache.py`, and `data/live_fetcher.py`. |
-| **Zero-Overflow Mobile Navigation** | Access portal on any smartphone (360px–430px viewports). | Wraps header controls cleanly, collapses filters into an accordion drawer, enables horizontal touch scrolling for data tables, and provides touch-optimized hit targets without horizontal page overflow. | Fluid flexbox architecture (`flex-wrap`, `min-w-0`), responsive padding scaling, and viewport-constrained containers. |
+- [`data/official/publications.json`](data/official/publications.json): source IDs, exact publication URLs, publication dates, related-case groups, response checksums and reviewed facts.
+- [`data/reviewed_facts.py`](data/reviewed_facts.py): manually reviewed locality, time and legal-section facts with short source evidence snippets. An explicit refresh checks these snippets against the official article text and stops if the evidence changes.
+- [`data/official/stations.json`](data/official/stations.json): 48 public facility points from the public map embedded on the official Bhopal Police homepage, with map URL, retrieval timestamp and checksum. Contact links use the [official directory](https://bhopal.mppolice.gov.in/contact/).
+- [`data/official/map_references.json`](data/official/map_references.json): separately reviewed civic/place coordinates, source URLs and precision notes. References come from the [public TCIL/MP Police location list](https://www.tcil.net.in/tender/pdf/25f2357_2.pdf), the indexed [MP Pollution Control Board river report](https://mppcb.mp.gov.in/proc/KALIYASOTE%2023.5.19.pdf), and one reviewed OpenStreetMap locality feature. These are geographic references, not police-published crime GPS coordinates. The river-report binary could not be fetched with current TLS settings; its checksum is explicitly null.
 
----
+The app does not retain names, private home addresses, vehicle identifiers or raw article bodies in its publication snapshot. Police publications describe reported allegations and enforcement actions, not necessarily convictions. Missing/corrupt snapshots show an unavailable state; failed refreshes preserve the existing snapshot. The old synthetic cache is not used.
 
-## 3. System Architecture
+## Run locally
 
-### Architectural Topology Diagram
-
-```mermaid
-graph TD
-    subgraph Client["Frontend Layer (Client Browser - Material Active M3)"]
-        UI["Material Active Web Shell"]
-        Search["Connected Search & Ward Selector"]
-        Filters["Multi-Parametric Filter Stack"]
-        IndicatorBar["Inline Map Indicator Toolbar (39px)"]
-        MapEngine["Leaflet.js Geospatial Engine"]
-        Clusters["MarkerCluster Layer"]
-        Heatmap["Kernel Density Heat Layer"]
-        SphereGraph["3D City Safety Distribution Globe"]
-        TabPanes["5-Tab Navigation Suite (Overview, AI Risk, Hotspots, Records, Sources)"]
-    end
-
-    subgraph Server["Application & Middleware Layer (Python / Streamlit)"]
-        App["app.py (Streamlit Web Host)"]
-        UIBuilder["ui_builder.py (Dynamic M3 HTML/CSS/JS Engine)"]
-        CacheMgr["data/cache.py (24h Rolling TTL Cache Manager)"]
-        Config[".streamlit/config.toml (Server Settings)"]
-    end
-
-    subgraph AnalyticsEngine["AI & Spatial Analytics Layer"]
-        Spatial["spatial_analytics.py (Vectorized Haversine Proximity)"]
-        RiskModel["ai/risk_model.py (Random Forest Risk Forecaster)"]
-        AnomModel["ai/anomaly_detection.py (Isolation Forest Outlier Detector)"]
-        Hotspots["ai/hotspots.py (DBSCAN Spatial Hotspot Engine)"]
-        XAI["ai/explanations.py (Explainable AI Insight Generator)"]
-        Temporal["analytics/temporal_analytics.py (Velocity & Diurnal Bias)"]
-    end
-
-    subgraph DataPipeline["Data Ingestion & Quality Validation Layer"]
-        Fetcher["data/live_fetcher.py (Ingestion Orchestrator)"]
-        Validator["data/validator.py (Bounding Box & Schema Quality Validator)"]
-        Normalizer["data/normalizer.py (Column Aliases & Type Resolver)"]
-        DataGen["data_generator.py (Calibrated Synthetic Dataset Generator)"]
-        PublicRec["data/public_records.py (Gazetted CrPC 82/83 Registry)"]
-    end
-
-    subgraph GeospatialBase["Cartography & Spatial Services"]
-        CrimeDB["520 Geocoded Incident Records"]
-        ThanaDB["10 Police Thanas Spatial Coordinates"]
-        CorridorDB["3 Civic Safe Corridors (Polylines)"]
-        OSM["OpenStreetMap & Esri Public Tile CDN"]
-    end
-
-    UI --> Search
-    UI --> Filters
-    UI --> IndicatorBar
-    IndicatorBar --> MapEngine
-    UI --> MapEngine
-    MapEngine --> Clusters
-    MapEngine --> Heatmap
-    UI --> SphereGraph
-    UI --> TabPanes
-
-    App --> CacheMgr
-    App --> Fetcher
-    Fetcher --> Validator
-    Validator --> Normalizer
-    Fetcher --> DataGen
-    DataGen --> CrimeDB
-
-    App --> Spatial
-    App --> RiskModel
-    App --> AnomModel
-    App --> Hotspots
-    App --> Temporal
-    RiskModel & AnomModel & Hotspots & Temporal --> XAI
-
-    Spatial --> ThanaDB
-    Spatial --> CorridorDB
-    XAI --> UIBuilder
-    Spatial --> UIBuilder
-    App --> UIBuilder
-    UIBuilder --> UI
-
-    MapEngine -. Public Tiles .-> OSM
-```
-
-### 3D Isometric Architecture Diagram
-
-![3D Isometric System Architecture](architecture_3d.png)
-
-The 3D isometric diagram above illustrates the multi-tier separation of concerns, rendered in the exact dark design system and visual componentry of the live application:
-1. **Top Plane (Frontend / UI Layer):** Responsive Leaflet geospatial viewport (Upper Lake / Bhopal road grid with category pins & cluster counts), 3D City Safety Distribution Globe with geodesic rings, Material Active (M3) filter controls, top search bar with `Dial 112 SOS`, and multi-tab analytics.
-2. **Middle Plane (Application & AI Intelligence Pipeline):** Vectorized NumPy Haversine distance matrix engine (520×10), DBSCAN spatial hotspot clustering, supervised risk model, and reactive Streamlit server runtime.
-3. **Bottom Plane (Data Layer):** In-memory 85-ward Bhopal municipal polygon boundary mesh, 10 Police Thanas (safety posts) spatial markers, safe corridor vectors, and the 520 calibrated FIR incident registry.
-
----
-
-## 4. Data Flow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant D as data_generator.py
-    participant S as spatial_analytics.py
-    participant U as ui_builder.py
-    participant A as app.py (Streamlit)
-    participant B as Browser (Leaflet / JS)
-
-    A->>D: generate_crime_dataset(n_samples=520, seed=101)
-    D-->>A: Raw DataFrame (incidents, lat/lon, severity, time, categories)
-    A->>S: calculate_station_proximity(gdf)
-    Note over S: NumPy Vectorized Haversine Distance Matrix (520 x 10)
-    S-->>A: DataFrame with nearest_station and distance_to_station_km
-    A->>S: compute_sector_risk_index(df)
-    Note over S: Computes composite scores (Volume 40%, Severity 35%, Night 25%)
-    S-->>A: risk_df (Sector Safety Rankings)
-    A->>U: generate_material_active_html(df, risk_df)
-    Note over U: Injects JSON datasets & precalculates CSS gauges/cards
-    U-->>A: Fully self-contained HTML/CSS/JS document
-    A->>B: Render via components.html() (or direct index.html)
-    Note over B: Initializes Leaflet map, renders markers, listens to search/filter events
-```
-
-### Data Processing Stages
-
-1. **Input & Calibration:**
-   `data_generator.py` defines neighborhood coordinate centroids, geographic dispersion radii (`spread`: 0.005–0.009°), baseline incident weights, and category proportions based on historical urban dynamics in Bhopal.
-2. **Spatial Geometry Construction:**
-   Coordinates are converted into Shapely `Point` geometries under the standard WGS84 coordinate reference system (`EPSG:4326`).
-3. **Proximity Calculation:**
-   `spatial_analytics.py` executes a vectorized NumPy Haversine matrix operation between all $N$ incidents and $M=10$ safety stations, determining the closest station and distance in kilometers without invoking thread-unsafe projection libraries.
-4. **Risk Index Modeling:**
-   `compute_sector_risk_index` aggregates incidents by sector, computing volume, average severity, and nighttime ratios to generate a normalized 0–100 composite risk score.
-5. **Template Ingestion & JSON Serialization:**
-   `ui_builder.py` serializes incident arrays, station coordinates, and corridor vectors into client-side JSON structures (`ALL_CRIMES`, `POLICE_STATIONS`, `SAFE_CORRIDORS`).
-6. **Client-Side Reactive Rendering:**
-   The browser executes client-side filtering, clustering, and DOM manipulation without incurring server round-trips.
-
----
-
-## 5. AI / ML & Geospatial Analytics Pipeline
-
-While the application does not rely on a black-box deep neural network, it implements a deterministic, explainable geospatial analytics and spatial scoring pipeline:
-
-```mermaid
-graph LR
-    subgraph Ingestion
-        Coords["Incident Coordinates (Lat, Lon)"]
-        Time["Temporal Class (Day / Night)"]
-        Severity["Severity Score (1-5)"]
-    end
-
-    subgraph SpatialAnalysis["Geospatial Vector Engine"]
-        Haversine["Vectorized Haversine Matrix (NumPy)"]
-        NearestPost["Nearest Safety Post Index (ArgMin)"]
-        DistanceKM["Distance in KM"]
-    end
-
-    subgraph RiskScoring["Composite Risk Engine"]
-        VolScore["Volume Factor (40% Weight)"]
-        SevScore["Severity Factor (35% Weight)"]
-        NightScore["Night Factor (25% Weight)"]
-        Composite["Composite Risk Index (0 - 100)"]
-    end
-
-    subgraph SurfaceModeling["Geospatial Cartography"]
-        KDE["Kernel Density Estimation (Heatmap)"]
-        KDTree["K-D Tree Spatial Clustering (MarkerCluster)"]
-    end
-
-    Coords --> Haversine
-    Haversine --> NearestPost --> DistanceKM
-    
-    Coords --> VolScore
-    Severity --> SevScore
-    Time --> NightScore
-    VolScore & SevScore & NightScore --> Composite
-
-    Coords & Severity --> KDE
-    Coords --> KDTree
-```
-
-### Mathematical Formulations
-
-#### 1. Vectorized Haversine Geodesic Distance
-For two coordinates $(\phi_1, \lambda_1)$ and $(\phi_2, \lambda_2)$ in radians:
-$$\Delta\phi = \phi_2 - \phi_1, \quad \Delta\lambda = \lambda_2 - \lambda_1$$
-$$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta\lambda}{2}\right)$$
-$$d = 2 R \arcsin\left(\min(1, \sqrt{a})\right)$$
-where $R = 6371.0 \text{ km}$. Computed as an $(N \times M)$ NumPy matrix broadcast.
-
-#### 2. Composite Sector Risk Formula
-$$\text{Risk Score} = \min\left(\frac{N_{\text{sector}}}{30}, 1.0\right) \times 40.0 + \left(\frac{\bar{S} - 1.0}{4.0}\right) \times 35.0 + \left(\frac{N_{\text{night}}}{N_{\text{sector}}}\right) \times 25.0$$
-where $N_{\text{sector}}$ is incident count, $\bar{S}$ is mean severity (1–5), and $N_{\text{night}}$ is nighttime incident count.
-
-#### 3. Spatial Density (Kernel Smoothing)
-Points are smoothed using an Epanechnikov/Gaussian kernel approximation via `leaflet-heat`:
-- Kernel Radius: 26px
-- Blur Radius: 20px
-- Weight: Normalized severity $\frac{\text{Severity}}{5.0}$
-
----
-
-## 6. UI / UX Architecture
-
-### Component Relationship Hierarchy
-
-```mermaid
-graph TD
-    Body["Dashboard Body (bg-[#0b0f17])"]
-    Header["Sticky Header App Bar"]
-    Ribbon["Incident Registry Overview Ribbon"]
-    MainGrid["12-Column Responsive Operational Grid"]
-    LeftStack["Left Stack (5 cols): Filters & Layer Toggles"]
-    RightMap["Right Stack (7 cols): Map Frame"]
-    BottomSection["Bottom Multi-Tab Analytics Section"]
-
-    Body --> Header
-    Body --> Ribbon
-    Body --> MainGrid
-    MainGrid --> LeftStack
-    MainGrid --> RightMap
-    Body --> BottomSection
-
-    Header --> Brand["Brand Title & Logo"]
-    Header --> SearchBox["Search Input & Ward Select"]
-    Header --> RecBadge["520 Records Badge"]
-    Header --> SOSBtn["Dial 112 SOS"]
-    Header --> ThemeBtn["Dark/Light Toggle"]
-
-    LeftStack --> FilterCtrl["Filters (Category, Time, Sector, Severity)"]
-    LeftStack --> QuickToggles["Quick Layer Toggles (Police Stations, Safe Corridors)"]
-
-    RightMap --> IndicatorBar["Inline Map Indicator Toolbar (#what-to-see-bar)"]
-    RightMap --> MapHeader["Cartographic Controls (Basemap Switcher: Civic | OSM | Satellite, Mode Indicator, Recenter)"]
-    RightMap --> LeafletMap["Leaflet Map Viewport (#leaflet-map)"]
-    RightMap --> MapFooter["Map Telemetry Ribbon"]
-
-    BottomSection --> TabPill["Top Navigation Tab Bar"]
-    BottomSection --> TabAnalytics["Tab 1: Crime Overview (3D Safety Globe & Analytics)"]
-    BottomSection --> TabAIRisk["Tab 2: AI Risk Insights"]
-    BottomSection --> TabHotspots["Tab 3: Crime Hotspots"]
-    BottomSection --> TabRecords["Tab 4: Crime Records Explorer & CSV Export"]
-    BottomSection --> TabSources["Tab 5: Data Sources"]
-```
-
----
-
-## 7. Visual Design System
-
-The visual design system is derived from **Google Material Design 3 (M3) Adaptive** and tailored for high-density geospatial interfaces with full **Dark Mode** and **Light Mode** bidirectional support:
-
-### Color Palette Tokens (Dual-Theme Adaptive)
-| Token | Dark Mode (Default) | Light Mode | Role in UI |
-| :--- | :--- | :--- | :--- |
-| `background` | `#0b0f17` | `#f1f5f9` | Root viewport canvas background |
-| `surface-container-low` | `#141822` | `#ffffff` | Card and panel container surface with subtle shadow elevation |
-| `surface-container-high`| `#222735` | `#e2e8f0` | Interactive button chips, hover states, and input containers |
-| `primary` | `#8ed5ff` | `#0284c7` | Primary brand accent, selected radio buttons, and coordinates |
-| `primary-container` | `#38bdf8` | `#0284c7` | Active pill background, selected states, and glow shadows |
-| `tertiary` | `#56e5a9` | `#059669` | Safe corridor vectors, low-severity badges, positive metrics |
-| `error` | `#ffb4ab` / `#ef4444` | `#dc2626` | High-risk sectors, severity level 5 indicators, SOS pill |
-| `on-surface` | `#dfe2ee` | `#0f172a` | High-contrast primary typography (Slate 900 in light mode) |
-| `on-surface-variant` | `#bdc8d1` | `#475569` | Secondary descriptions, captions, and table metadata |
-
-### Typography
-- **Primary Font Family:** `Roboto Flex` and `Plus Jakarta Sans` via Google Fonts.
-- **Monospace Font Family:** Integrated for telemetry tags, coordinates, and FIR IDs.
-
-### Elevation & Radii
-- **Squircles & Rounded Corners:** `rounded-[28px]`, `rounded-[32px]`, `rounded-full` (9999px pills).
-- **Gradients & Glows:**
-  - `shadow-m3-card`: `0 10px 30px -10px rgba(56, 189, 248, 0.08), 0 4px 18px rgba(0, 0, 0, 0.35)`
-  - `shadow-m3-glow`: `0 12px 36px -8px rgba(56, 189, 248, 0.2)`
-  - `shadow-m3-error-glow`: `0 8px 24px -4px rgba(239, 68, 68, 0.35)`
-
----
-
-## 8. Responsive Design
-
-The dashboard is built to adapt seamlessly across standard responsive breakpoints with dedicated mobile viewport optimization:
-
-| Breakpoint | Layout Behavior | Component Adaptations |
-| :--- | :--- | :--- |
-| **Desktop (≥ 1280px)** | Standard 12-column grid master layout. | 5 columns for streamlined Filters stack, 7 columns for map frame. Inline indicator toolbar (39px) sits directly above the Leaflet viewport. 3D City Safety Distribution globe renders in full 3D interactive mode with auto-spin momentum and node inspection. Full header with search, ward select, and quick SOS button. |
-| **Tablet (768px – 1024px)** | 2-column or stacked grid. | Controls stack reflows gracefully above or alongside the map. Inline indicator bar allows smooth flex wrapping without vertical misalignment. 3D globe and SVG radial charts auto-rescale to canvas bounds. Quick ward selector collapses into header dropdown. |
-| **Mobile (< 768px)** | Single-column linear layout with zero overflow. | **Zero-Overflow Navigation**: Header elements wrap gracefully (`flex-wrap`, `min-w-0`), search bar and SOS action button adapt without pushing content offscreen. Inline indicator bar is horizontally scrollable/panned via touch. Map viewport maintains a fixed 420–540px height with color-coded markers. 3D Globe supports touch rotation. Tables enable smooth horizontal swipe scrolling with no layout blowout. |
-
----
-
-## 9. Technology Stack
-
-### Frontend
-- **HTML5 & Vanilla JavaScript (ES6+):** Core application structure and event-driven state bus.
-- **Tailwind CSS (v3.x JIT via CDN):** Styling tokens, responsive grid, flexbox layouts.
-- **Leaflet.js (`v1.9.4`):** Hardware-accelerated client-side interactive mapping.
-- **Leaflet.markercluster (`v1.5.3`):** Dynamic client-side spatial marker clustering.
-- **Leaflet.heat (`v0.2.0`):** Client-side continuous heat surface rendering.
-- **Google Fonts & Material Symbols Outlined:** Icons and typography.
-
-### Backend & Middleware
-- **Python (`3.12`):** Primary language for data generation and analytics.
-- **Streamlit (`>= 1.35.0`):** Web application server and component host.
-- **Uvicorn:** Underlying ASGI web server for Streamlit runtime.
-
-### Machine Learning & Statistical Modeling
-- **Scikit-learn (`>= 1.4.0`):** Supervised Random Forest Regressor risk modeling, Isolation Forest anomaly outlier detection, and DBSCAN spatial cluster density analysis.
-- **SciPy (`>= 1.10.0`):** Spatial distance metrics, gaussian perturbation, and statistical distributions.
-
-### Data & Geospatial Processing
-- **NumPy (`>= 1.26.0`):** Vectorized trigonometric and Haversine matrix mathematics.
-- **Pandas (`>= 2.0.0`):** Data aggregation, filtering, and tabular grouping.
-- **GeoPandas (`>= 1.0.0`):** Spatial GeoDataFrame management and geometry structures.
-- **Shapely (`>= 2.0.0`):** Geometric point and polyline objects.
-
-### Zero-Key Cartography Suite
-- **Esri World Dark Gray Base:** Public ArcGIS REST service (`server.arcgisonline.com/.../Canvas/World_Dark_Gray_Base/MapServer`) for high-contrast dark theme civic mapping.
-- **Esri World Street Map:** Public ArcGIS REST service (`server.arcgisonline.com/.../World_Street_Map/MapServer`) for daytime civic street cartography.
-- **OpenStreetMap Standard:** OpenStreetMap Foundation raster tiles (`tile.openstreetmap.org`) for open-source street grid navigation.
-- **Esri World Imagery:** Public ArcGIS REST service (`server.arcgisonline.com/.../World_Imagery/MapServer`) for HD aerial satellite photography.
-- **100% Free & Zero-Key:** All basemap layers stream via public endpoints with zero API keys, no subscription tokens, and zero diagonal watermarks.
-
----
-
-## 10. Project Structure
-
-```text
-bhopal-crime-safety-dashboard/
-├── .github/
-│   └── workflows/
-│       └── publish-package.yml   # GitHub Actions: builds and publishes container to GitHub Packages (ghcr.io)
-├── .streamlit/
-│   └── config.toml               # Streamlit server port, theme tokens, and CORS configuration
-├── ai/
-│   ├── __init__.py               # Machine learning module exports
-│   ├── risk_model.py             # Supervised Random Forest Regressor risk model & evaluation metrics
-│   ├── anomaly_detection.py      # Unsupervised Isolation Forest spatial-temporal anomaly detector
-│   ├── hotspots.py               # DBSCAN spatial density & emerging cluster detection engine
-│   └── explanations.py           # Explainable AI (XAI) natural language insight synthesis
-├── analytics/
-│   ├── __init__.py               # Analytics module exports
-│   └── temporal_analytics.py     # Diurnal distribution, 7d/30d velocities, and temporal shifts
-├── data/
-│   ├── __init__.py               # Data pipeline exports
-│   ├── validator.py              # Schema validation, geo-bounding box enforcement, & quality reports
-│   ├── normalizer.py             # Column alias resolution & schema standardization
-│   ├── cache.py                  # Local 24h TTL cache manager
-│   ├── live_fetcher.py           # Ingestion orchestrator with fallback to calibrated distributions
-│   └── public_records.py         # Gazetted CrPC 82/83 public notices & statutory disclaimers
-├── static/
-│   └── leaflet-heat.js           # Client-side Leaflet heat layer renderer
-├── app.py                        # Streamlit application host with rolling cache & UI delivery
-├── ui_builder.py                 # Core UI engine: builds complete connected Material Active HTML/CSS/JS
-├── data_generator.py             # Calibrated Bhopal crime incident dataset generator (520 records)
-├── spatial_analytics.py          # Vectorized NumPy Haversine proximity matrix & composite risk scoring
-├── map_builder.py                # Auxiliary Folium cartographic generator
-├── sourcing_guide.py             # Legal, NCRB, and CCTNS data sourcing specifications
-├── index.html                    # Standalone zero-dependency distribution file
-├── preview.png                   # Verified UI desktop capture
-├── architecture_3d.png           # 3D isometric system architecture technical diagram
-├── requirements.txt              # Pinned Python package dependencies
-├── pyproject.toml                # Standard PEP 517/621 Python package configuration
-├── Dockerfile                    # Production container build manifest
-├── .dockerignore                 # Docker context exclusion filter
-├── DEPLOYMENT.md                 # Multi-cloud deployment instructions (Streamlit Cloud, Docker)
-├── verify_basemap_switcher.py    # Playwright test for multi-basemap switcher
-├── verify_mobile_nav.py          # Playwright test for zero-overflow mobile responsive layout
-├── verify_theme_and_perf.py      # Playwright test for Dark/Light theme toggle & load performance
-└── README.md                     # Comprehensive technical documentation & engineering manual
-```
-
----
-
-## 11. Installation & Deployment
-
-### 🌐 Live Hosted Application
-You can interact with the live application instantly without local installation:
-👉 **[Launch Bhopal Safety Intelligence on Streamlit Cloud](https://bhopalcrimesafety.streamlit.app/)**
-
-### Prerequisites
-- Python 3.10+ (Python 3.12 recommended)
-- `pip` package manager
-- Modern web browser (Chrome, Brave, Edge, Firefox, Safari)
-
-### Local Setup
-```bash
-# 1. Clone repository
-git clone https://github.com/shreyshrivastava/bhopal-crime-safety-intelligence.git
-cd bhopal-crime-safety-intelligence
-
-# 2. Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
-
-# 4. Launch Streamlit dashboard
-streamlit run app.py --server.port 8501
-```
-
-Visit `http://localhost:8501` in your browser.
-
-> [!TIP]
-> You can also view the application instantly by opening `index.html` in any web browser without running a Python environment.
-
----
-
-## 12. Configuration
-
-### Streamlit Configuration (`.streamlit/config.toml`)
-```toml
-[server]
-headless = true
-enableCORS = false
-enableXsrfProtection = true
-maxUploadSize = 50
-
-[browser]
-gatherUsageStats = false
-```
-
-### Environment Variables
-| Variable | Required | Default | Purpose |
-| :--- | :--- | :--- | :--- |
-| `OBJC_DISABLE_INITIALIZE_FORK_SAFETY` | Optional | `YES` | Prevents macOS Apple Silicon fork crashes during multithreaded operations. |
-| `PROJ_NETWORK` | Optional | `OFF` | Disables remote PROJ datum network lookups for faster startup. |
-
----
-
-## 13. API & Data Contracts
-
-The application utilizes an in-memory client-side JavaScript event bus:
-
-### JavaScript Event Functions
-- `applyFilters()`: Re-computes filtered array from `ALL_CRIMES` based on selected category, time of day, zone, and severity.
-- `handleSearch(query)`: Instant query across ID, neighborhood, category, subtype, and nearest thana.
-- `executeSearch(query)`: Triggered on <kbd>Enter</kbd>; flies camera to matching sector centroid.
-- `setVizMode('cluster' | 'density')`: Toggles MarkerCluster versus Kernel Density layers.
-- `filterByZone(zoneName)`: Sets sector filter and smoothly animates camera to sector center.
-- `downloadCSV()`: Serializes `currentFiltered` into a CSV Blob and triggers client download.
-
-### Data Schemas
-
-#### Incident Record (`ALL_CRIMES`)
-```json
-{
-  "id": "BHP-2026-1082",
-  "lat": 23.1952,
-  "lon": 77.4268,
-  "neighborhood": "Shahpura",
-  "category": "Public Harassment / Women's Safety",
-  "subtype": "Transit Stop Harassment",
-  "time_of_day": "Nighttime/Post-10 PM",
-  "date": "2026-09-28",
-  "severity": 2,
-  "status": "Under Investigation",
-  "nearest_ps": "Shahpura Police Station",
-  "dist_km": 0.24
-}
-```
-
-#### Police Station Object (`POLICE_STATIONS`)
-```json
-{
-  "name": "TT Nagar Police Station",
-  "lat": 23.2315,
-  "lon": 77.3995,
-  "jurisdiction": "Zone 10 / New Market",
-  "phone": "0755-2777240"
-}
-```
-
----
-
-## 14. Models and Data
-
-### Machine Learning Architecture & Training Pipeline
-
-The platform incorporates an auditable, multi-model AI/ML safety intelligence pipeline designed to forecast municipal risk, detect emerging spatial hotspots, and isolate behavioral outliers without black-box opacity.
-
-```mermaid
-graph LR
-    subgraph Data["1. Spatial Incident Base"]
-        Raw["520 Geocoded Crime Incidents"] --> Agg["Municipal Sector Aggregator"]
-    end
-    subgraph Feat["2. Feature Engineering"]
-        Agg --> F1["Incident Volume"]
-        Agg --> F2["Mean Severity"]
-        Agg --> F3["Nocturnal Chrono-Ratio"]
-        Agg --> F4["Police Station Proximity"]
-        Agg --> F5["Safe Corridor Proximity"]
-        Agg --> F6["Active Case Velocity"]
-    end
-    subgraph ML["3. Supervised Model (Random Forest)"]
-        F1 & F2 & F3 & F4 & F5 & F6 --> RegRF["Regularized Random Forest Regressor<br/>(100 Trees, Depth=4, Split=4, Leaf=2, Sqrt Bagging)"]
-        RegRF --> Split["80% Train (80) / 20% Test (20)"]
-        RegRF --> OOB["Out-of-Bag (OOB) Unbiased Validation"]
-        Split --> Eval["R² = 0.990 | MAE = 0.86 pts | Gap = 0.002"]
-    end
-    subgraph Unsup["4. Unsupervised Spatial AI"]
-        Raw --> Iso["Isolation Forest<br/>(100 Trees, Contamination=4%)"] --> Anom["21 Spatial-Temporal Outliers"]
-        Raw --> DB["DBSCAN (Haversine Metric)<br/>(eps=750m, min_samples=10)"] --> Clusters["5 Dense Hotspots & Emerging Clusters"]
-    end
-```
-
-### 1. Supervised Safety Risk Model (`ai/risk_model.py`)
-- **Algorithm:** Regularized Random Forest Regressor (`sklearn.ensemble.RandomForestRegressor`).
-- **Target Variable:** Continuous composite civic safety risk index ($0.0 - 100.0$) evaluated per municipal sector.
-- **Input Features (7 continuous spatial-temporal metrics):**
-  1. `incident_volume`: Historical incident density.
-  2. `average_severity`: Mean severity level ($1.0 - 5.0$).
-  3. `high_severity_ratio`: Proportion of severe offenses (Lv 4–5).
-  4. `nighttime_ratio`: Proportion of incidents occurring during nocturnal hours (22:00–05:00).
-  5. `distance_to_thana_km`: Distance from sector centroid to nearest of 10 police stations.
-  6. `distance_to_corridor_km`: Geodesic distance to designated safe, illuminated corridors.
-  7. `active_case_ratio`: Unresolved / actively investigated incident velocity.
-- **Training Data Volume & Partitioning:**
-  - **Base Incident Records:** 520 geocoded incident events across Bhopal's municipal sectors.
-  - **Feature Space:** To avoid high-variance instability from a tiny 10-point sample, the sector feature distributions are expanded via controlled Gaussian perturbation ($\sigma = 0.02$) into a regularized training dataset of **100 municipal ward-feature instances**.
-  - **Train / Test Partitioning:** **80% Training (80 instances)** and **20% Testing (20 instances)** with fixed `random_state=42`.
-
-### 2. Overfitting & Underfitting Safeguards
-
-To prevent both **high bias (underfitting)** and **high variance (overfitting)**, the model implements five structural engineering controls:
-
-| Risk Category | Potential Failure Mode | Implemented Engineering Safeguard | Empirical Verification |
-| :--- | :--- | :--- | :--- |
-| **Underfitting** | Model too simplistic to capture non-linear crime dynamics (e.g. single decision tree or linear regression). | **100 Ensemble Bagged Estimators** with non-linear feature splits and interaction modeling. | **Test $R^2 = 0.990$**, **Test MAE = 0.86 points** (on 100-point scale), **RMSE = 1.08 points**. High explanatory fidelity. |
-| **Overfitting** | Unpruned trees memorizing point noise or specific training instances. | **Tree Depth Pruning (`max_depth=4`)**: Strictly restricts maximum branch depth to prevent single-point memorization. | **Generalization Gap $|R^2_{\text{train}} - R^2_{\text{test}}| = 0.0024$** (less than $0.3\%$ difference, well within the $0.05$ threshold). |
-| **Overfitting** | Leaf nodes splitting on single outlier samples. | **Minimum Partition Bounds (`min_samples_split=4`, `min_samples_leaf=2`)**: Partitions only occur when supported by multiple independent samples. | Leaf node distributions represent generalized spatial clusters rather than individual anomalies. |
-| **Overfitting** | Dominant features monopolizing all decision trees. | **Feature Subsampling (`max_features='sqrt'`)**: Each tree split considers a random feature subset, decorrelating trees. | Gini feature importance distributes across historical volume (35.2%), mean severity (28.4%), nighttime ratio (19.8%), and thana distance (16.6%). |
-| **Data Leakage** | Optimistic test evaluation due to partition overlap. | **Out-of-Bag (OOB) Validation (`oob_score=True`)**: Each tree is independently evaluated on the bootstrap instances left out of its training. | **Out-of-Bag $R^2 = 0.980$**, confirming high out-of-sample generalization with zero train-to-test leakage. |
-
-### 3. Unsupervised Anomaly Detection (`ai/anomaly_detection.py`)
-- **Algorithm:** Isolation Forest (`sklearn.ensemble.IsolationForest`).
-- **Data Evaluated:** All **520 raw incident coordinate-temporal records** (`latitude`, `longitude`, `hour`, `severity`, `time_of_day`).
-- **Hyperparameters:** `n_estimators=100`, `contamination=0.04`, `random_state=42`.
-- **Output:** Isolates **21 spatial-temporal outliers** (e.g., late-night violent assaults in low-density residential sectors or uncharacteristic daytime offense spikes) accompanied by natural-language explanation tags.
-
-### 4. Density Hotspots & Emerging Cluster Engine (`ai/hotspots.py`)
-- **Algorithm:** Density-Based Spatial Clustering of Applications with Noise (DBSCAN).
-- **Metric:** Great-circle spherical Haversine metric on radian coordinates ($\text{radius} = 6371.0\text{ km}$).
-- **Hyperparameters:** $\epsilon = 750\text{ meters}$ ($0.0001177\text{ radians}$), $\text{min\_samples} = 10$.
-- **Temporal Emergence Filter:** Flags clusters where $>45\%$ of incidents occurred within the past 30 days as **"Emerging Hotspots"**, distinguishing newly forming clusters from historically established ones.
-
-### 5. Active Crime Incident Registry (Full 520 Records)
-The updated platform preserves and enhances the complete incident records registry (accessible under **Tab 4: Crime Records** in the primary navigation tab bar):
-- **Full Historical Records:** All 520 calibrated incident reports are maintained with complete schema fidelity.
-- **Detailed Attributes:**
-  - `Incident ID` (e.g. `BHP-2026-1042`, clickable to zoom and inspect on the map)
-  - `Date` (calendar date of occurrence)
-  - `Sector / Locality` (Bhopal municipal ward/zone)
-  - `Crime Category` (Property Crime, Assault, Women's Safety, Vandalism)
-  - `Offense Detail` (specific subtype, e.g. "Two-Wheeler / Motor Vehicle Lifting", "Transit Stop Harassment")
-  - `Time of Day` (Daytime vs. Nighttime)
-  - `Severity Level` (Lv 1 to Lv 5 with color indicators)
-  - `Investigation Status` ("FIR Registered", "Under Investigation", "Action Dispatched", "Resolved / Arrest Made")
-  - `Nearest Thana & Distance` (exact km proximity)
-- **Interactive Controls:**
-  - Real-time search filter (instant filtering by ID, sector, or keyword)
-  - Records counter (`Showing 50 of 520 Reports`)
-  - `Show All (520)` toggle button
-  - `Download CSV` export for spreadsheet analysis
-  - Map synchronization (clicking any row centers the Leaflet map and opens the incident pin)
-
----
-
-## 15. Performance
-
-- **Geodesic Calculation Latency:** Vectorized NumPy Haversine executes over 520 records and 10 stations ($5,200$ coordinate pairs) in **`< 1.5 ms`** on Apple Silicon (M-series) and modern x86_64 architectures.
-- **Memory Footprint:** Application baseline memory is **`~58 MB`** under Streamlit runtime.
-- **Client-Side Rendering:** HTML5 Canvas layer (`preferCanvas: true`) enables 60 FPS panning and zooming for marker clusters.
-
----
-
-## 16. Security and Privacy
-
-- **Zero Remote Telemetry:** The application operates entirely locally; incident data does not egress to third-party tracking services.
-- **Tile Security:** All map tiles are fetched over secure HTTPS from ESRI ArcGIS REST servers.
-- **DPDP Act 2023 Alignment:** In production deployments, real FIR records must be stripped of Personally Identifiable Information (PII) and coordinates must undergo spatial perturbation (jittering) to prevent home-level victim identification.
-
----
-
-## 17. Error Handling
-
-- **Zero-Division Protection:** KPI calculations safely guard against empty filter queries (`df.empty` or `currentFiltered.length === 0`), returning zeroed metrics without crashing.
-- **Fork Safety:** Sets `OBJC_DISABLE_INITIALIZE_FORK_SAFETY="YES"` to prevent Python `pthread_atfork` segmentation faults on macOS ARM64.
-- **Offline / Tile Fallback:** Map layers load gracefully; if tile networks are restricted, GeoJSON markers and SVG overlays remain interactive.
-
----
-
-## 18. Testing
-
-The repository is validated using headless and automated browser integration test suites:
+Requires Python 3.10 or later. Local verification was performed with Python 3.14; the existing Dockerfile uses Python 3.12.
 
 ```bash
-# 1. Run Mobile Responsive & Zero-Overflow Viewport Test
-python verify_mobile_nav.py
-
-# 2. Run Basemap Cartography Switcher Test (Civic, OSM, Satellite)
-python verify_basemap_switcher.py
-
-# 3. Run Dark / Light Theme & Performance Verification
-python verify_theme_and_perf.py
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m streamlit run app.py \
+  --server.address 127.0.0.1 \
+  --server.port 8507 \
+  --server.headless true \
+  --browser.gatherUsageStats false
 ```
 
-These suites validate 60 FPS Canvas rendering, zero-overflow mobile wrapping, theme token contrast persistence, and Leaflet layer synchronization across multiple viewports (360px–1440px).
+Open [the local dashboard](http://127.0.0.1:8507/). Checked-in snapshots load without police API credentials. Browser map tiles, fonts and the existing UI libraries require internet access.
 
----
-
-## 19. Deployment
-
-### Docker & GitHub Packages (GHCR) Deployment
-You can pull and launch the container package directly from GitHub Container Registry, or build locally:
+Generate the standalone HTML export:
 
 ```bash
-# Option A: Run directly from GitHub Packages (GHCR)
-docker run -d -p 8501:8501 --name safety-portal ghcr.io/shreyshrivastava/bhopal-crime-safety-intelligence:latest
-
-# Option B: Build and run locally
-docker build -t bhopal-safety-intelligence .
-docker run -d -p 8501:8501 --name safety-portal bhopal-safety-intelligence
+.venv/bin/python scripts/export_official_html.py
 ```
 
-The container exposes port `8501` with an automated healthcheck at `http://localhost:8501/_stcore/health`. Access the platform at `http://localhost:8501`.
+This writes `index.html` from the same official-data dashboard. The app does not overwrite that file during requests.
 
----
+## Refresh official snapshots
 
-## 20. Development Guide for AI Coding Agents
+Refreshes are explicit maintenance actions, not background collection jobs:
 
-## Instructions for AI Coding Agents
+```bash
+.venv/bin/python scripts/refresh_official_data.py
+.venv/bin/python scripts/refresh_station_locations.py
+.venv/bin/python scripts/export_official_html.py
+```
 
-When working with this repository, AI agents (such as Google Antigravity) must strictly adhere to the following operational rules:
+Publication refresh fetches only the ten explicitly reviewed public post IDs. Add a new record only after reviewing its source, locality evidence, occurrence-time meaning and category. Never infer an occurrence time from a publication timestamp, a crime location from a police-station coordinate, or a severity score from missing data.
 
-1. **Inspect Before Modifying:** Always inspect `app.py`, `ui_builder.py`, and `spatial_analytics.py` before altering UI logic or calculations.
-2. **Preserve Existing Functionality:** Do not break the dual-mode Leaflet engine, search zoom bindings, or CSV export pipeline.
-3. **Avoid Unnecessary Rewrites:** Do not replace the custom Material Active UI template with default Streamlit components unless explicitly instructed.
-4. **No Hallucinated Features:** Do not claim real-time GPS tracking or external live police API connections; represent data accurately as historical records.
-5. **Component Reusability:** Reuse `POLICE_STATIONS`, `SAFE_CORRIDORS`, and `NEIGHBORHOOD_CONFIG` defined in `data_generator.py`.
-6. **Preserve Architectural Separation:** Keep dataset simulation in `data_generator.py`, spatial math in `spatial_analytics.py`, and UI generation in `ui_builder.py`.
-7. **Thread & Fork Safety:** Never invoke `geopandas.to_crs(epsg=32643)` inside request loops on macOS; rely on vectorized Haversine in `spatial_analytics.py`.
-8. **Preserve Data Contracts:** The JavaScript array `ALL_CRIMES` expects exact keys (`id`, `lat`, `lon`, `neighborhood`, `category`, `subtype`, `time_of_day`, `severity`, `nearest_ps`, `dist_km`).
-9. **Run Local Verifications:** After modifying frontend logic, run a headless verification script to verify there are zero JavaScript errors.
-10. **Visual Inspection:** Verify screenshots of both desktop (`1400x900`) and mobile (`390x844`) viewports before closing tasks.
-11. **Maintain Responsive Integrity:** Ensure headers, inline toolbars, and grid columns stack gracefully on smaller viewports without floating docks or fixed overlays obscuring interactive content.
-12. **Follow Visual Language:** Preserve rounded squircles, M3 color tokens, and smooth transition animations.
-13. **Do Not Reintroduce Deprecated Badges:** Never add back "RTK: 99.8% LIVE", "Real-time CAD", or "MP Police" branding.
-14. **Maintain Offline Export:** Ensure client-side CSV downloads function without external server dependencies.
-15. **Document Architecture Changes:** If modifying schemas or calculation weights, update this `README.md` and associated data dictionaries.
+`build_reviewed_map_references.py` is a maintenance transcription script; it uses the reviewed source PDF and geocoding review cache described in the [migration plan](docs/REAL_DATA_MIGRATION.md). It is not required to run the app. Do not automatically geocode victim addresses or accept the first place-search match.
 
----
+## Test locally
 
-## 21. Visual Implementation Rules for Antigravity
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+```
 
-The Material Active UI implemented in `ui_builder.py` is the **authoritative visual source of truth**:
+With the local app running on port 8507, run the browser checks:
 
-- **Organic & Curved Forms:** All primary containers must use squircle curvature (`rounded-[28px]` or `rounded-[32px]`). Avoid sharp, rectangular dashboard boxes.
-- **Consistent Surface Roles:** Base background is `#0b0f17`; containers use `#141822` with subtle borders (`border border-white/5` or `border border-white/10`).
-- **Gradients over Flat Fills:** Use soft radial and linear gradients for accents (e.g., `from-primary-container to-secondary-container`).
-- **Typography:** Always use `Roboto Flex` or `Plus Jakarta Sans`. Use uppercase tracking (`tracking-wider text-[10px] font-mono`) for metadata tags.
-- **No Inappropriate Blinking:** Do not use `animate-pulse` or `animate-ping` for static or historical data points.
+```bash
+.venv/bin/python -m pip install playwright
+.venv/bin/python -m playwright install chromium
+.venv/bin/python tests/browser_official_data.py
+```
 
----
+**Validation:** 17 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
 
-## 22. Architecture Decisions
+See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artifacts/browser-results.json) and [unit-test log](artifacts/unit-tests.txt). Screenshots and downloaded source-review material remain local and are excluded from Git.
 
-| Decision | Context & Reason | Trade-off |
-| :--- | :--- | :--- |
-| **Hybrid Streamlit + Leaflet HTML Shell** | Streamlit alone has layout limitations for rich Google Stitch M3 layouts. Generating a full-bleed HTML/JS bundle via `ui_builder.py` delivers complete cartographic control and fluid client-side speed. | Requires serializing Python data to JavaScript JSON and maintaining HTML templates. |
-| **Zero-Key Multi-Basemap Suite (Esri + OSM)** | Proprietary and tokenized tile providers (CARTO, Mapbox) require paid credentials and inject diagonal watermarks on unauthenticated requests. Leveraging public Esri REST endpoints (Dark Gray Canvas, World Street Map, World Imagery) and OpenStreetMap Standard provides 100% free, zero-key, zero-watermark cartography with instant 3-way switching. | Requires internet connectivity to stream raster tiles from Esri and OSM servers. |
-| **Vectorized Haversine over `GeoPandas.to_crs`** | On macOS Apple Silicon (ARM64), `pyproj`/`libproj` triggers `SIGSEGV` during Streamlit process forks when closing SQLite database handles. Vectorized NumPy Haversine math is 100% thread/fork safe. | Great-circle distance assumes a spherical Earth ($R=6371\text{ km}$), introducing an error of $< 0.3\%$ compared to ellipsoidal projections. |
-| **Client-Side Event Bus** | Filtering, searching, and clustering run directly in the client browser using vanilla JS and Leaflet. | Eliminates server roundtrips, but limits dataset scale to roughly $< 50,000$ records before browser memory degrades. |
-| **Fluid Mobile Flexbox Navigation** | Fixed-width desktop headers cause horizontal scrolling and cut off items on small viewports (< 480px). Using fluid flexbox with dynamic wrapping and touch-friendly targets ensures zero horizontal overflow across all smartphones. | Navigation elements wrap to multiple lines on narrow vertical screens. |
+## Architecture and development
 
----
+| Component | Purpose |
+| --- | --- |
+| `app.py` | Default Streamlit host for official data |
+| `dashboard.py` | Connects reviewed facts and geographic references to the existing dashboard shell |
+| `ui_builder.py` | Original Material Active HTML/CSS/Leaflet shell |
+| `static/official-dashboard.js` | Official-record rendering, source filters, locality pins and evidence panels |
+| `data/official_sources.py` | Snapshot validation and explicit publication refresh |
+| `data/reviewed_facts.py` | Reviewed source facts and map-category tags |
+| `data/official/` | Checked-in publication, facility and geographic-reference snapshots |
+| `scripts/` | Explicit refresh and HTML export commands |
+| `tests/` | Automated source/data checks and browser verification |
 
-## 23. Known Limitations
+Preserve the existing interface, search, navigation, responsive layout and CSV export when changing data connections. Keep publication dates, occurrence dates, reporting police units, source localities and reference coordinates separate. Check desktop and mobile screenshots after frontend changes. Do not reintroduce simulated data fallbacks, unsupported live-feed badges, named unverified person profiles or fixed accuracy claims.
 
-1. **Client-Side Scalability:** Loading $> 25,000$ raw marker points simultaneously in Leaflet DOM will degrade frame rates; clustering mitigates this up to $50,000$ points.
-2. **Synthetic Data Calibration:** The current dataset uses statistically calibrated synthetic distributions rather than a direct real-time wire to the CCTNS database (which is air-gapped on government intranets).
-3. **Raster Tile Dependency:** Base cartography requires internet connectivity to stream public Esri and OpenStreetMap tile layers unless a local vector MBTiles server is provisioned.
+## Synthetic training/demo experiments
 
----
+The previous generated-data interface is isolated behind an explicit separate entrypoint:
 
-## 24. Future Improvements
+```bash
+.venv/bin/python -m streamlit run demo_app.py --server.port 8508
+```
 
-### Current
-- Calibrated 520-incident spatial dataset.
-- Dual-mode Leaflet clustering & heatmap cartography.
-- 100% free, zero-API-key 3-way basemap switcher (Civic Dark/Light, OSM, Satellite).
-- Full bidirectional Dark / Light theme engine with dynamic map tile synchronization.
-- Zero-overflow responsive mobile navigation engine (tested on 360px–430px viewports).
-- Vectorized Haversine proximity calculations.
-- Connected search, streamlined Filters workflow, 3D City Safety Distribution globe, and inline map indicator toolbar.
+It displays a synthetic-demo banner and cannot overwrite the official `index.html`. The experimental risk model requires explicit synthetic opt-in and rejects official publication rows. Its perturbed random train/test split does not establish real-world forecasting accuracy. The production app does not invoke it.
 
-### Planned / Potential
-- [ ] Integration of OpenStreetMap street lamp locations to generate nighttime lighting deficit layers.
-- [ ] Automated e-FIR ingestion connector for authenticated CCTNS endpoints.
-- [ ] Isochrone generation showing 5-minute walking radius around emergency SOS kiosks.
-- [ ] WebGL (Deck.gl / MapLibre) migration for visualizing multi-year datasets ($> 100,000$ incidents).
+## Deployment and next steps
 
----
+The existing repository workflow publishes a container on code pushes to `main`. The deployment guide also identifies `main` as the Streamlit deployment branch. Pushing a feature branch does not demonstrate that the public application has been updated.
 
-## 25. Credits & License
-
-- **License:** [MIT License](LICENSE)
-- **Base Cartography:** &copy; [Esri](https://www.esri.com/) &mdash; ArcGIS World Dark Gray Base, World Street Map, and World Imagery.
-- **Open-Source Cartography:** &copy; [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
-- **UI Architecture:** Designed with Google Material Design 3 (Material You) Adaptive principles.
+See [deployment instructions](DEPLOYMENT.md) and the [real-data migration plan](docs/REAL_DATA_MIGRATION.md). Future work includes independently verified annual SCRB/NCRB statistics, stronger incident-location evidence, and time-based model evaluation against baselines. Aggregate annual totals must never be expanded into fictional individual incidents or map points.

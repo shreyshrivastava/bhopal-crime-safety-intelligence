@@ -1,0 +1,40 @@
+[
+  {
+    "target": "restored dashboard",
+    "viewport": "1400x900",
+    "facilities": 48,
+    "publications": 10,
+    "basemaps": "pass",
+    "theme": "pass",
+    "filters": "pass",
+    "tabs": "pass",
+    "csv": "pass",
+    "sphere": "pass",
+    "fabricated_incident_points": 0,
+    "locality_reference_pins": 8,
+    "javascript_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "target": "restored dashboard",
+    "viewport": "390x844",
+    "facilities": 48,
+    "publications": 10,
+    "basemaps": "pass",
+    "theme": "pass",
+    "filters": "pass",
+    "tabs": "pass",
+    "csv": "pass",
+    "sphere": "pass",
+    "fabricated_incident_points": 0,
+    "locality_reference_pins": 8,
+    "javascript_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "target": "local Streamlit",
+    "facilities": 48,
+    "publications": 10,
+    "status": "pass"
+  }
+]

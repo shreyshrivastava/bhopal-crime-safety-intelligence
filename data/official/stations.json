@@ -1,0 +1,440 @@
+{
+  "source_url": "https://bhopal.mppolice.gov.in/",
+  "map_url": "https://www.google.com/maps/d/kml?mid=1B6Ui99x-DXx_TDO3EGDPPfmtzF4ij6w&forcekml=1",
+  "retrieved_at": "2026-10-25T17:48:41.847016+00:00",
+  "sha256": "01bde45151df7a0c0aea6b9023c0d9803d17445490b1cccb93a3a313e46c1802",
+  "records": [
+    {
+      "name": "TT Nagar Police Station",
+      "lat": 23.2359122,
+      "lon": 77.4000175,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Thana Kamla Nagar",
+      "lat": 23.2151458,
+      "lon": 77.395534,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Station - Ashoka Garden",
+      "lat": 23.26103,
+      "lon": 77.4296762,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Shahpura Police Station",
+      "lat": 23.1862549,
+      "lon": 77.4317574,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Habibganj Police Station",
+      "lat": 23.2165701,
+      "lon": 77.4277247,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Aishbagh Police Thana",
+      "lat": 23.2550237,
+      "lon": 77.421,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Thana Bajaria Police Station",
+      "lat": 23.2625802,
+      "lon": 77.4129913,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Thana Jahangirabad",
+      "lat": 23.247429,
+      "lon": 77.4160086,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Thana Ratibad",
+      "lat": 23.1694201,
+      "lon": 77.3214372,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Arera Hills Police Station",
+      "lat": 23.2407433,
+      "lon": 77.4064658,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Bag Sevania Police Station",
+      "lat": 23.1926525,
+      "lon": 77.4508184,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Govindpura Police Station",
+      "lat": 23.2314512,
+      "lon": 77.4549715,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Katara Hills Police Station",
+      "lat": 23.1808916,
+      "lon": 77.5026426,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Misrod Police Station",
+      "lat": 23.1610922,
+      "lon": 77.4696517,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "M.P. Nagar Police Station",
+      "lat": 23.2350528,
+      "lon": 77.4289966,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Piplani Police Station",
+      "lat": 23.2417331,
+      "lon": 77.4721242,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Awadhpuri Police Station",
+      "lat": 23.2198645,
+      "lon": 77.486698,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Ayodhya Nagar Police Station",
+      "lat": 23.2756703,
+      "lon": 77.4643556,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Gautam Nagar Police Station",
+      "lat": 23.278989,
+      "lon": 77.4032919,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Hunumanganj Police Station",
+      "lat": 23.2655285,
+      "lon": 77.4063816,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Koh-e-fiza Police Station",
+      "lat": 23.261694,
+      "lon": 77.3876473,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Kotwali Thana",
+      "lat": 23.2554971,
+      "lon": 77.4034663,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Shahjahanabad Police Station",
+      "lat": 23.2670856,
+      "lon": 77.3954895,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Shyamla Hills Police Station",
+      "lat": 23.2444304,
+      "lon": 77.3926316,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Talaiya Police Station",
+      "lat": 23.2547045,
+      "lon": 77.4085431,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Tila Jamalpura Police Station",
+      "lat": 23.2781733,
+      "lon": 77.39602,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Bairagarh Police Station",
+      "lat": 23.2723584,
+      "lon": 77.3414502,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Chhola Mandir Police Station",
+      "lat": 23.2797943,
+      "lon": 77.4178668,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Chuna Bhatti Police Station",
+      "lat": 23.1964865,
+      "lon": 77.4173828,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Station-Gandhi Nagar",
+      "lat": 23.2963395,
+      "lon": 77.3448678,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Thana - Khajoori Sadak",
+      "lat": 23.2418984,
+      "lon": 77.2406312,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Kolar Road Police Station",
+      "lat": 23.1700822,
+      "lon": 77.416806,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Nishatpura Police Station",
+      "lat": 23.3037551,
+      "lon": 77.4042125,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Gunga Police Station",
+      "lat": 23.4522787,
+      "lon": 77.3493396,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Berasiya Police Station",
+      "lat": 23.620575,
+      "lon": 77.4309127,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Bilkhiria Police Station J. K.",
+      "lat": 23.2547297,
+      "lon": 77.5714102,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Station Eintkhedi",
+      "lat": 23.3595378,
+      "lon": 77.3990997,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Nazirabad Police Station",
+      "lat": 23.7982334,
+      "lon": 77.2555697,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Parwaliya Sadak Police Station",
+      "lat": 23.3368006,
+      "lon": 77.2741868,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Police Station Sukai",
+      "lat": 23.3518333,
+      "lon": 77.4855566,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "MP Police Headquarters",
+      "lat": 23.248465,
+      "lon": 77.4102467,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Crime Branch Bhopal",
+      "lat": 23.235044,
+      "lon": 77.429502,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Cyber Cell Bhopal",
+      "lat": 23.227316,
+      "lon": 77.38771,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Eow Bhopal",
+      "lat": 23.24008,
+      "lon": 77.427334,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Lokayukta Bhopal",
+      "lat": 23.262402,
+      "lon": 77.388178,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "STF Bhopal",
+      "lat": 23.227316,
+      "lon": 77.38771,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Traffic Police Station",
+      "lat": 23.242971,
+      "lon": 77.410523,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    },
+    {
+      "name": "Mahila Thana Bhopal",
+      "lat": 23.2433359,
+      "lon": 77.4116075,
+      "jurisdiction": "Public facility location — not an incident location",
+      "phone": "See official contact directory",
+      "source_url": "https://bhopal.mppolice.gov.in/",
+      "contact_url": "https://bhopal.mppolice.gov.in/contact/"
+    }
+  ]
+}

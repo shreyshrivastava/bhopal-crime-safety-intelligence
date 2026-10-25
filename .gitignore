@@ -37,3 +37,9 @@ secrets.toml
 scratch_temp.py
 verify_*.py
 test_and_screenshot.py
+
+# Downloaded source PDFs and geocoding review candidates
+tmp/
+
+# Generated CSV downloads; keep the reviewed snapshots instead
+artifacts/*.csv

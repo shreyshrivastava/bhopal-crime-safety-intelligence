@@ -1,0 +1,309 @@
+{
+  "schema_version": 2,
+  "data_kind": "official_publications",
+  "retrieved_at": "2026-10-25T18:39:31.439059+00:00",
+  "status": "snapshot",
+  "records": [
+    {
+      "source_post_id": 5223,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%b9%e0%a4%a8%e0%a5%81%e0%a4%ae%e0%a4%be%e0%a4%a8%e0%a4%97%e0%a4%82%e0%a4%9c-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8-%e0%a4%a6%e0%a5%8d%e0%a4%b5-2/",
+      "publication_date": "2026-07-17",
+      "category": "Women Safety Concerns",
+      "reporting_unit": "Hanumanganj",
+      "summary": "Police report arrests in an investigation concerning trafficking and kidnapping of girls.",
+      "related_case_group": "hanumanganj-girl-protection-2025",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": "2025-01-10",
+      "reviewed_facts": {
+        "locality": null,
+        "locality_evidence": null,
+        "occurrence": {
+          "kind": "date_only",
+          "date": "2025-01-10",
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Selected disappearance reported on 10 January 2025; time not stated",
+          "evidence": [
+            "दिनांक 10.01.25"
+          ]
+        },
+        "legal_basis": "BNS, section 137(2)",
+        "legal_evidence": "धारा 137(2) बीएनएस",
+        "notes": "The source concerns girls’ trafficking/kidnapping investigations and gives no established publishable occurrence location. Do not geocode an informant/victim residential address or reporting station as a crime scene."
+      },
+      "source_sha256": "9ed604ef6e7bad60d07a4221044a4e14aedf89a3fe30ea9a93a480b444116a10"
+    },
+    {
+      "source_post_id": 5017,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%b6%e0%a5%8d%e0%a4%af%e0%a4%be%e0%a4%ae%e0%a4%b2%e0%a4%be-%e0%a4%b9%e0%a4%bf%e0%a4%b2%e0%a5%8d%e0%a4%b8-%e0%a4%95%e0%a5%8d%e0%a4%b7%e0%a5%87%e0%a4%a4/",
+      "publication_date": "2026-04-16",
+      "category": "Violent Assault",
+      "reporting_unit": "Shyamla Hills",
+      "summary": "Police report a robbery involving a cyclist being knocked down and assaulted with chilli powder.",
+      "related_case_group": "kilol-robbery-2026-04-10",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": "2026-04-10",
+      "reviewed_facts": {
+        "locality": "Near Kilol Park",
+        "locality_evidence": "किलोल पार्क के पास मेन रोड",
+        "occurrence": {
+          "kind": "date_only",
+          "date": "2026-04-10",
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Robbery with assault reported on 10 April 2026; time not stated",
+          "evidence": [
+            "दिनांक 10/04/26"
+          ]
+        },
+        "legal_basis": "BNS, sections 309(4), 309(6), 3(5)",
+        "legal_evidence": "धारा 309(4),309(6),3(5) बीएनएस",
+        "notes": "The source describes a cyclist being knocked down and assaulted with chilli powder during a robbery. No numeric severity score is published."
+      },
+      "source_sha256": "c01f00de37258578d074b9ef7315dde9dbfaa5164d2e209453bc54f879e5d9a6"
+    },
+    {
+      "source_post_id": 5406,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%96%e0%a4%9c%e0%a5%82%e0%a4%b0%e0%a5%80-%e0%a4%b8%e0%a4%a1%e0%a4%bc%e0%a4%95-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8-%e0%a4%a6%e0%a5%8d%e0%a4%b5%e0%a4%be%e0%a4%b0%e0%a4%be-225-%e0%a4%b2/",
+      "publication_date": "2026-10-10",
+      "category": "Excise enforcement",
+      "reporting_unit": "Khajuri Sadak",
+      "summary": "Police report an illicit liquor seizure and an arrest.",
+      "related_case_group": "khajuri-excise-2026-10-08",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": "2026-10-08",
+      "reviewed_facts": {
+        "locality": "Khajuri Sadak",
+        "locality_evidence": "ग्राम खजूरी सड़क",
+        "occurrence": {
+          "kind": "date_only",
+          "date": "2026-10-08",
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Enforcement action reported on 8 October 2026; time not stated",
+          "evidence": [
+            "दिनांक 08/10/2026"
+          ]
+        },
+        "legal_basis": "Excise Act, section 34(2)",
+        "legal_evidence": "धारा 34(2) आबकारी एक्ट",
+        "notes": "Date refers to the reported police enforcement action; no numeric severity is published."
+      },
+      "source_sha256": "0c1b07acef56aded3d3a620fac54298cb97b89e9930f8d05414538aed00a67bb"
+    },
+    {
+      "source_post_id": 5380,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%95%e0%a5%8b%e0%a4%a4%e0%a4%b5%e0%a4%be%e0%a4%b2%e0%a5%80-%e0%a4%ad%e0%a5%8b%e0%a4%aa%e0%a4%be%e0%a4%b2-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8/",
+      "publication_date": "2026-10-03",
+      "category": "Property crime",
+      "reporting_unit": "Kotwali",
+      "summary": "Police report recovery of stolen gold and jewellery.",
+      "related_case_group": "kotwali-gold-2026-10",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "Lalwani Gali, KN Market",
+        "locality_evidence": "ललवानी गली K.N. मार्केट",
+        "occurrence": {
+          "kind": "conflicting",
+          "date": null,
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Source chronology conflicts; occurrence time not established",
+          "evidence": []
+        },
+        "legal_basis": "Section 306; code label inconsistent in source",
+        "legal_evidence": "धारा 306 भादवि",
+        "notes": "The narrative lists 17, 26 and 27 September inconsistently. Noon refers to arrival at the shop, not a confirmed theft time. Preserve the source section label without correcting the code."
+      },
+      "source_sha256": "35c22407cc9c6018190c2f39dfe26cd46e5b4cddf9e2387acfcf3a1a09dfafce"
+    },
+    {
+      "source_post_id": 5375,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%9f%e0%a5%80-%e0%a4%9f%e0%a5%80-%e0%a4%a8%e0%a4%97%e0%a4%b0-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8-%e0%a4%a8%e0%a5%87-%e0%a4%95%e0%a5%80-%e0%a4%86/",
+      "publication_date": "2026-10-02",
+      "category": "Excise enforcement",
+      "reporting_unit": "TT Nagar",
+      "summary": "Police report enforcement action under the Excise Act.",
+      "related_case_group": "tt-nagar-excise-2026-10",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "Mata Mandir",
+        "locality_evidence": "माता मंदिर 56 की लाइन",
+        "occurrence": {
+          "kind": "unknown",
+          "date": null,
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Occurrence date and time not stated",
+          "evidence": []
+        },
+        "legal_basis": "Excise Act, section 34(2)",
+        "legal_evidence": "धारा 34(2) आबकारी अधि.",
+        "notes": "The publication date is not used as the enforcement-action date."
+      },
+      "source_sha256": "229d26c60bd19c5a8fead10f2816ec972ff9a207193d63fd1329052d9604f6a2"
+    },
+    {
+      "source_post_id": 5360,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%95%e0%a5%8b%e0%a4%b2%e0%a4%be%e0%a4%b0-%e0%a4%b0%e0%a5%8b%e0%a4%a1-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8-%e0%a4%95%e0%a5%8b-%e0%a4%8f%e0%a4%b8/",
+      "publication_date": "2026-09-26",
+      "category": "Property crime",
+      "reporting_unit": "Kolar Road",
+      "summary": "Police publish a further recovery update in a burglary investigation.",
+      "related_case_group": "kolar-burglary-2026-09",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "Danish Kunj",
+        "locality_evidence": "दानिशकुन्ज कोलार रोड",
+        "occurrence": {
+          "kind": "unknown",
+          "date": null,
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Occurrence time not restated in this recovery update",
+          "evidence": []
+        },
+        "legal_basis": "BNS, sections 305(a), 331(4)",
+        "legal_evidence": "धारा 305ए, 331(4) बीएनएस",
+        "notes": "Follow-up to publication 5347; 11 September is the complaint date in this update, not an independently established occurrence date."
+      },
+      "source_sha256": "bd1eebf7237f0a1e1b1e7e7f6c227e8355083ed3fcfb0e4056312a93acebe758"
+    },
+    {
+      "source_post_id": 5347,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%95%e0%a5%8b%e0%a4%b2%e0%a4%be%e0%a4%b0-%e0%a4%b0%e0%a5%8b%e0%a4%a1-%e0%a4%aa%e0%a5%81%e0%a4%b2%e0%a4%bf%e0%a4%b8-%e0%a4%95%e0%a5%8b-%e0%a4%ae%e0%a4%bf/",
+      "publication_date": "2026-09-22",
+      "category": "Property crime",
+      "reporting_unit": "Kolar Road",
+      "summary": "Police report arrests and recovery in a burglary investigation.",
+      "related_case_group": "kolar-burglary-2026-09",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "Danish Kunj",
+        "locality_evidence": "दानिशकुंज कोलार रोड",
+        "occurrence": {
+          "kind": "window",
+          "date": null,
+          "time": null,
+          "start": "2026-09-10T11:30:00+05:30",
+          "end": "2026-09-11T00:30:00+05:30",
+          "label": "10 Sep 11:30 a.m. – 11 Sep 12:30 a.m. IST; exact time unknown",
+          "evidence": [
+            "11.30 बजे",
+            "11.09.2026 के करीबन 00.30 बजे"
+          ]
+        },
+        "legal_basis": null,
+        "legal_evidence": null,
+        "notes": "The window is bounded by the household being locked and the burglary being discovered. The 9 a.m. departure is not the occurrence time. Related recovery update: 5360."
+      },
+      "source_sha256": "50fde449fcdad3d7f8bcdb57d5202e69ae4f680f65ad88f04c2e453d0950c4fb"
+    },
+    {
+      "source_post_id": 5340,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%95%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%87%e0%a4%ae-%e0%a4%ac%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%82%e0%a4%9a-%e0%a4%ad%e0%a5%8b%e0%a4%aa%e0%a4%be%e0%a4%b2-%e0%a4%95%e0%a4%be-%e0%a4%a8%e0%a4%b6-3/",
+      "publication_date": "2026-09-18",
+      "category": "Narcotics enforcement",
+      "reporting_unit": "Bhopal Crime Branch",
+      "summary": "Police report a narcotics seizure and arrests.",
+      "related_case_group": "crime-branch-narcotics-2026-09",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "MP Nagar Zone 1",
+        "locality_evidence": "एम.पी. नगर जोन-1",
+        "occurrence": {
+          "kind": "unknown",
+          "date": null,
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Enforcement-action date and time not stated",
+          "evidence": []
+        },
+        "legal_basis": "NDPS Act, sections 8/21",
+        "legal_evidence": "एनडीपीएस एक्ट की धारा 8/21",
+        "notes": "Crime Branch is the reporting police unit; the reported action location is MP Nagar Zone 1."
+      },
+      "source_sha256": "6f33d5d22c759872b232ea64eb58dc1e6c68af044396edfeef34cee4162db4f2"
+    },
+    {
+      "source_post_id": 5337,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%95%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%87%e0%a4%ae-%e0%a4%ac%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%82%e0%a4%9a-%e0%a4%ad%e0%a5%8b%e0%a4%aa%e0%a4%be%e0%a4%b2-%e0%a4%95%e0%a5%80-%e0%a4%ac%e0%a4%a1/",
+      "publication_date": "2026-09-18",
+      "category": "Weapons enforcement",
+      "reporting_unit": "Bhopal Crime Branch",
+      "summary": "Police report seizure of weapons and manufacturing equipment.",
+      "related_case_group": "crime-branch-weapons-2026-09",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": null,
+      "reviewed_facts": {
+        "locality": "Budhwara, Talaiya",
+        "locality_evidence": "बुधवारा तलैया",
+        "occurrence": {
+          "kind": "unknown",
+          "date": null,
+          "time": null,
+          "start": null,
+          "end": null,
+          "label": "Enforcement-action date and time not stated",
+          "evidence": []
+        },
+        "legal_basis": "Arms Act, section 25(1AA)",
+        "legal_evidence": "धारा 25(1AA) आर्म्स एक्ट",
+        "notes": "Crime Branch is the reporting police unit; the reported action location is Budhwara, Talaiya."
+      },
+      "source_sha256": "394e630376cc4a497423941cf79a5ecc5010f7404a36724e38140c718f0a1ec4"
+    },
+    {
+      "source_post_id": 5327,
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%a5%e0%a4%be%e0%a4%a8%e0%a4%be-%e0%a4%8f%e0%a4%ae%e0%a4%aa%e0%a5%80%e0%a4%a8%e0%a4%97%e0%a4%b0-%e0%a4%95%e0%a5%8b-%e0%a4%ae%e0%a4%bf%e0%a4%b2%e0%a5%80-%e0%a4%ac%e0%a4%a1%e0%a5%80-%e0%a4%b8/",
+      "publication_date": "2026-09-17",
+      "category": "Property crime",
+      "reporting_unit": "MP Nagar",
+      "summary": "Police report arrests in theft investigations.",
+      "related_case_group": "mp-nagar-theft-2026-09",
+      "latitude": null,
+      "longitude": null,
+      "incident_date": "2026-09-10",
+      "reviewed_facts": {
+        "locality": "MP Nagar Zone 2",
+        "locality_evidence": "जोन 2 एमपी नगर",
+        "occurrence": {
+          "kind": "exact",
+          "date": "2026-09-10",
+          "time": "19:30",
+          "start": null,
+          "end": null,
+          "label": "10 Sep 2026, 7:30 p.m. IST — cylinder theft described in the report",
+          "evidence": [
+            "10/09/26 को शाम 07.30 बजे"
+          ]
+        },
+        "legal_basis": "BNS, sections 331(4), 305(a)",
+        "legal_evidence": "धारा 331(4),305(a) बीएनएस",
+        "notes": "Selected cylinder-theft event only. This publication also mentions other cases without a single shared occurrence time."
+      },
+      "source_sha256": "3e2d6158d7c1558ae2e225f99f898b15077db9d91094682de06bc09e2fc16cd0"
+    }
+  ]
+}

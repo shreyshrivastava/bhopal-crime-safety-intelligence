@@ -22,7 +22,7 @@ You can deploy directly to Streamlit Community Cloud using your GitHub repositor
    - **Python version:** Select `3.11` or `3.12`.
 5. Click **Deploy!**
 
-Your dashboard will automatically build and become accessible at a public URL (e.g. `https://bhopalcrimesafety.streamlit.app/`). Any future commits pushed to the `main` branch will automatically trigger a zero-downtime redeploy!
+Your dashboard will automatically build and become accessible at a public URL (e.g. `https://bhopalcrimesafety.streamlit.app/`). For an app configured to track `main`, code pushes to that branch can trigger a rebuild. Confirm deployment status in Streamlit; a Git push alone does not verify a successful redeploy.
 
 ---
 
@@ -45,5 +45,5 @@ Access the app at `http://localhost:8501`.
 ## ⚙️ Configuration Files Included in This Repo
 
 - **`.streamlit/config.toml`**: Configures server settings (headless mode, custom port, security flags) and theme colors.
-- **`requirements.txt`**: Specifies all required Python libraries with pinned versions.
-- **`Dockerfile`**: Self-contained multi-stage container build for Linux production hosts.
+- **`requirements.txt`**: Specifies all required Python libraries with minimum-version requirements.
+- **`Dockerfile`**: Self-contained container build for Linux production hosts.
