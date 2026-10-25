@@ -48,3 +48,9 @@ Machine-readable browser results:
   ]
 }
 ```
+
+## Locality/category spacing and map visibility correction
+
+The compact locality and category cards now sit together, use content-sized heights, and place headings immediately above their bars. Report pins use category-colored teardrop icons and accessible category/locality labels, distinct from square police-facility icons. The initial map fits all eight loaded reference locations; “Show all report pins” restores that view.
+
+Local desktop/mobile browser checks assert that all eight marker elements are visible and inside the initial map bounds, clicking a pin opens its source-linked approximate-location popup, chart headings have less than 40px of space before the bars, and compact cards remain below 500px in height. The existing filter, evidence, navigation, CSV and Streamlit checks also pass. All 17 source/model-isolation tests pass.

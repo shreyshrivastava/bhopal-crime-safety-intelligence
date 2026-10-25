@@ -2,7 +2,19 @@
 function officialText(id, value) {const e=document.getElementById(id);if(e)e.textContent=value;}
 function officialElement(tag,text,cls=''){const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;}
 function officialCounts(key){const counts={};for(const r of currentFiltered){if(key==='neighborhood'&&!r[key])continue;counts[r[key]]=(counts[r[key]]||0)+1;}return Object.entries(counts).sort((a,b)=>b[1]-a[1]);}
-function officialBars(id,key){const e=document.getElementById(id);if(!e)return;e.replaceChildren();const counts=officialCounts(key);const max=counts.length?counts[0][1]:1;for(const [name,count] of counts){const row=officialElement('div','', 'flex items-center gap-3 py-2 text-xs');const label=officialElement('button',name,'text-left w-40 shrink-0');label.type='button';label.onclick=()=>key==='neighborhood'?filterByZone(name):setCategoryFilter(name);row.append(label);const bar=officialElement('div',String(count),'rounded-full bg-sky-600 text-white px-3 py-1');bar.style.width=(count/max*60)+'%';row.append(bar);e.append(row);}if(!counts.length)e.append(officialElement('p','No publications match these filters.'));}
+function officialBars(id,key){
+ const e=document.getElementById(id);if(!e)return;e.replaceChildren();
+ const counts=officialCounts(key),max=counts[0]?.[1]||1;
+ for(const [name,count] of counts){
+  const row=officialElement('div','','official-bar-row');
+  const label=officialElement('button',name,'official-bar-label');label.type='button';
+  label.onclick=()=>{key==='neighborhood'?filterByZone(name):setCategoryFilter(name);fitReportPins();};
+  const track=officialElement('div','','official-bar-track'),bar=officialElement('div','','official-bar-fill');
+  bar.style.width=(count/max*100)+'%';track.append(bar);track.setAttribute('aria-hidden','true');
+  row.append(label,track,officialElement('span',String(count),'font-mono'));e.append(row);
+ }
+ if(!counts.length)e.append(officialElement('p','No publications match these filters.'));
+}
 function updateKPIs(){officialText('metric-total-count',currentFiltered.length);officialText('header-records-count',currentFiltered.length+' Publications');officialText('metric-avg-sev','Unknown');officialText('metric-top-crime',officialCounts('category')[0]?.[0]||'No matching data');officialText('metric-top-sector',officialCounts('neighborhood')[0]?.[0]||'No matching data');officialText('training-record-count','Unavailable');}
 function updateSphericalGraph(){officialText('source-locality-coverage',currentFiltered.filter(r=>r.neighborhood).length+' of '+currentFiltered.length+' selected publications have a source-named locality. Unlocated publications are excluded from area nodes; percentages use all selected publications.');const counts=Object.fromEntries(officialCounts('neighborhood'));const max=Math.max(...Object.values(counts),1);for(const s of SPHERE_SECTORS){s.count=counts[s.name]||0;s.avgSev='Unknown';s.nodeRadius=6+s.count/max*12;const cats={};for(const r of currentFiltered.filter(r=>r.neighborhood===s.name))cats[r.category]=(cats[r.category]||0)+1;s.dominant=Object.keys(cats).sort((a,b)=>cats[b]-cats[a])[0]||'No matching publications';}const top=officialCounts('neighborhood')[0];officialText('sphere-apex-sector',top?.[0]||'No matching data');officialText('sphere-apex-pct',top?Math.round(top[1]/currentFiltered.length*100)+'%':'Unavailable');officialText('sphere-entropy-score','Selected sample');officialBars('sphere-category-dispersion-list','category');}
 function updateCharts(){officialBars('sector-bar-container','neighborhood');officialBars('modalities-container','category');const body=document.getElementById('official-coverage-body');if(body){body.replaceChildren();for(const [unit,count] of officialCounts('neighborhood')){const row=document.createElement('tr');for(const v of [unit,String(count),'Unavailable'])row.append(officialElement('td',v,'p-3 text-xs'));body.append(row);}}updateSphericalGraph();renderEvidencePanels();}
@@ -80,6 +92,11 @@ function renderEvidencePanels() {
 }
 // Locality references and incident GPS coordinates remain separate in memory and CSV.
 const mapCategoryEnabled={property:true,assault:true,women:true,vandalism:true,other:true};
+let reportPinsInitiallyFitted=false;
+const mapCategoryLabels={property:'Property',assault:'Assault',women:'Women’s safety',vandalism:'Vandalism',other:'Other report'};
+const mapCategoryLetters={property:'P',assault:'A',women:'W',vandalism:'V',other:'R'};
+function fitReportPins(){if(!map||!markerClusterGroup)return;const layers=markerClusterGroup.getLayers();if(layers.length)map.fitBounds(L.latLngBounds(layers.map(l=>l.getLatLng())),{padding:[36,36],maxZoom:14,animate:false});}
+function centerBhopal(){fitReportPins();}
 const mapCategoryColors={property:'#f59e0b',assault:'#ef4444',women:'#d946ef',vandalism:'#10b981',other:'#8b5cf6'};
 function toggleMapCategory(key,checked){mapCategoryEnabled[key]=checked;renderMapLayers();}
 function renderMapLayers(){
@@ -107,8 +124,12 @@ function renderMapLayers(){
   for(const item of records){const line=officialElement('p',item.id+' · published '+item.date+' · '+item.occurrence_label+' ');line.append(officialSourceLink(item));popup.append(line);}
   const geo=officialElement('a','Published geographic reference');geo.href=ref.source_url;geo.target='_blank';geo.rel='noopener noreferrer';popup.append(geo);
   popup.append(officialElement('p','Linked publications may update the same investigation; this pin is not an independent incident count.','mt-2'));
-  L.circleMarker([ref.latitude,ref.longitude],{pane:'sourceLocalityPins',radius:10,color:mapCategoryColors[kind],fillColor:mapCategoryColors[kind],fillOpacity:.4,weight:3,dashArray:'3,2'}).bindPopup(popup).addTo(markerClusterGroup);
+  const symbol=officialElement('span','');symbol.style.setProperty('--pin-color',mapCategoryColors[kind]);symbol.append(officialElement('b',mapCategoryLetters[kind]));
+  const icon=L.divIcon({html:symbol.outerHTML,className:'official-report-pin',iconSize:[30,36],iconAnchor:[15,34],popupAnchor:[0,-30]});
+  const label=mapCategoryLabels[kind]+' · '+r.neighborhood+' · approximate locality';
+  L.marker([ref.latitude,ref.longitude],{pane:'sourceLocalityPins',icon,title:label,alt:label,keyboard:true}).bindTooltip(officialElement('span',label),{className:'official-report-tooltip',direction:'top',offset:[0,-32]}).bindPopup(popup).addTo(markerClusterGroup);
  }
+ if(groups.size&&!reportPinsInitiallyFitted){reportPinsInitiallyFitted=true;fitReportPins();}
  officialText('telemetry-node-count',groups.size);
  for(const key of Object.keys(mapCategoryEnabled))officialText('map-count-'+key,'('+currentFiltered.filter(r=>r.map_categories.includes(key)).length+' loaded)');
  const notice=document.getElementById('official-map-coverage');

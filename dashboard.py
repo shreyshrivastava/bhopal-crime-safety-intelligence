@@ -86,7 +86,7 @@ def generate_dashboard(payload=None):
     particle_start = page.index('  const AMBIENT_PARTICLES =')
     particle_end = page.index('  function initSphericalGraph', particle_start)
     page = page[:particle_start] + '  const AMBIENT_PARTICLES = [];\n' + page[particle_end:]
-    page = page.replace('maxClusterRadius: 45,', 'maxClusterRadius: 30, disableClusteringAtZoom: 12,')
+    page = page.replace('maxClusterRadius: 45,', 'maxClusterRadius: 30, disableClusteringAtZoom: 10,')
     page = page.replace("let currentDateRange = '90';", "let currentDateRange = 'ALL';")
     page = page.replace("const matchCat = currentCategory === 'ALL' || c.category === currentCategory;", "const matchCat = currentCategory === 'ALL' || c.category === currentCategory || c.map_categories.includes(currentCategory.replace('map:', ''));")
     soup = BeautifulSoup(page,'html.parser')
@@ -152,6 +152,30 @@ def generate_dashboard(payload=None):
             card=node.find_parent(class_=lambda v:v and 'rounded-[24px]' in v)
             content_id = {'chart2-day-pct':'occurrence-evidence','sev-count-2':'severity-evidence','modalities-container':'modalities-container'}[marker]
             set_content(card,f'<h3 class="font-bold mb-3">{title}</h3><p class="text-sm text-on-surface-variant">{detail}</p><div id="{content_id}" class="mt-3"></div>')
+    # Source cards have unequal content lengths; never stretch/distribute their children.
+    chart_card = soup.find(id='sector-bar-container').parent
+    chart_grid = chart_card.parent
+    chart_grid['class'].append('official-analytics-grid')
+    # Keep the compact summaries together, followed by the detailed source evidence.
+    category_card = soup.find(id='modalities-container').parent.extract()
+    chart_card.insert_after(category_card)
+    for ident in ['sector-bar-container','occurrence-evidence','severity-evidence','modalities-container']:
+        card = soup.find(id=ident).parent
+        card['class'] = [c for c in card.get('class',[]) if c != 'justify-between'] + ['official-analytics-card']
+    style = soup.new_tag('style')
+    style.string = """
+    .official-analytics-grid{align-items:start}
+    .official-analytics-card{justify-content:flex-start;min-width:0}
+    .official-bar-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(48px,1fr) 2ch;gap:10px;align-items:center;padding:7px 0;font-size:12px}
+    .official-bar-label{text-align:left;overflow-wrap:anywhere;line-height:1.4}
+    .official-bar-track{height:8px;border-radius:999px;background:rgba(125,150,180,.18);overflow:hidden}
+    .official-bar-fill{height:100%;border-radius:999px;background:#0284c7;min-width:4px}
+    .official-report-pin{background:transparent;border:0}
+    .official-report-pin span{display:flex;align-items:center;justify-content:center;width:30px;height:30px;background:var(--pin-color);color:#fff;border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 7px #0008}
+    .official-report-pin b{transform:rotate(45deg);font:700 12px sans-serif}
+    .official-report-tooltip{font-size:11px;font-weight:600}
+    """
+    soup.head.append(style)
     # The sector risk table stays in place as a coverage table, with no invented score.
     heading=soup.find(string=lambda s:s and 'Sector Safety' in s)
     if heading: heading.replace_with('Locality coverage · risk scores unavailable')
@@ -192,6 +216,7 @@ def generate_dashboard(payload=None):
     for ident in ['sphere-entropy-score','metric-avg-sev']:
         set_content(soup.find(id=ident),'Unavailable')
     map_header=soup.find(id='map-frame-container').find('button',attrs={'title':'Center on Bhopal'}).parent
+    map_header.insert(0,fragment('<button id="fit-report-pins" type="button" onclick="fitReportPins()" class="rounded-full bg-primary-container text-on-primary-container text-xs px-3 py-1">Show all report pins</button>'))
     map_header.insert(0,fragment('<select id="basemap-select" aria-label="Basemap" onchange="setBasemap(this.value)" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select>'))
     # Keep legacy JS and the map engine. Replace only the data-specific render functions.
     script=soup.new_tag('script')

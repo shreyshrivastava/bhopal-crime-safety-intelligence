@@ -20,6 +20,18 @@ async def verify():
             await page.locator('#app-preloader').wait_for(state='detached')
             assert await page.locator('.leaflet-tile-loaded').count()>0
             assert await page.evaluate('markerClusterGroup.getLayers().length')==8
+            assert await page.locator('.official-report-pin').count()==8
+            assert await page.evaluate('markerClusterGroup.getLayers().every(l=>map.getBounds().contains(l.getLatLng()))')
+            await page.locator('.official-report-pin').first.click()
+            assert await page.locator('.leaflet-popup-content').get_by_text('APPROXIMATE LOCALITY REFERENCE — NOT INCIDENT GPS',exact=True).is_visible()
+            await page.locator('.leaflet-popup-close-button').click()
+            for ident in ['sector-bar-container','modalities-container']:
+                card=page.locator('#'+ident).locator('..')
+                assert await card.evaluate("e=>getComputedStyle(e).justifyContent==='flex-start'")
+                assert await card.evaluate("e=>e.getBoundingClientRect().height<500")
+                gap=await page.locator('#'+ident).evaluate("e=>e.getBoundingClientRect().top-e.parentElement.querySelector('h3').getBoundingClientRect().bottom")
+                assert gap<40,gap
+            await page.locator('#fit-report-pins').click()
             assert await page.evaluate('ALL_CRIMES.every(r=>r.lat===null && r.lon===null && r.severity===null)')
             assert not await page.evaluate('document.documentElement.scrollWidth > innerWidth')
             await page.get_by_label('Basemap',exact=True).select_option('satellite')
@@ -103,7 +115,7 @@ async def verify():
         await page.goto('http://127.0.0.1:8507')
         frame=page.frame_locator('iframe').first
         await frame.locator('.leaflet-tile-loaded').first.wait_for(timeout=30000)
-        assert await frame.locator('.leaflet-marker-icon:not(.marker-cluster)').count()==48
+        assert await frame.locator('.official-report-pin').count()==8
         assert await frame.locator('#records-table-body tr').count()==10
         results.append(dict(target='local Streamlit',facilities=48,publications=10,status='pass'))
         await browser.close()

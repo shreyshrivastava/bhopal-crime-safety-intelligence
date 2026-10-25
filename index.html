@@ -382,7 +382,18 @@ tailwind.config = {
     border: 1px solid rgba(56, 189, 248, 0.25) !important;
   }
 </style>
-</head>
+<style>
+    .official-analytics-grid{align-items:start}
+    .official-analytics-card{justify-content:flex-start;min-width:0}
+    .official-bar-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(48px,1fr) 2ch;gap:10px;align-items:center;padding:7px 0;font-size:12px}
+    .official-bar-label{text-align:left;overflow-wrap:anywhere;line-height:1.4}
+    .official-bar-track{height:8px;border-radius:999px;background:rgba(125,150,180,.18);overflow:hidden}
+    .official-bar-fill{height:100%;border-radius:999px;background:#0284c7;min-width:4px}
+    .official-report-pin{background:transparent;border:0}
+    .official-report-pin span{display:flex;align-items:center;justify-content:center;width:30px;height:30px;background:var(--pin-color);color:#fff;border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 7px #0008}
+    .official-report-pin b{transform:rotate(45deg);font:700 12px sans-serif}
+    .official-report-tooltip{font-size:11px;font-weight:600}
+    </style></head>
 <body class="selection:bg-primary/20 selection:text-primary">
 <!-- Loading Screen -->
 <div class="fixed inset-0 z-[100] bg-surface-container-lowest flex flex-col items-center justify-center gap-4 transition-opacity duration-300" id="app-preloader">
@@ -611,7 +622,7 @@ Occurrence-time evidence
 <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>Reported locality pins</span>
 </div>
 <!-- High-Performance OpenStreetMap Standard Engine -->
-<div class="flex items-center gap-1.5 flex-wrap"><select aria-label="Basemap" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10" id="basemap-select" onchange="setBasemap(this.value)"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select>
+<div class="flex items-center gap-1.5 flex-wrap"><select aria-label="Basemap" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10" id="basemap-select" onchange="setBasemap(this.value)"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select><button class="rounded-full bg-primary-container text-on-primary-container text-xs px-3 py-1" id="fit-report-pins" onclick="fitReportPins()" type="button">Show all report pins</button>
 <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-surface-container-lowest/90 border border-slate-200 dark:border-white/5 text-[10px] md:text-[11px] font-mono text-slate-700 dark:text-on-surface">
 <span class="material-symbols-outlined text-primary text-[14px]">public</span>
 <span class="font-bold">OpenStreetMap Standard</span>
@@ -805,15 +816,15 @@ Occurrence-time evidence
 </div>
 </div>
 <!-- 4 Fluid Material 3 Analytical Cards -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5 official-analytics-grid">
 <!-- Chart 1: Crime by Area -->
-<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1"><h3 class="font-bold mb-3">Publications by source-named locality</h3><div id="sector-bar-container"></div></div>
+<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col shadow-m3-1 official-analytics-card"><h3 class="font-bold mb-3">Publications by source-named locality</h3><div id="sector-bar-container"></div></div><div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col shadow-m3-1 official-analytics-card"><h3 class="font-bold mb-3">Publication categories</h3><p class="text-sm text-on-surface-variant"></p><div class="mt-3" id="modalities-container"></div></div>
 <!-- Chart 2: Day vs Night Split -->
-<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1"><h3 class="font-bold mb-3">Time of occurrence · source evidence</h3><p class="text-sm text-on-surface-variant">Selected event/action times in IST. Publication dates do not determine occurrence times; unknown and conflicting values stay visible.</p><div class="mt-3" id="occurrence-evidence"></div></div>
+<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col shadow-m3-1 official-analytics-card"><h3 class="font-bold mb-3">Time of occurrence · source evidence</h3><p class="text-sm text-on-surface-variant">Selected event/action times in IST. Publication dates do not determine occurrence times; unknown and conflicting values stay visible.</p><div class="mt-3" id="occurrence-evidence"></div></div>
 <!-- Chart 3: Crime Severity Breakdown -->
-<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1"><h3 class="font-bold mb-3">Incident severity · source evidence</h3><p class="text-sm text-on-surface-variant">The police reports publish no numeric severity scores. Reported legal sections are shown below as evidence, not converted into a 1–5 rating.</p><div class="mt-3" id="severity-evidence"></div></div>
+<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col shadow-m3-1 official-analytics-card"><h3 class="font-bold mb-3">Incident severity · source evidence</h3><p class="text-sm text-on-surface-variant">The police reports publish no numeric severity scores. Reported legal sections are shown below as evidence, not converted into a 1–5 rating.</p><div class="mt-3" id="severity-evidence"></div></div>
 <!-- Chart 4: Most Common Crime Types -->
-<div class="bg-surface-container-lowest/80 rounded-[24px] md:rounded-[28px] p-4 md:p-5 border border-white/5 flex flex-col justify-between shadow-m3-1"><h3 class="font-bold mb-3">Publication categories</h3><p class="text-sm text-on-surface-variant"></p><div class="mt-3" id="modalities-container"></div></div>
+
 </div>
 <!-- Area Safety Ratings Table -->
 <div class="mt-3">
@@ -1004,7 +1015,7 @@ Occurrence-time evidence
     applyTileUrl(BASEMAP_TILES.osm, BASEMAP_ATTRIBUTIONS.osm, 19);
 
     markerClusterGroup = L.markerClusterGroup({
-      maxClusterRadius: 30, disableClusteringAtZoom: 12,
+      maxClusterRadius: 30, disableClusteringAtZoom: 10,
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false
     }).addTo(map);
@@ -1986,7 +1997,19 @@ Occurrence-time evidence
 function officialText(id, value) {const e=document.getElementById(id);if(e)e.textContent=value;}
 function officialElement(tag,text,cls=''){const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;}
 function officialCounts(key){const counts={};for(const r of currentFiltered){if(key==='neighborhood'&&!r[key])continue;counts[r[key]]=(counts[r[key]]||0)+1;}return Object.entries(counts).sort((a,b)=>b[1]-a[1]);}
-function officialBars(id,key){const e=document.getElementById(id);if(!e)return;e.replaceChildren();const counts=officialCounts(key);const max=counts.length?counts[0][1]:1;for(const [name,count] of counts){const row=officialElement('div','', 'flex items-center gap-3 py-2 text-xs');const label=officialElement('button',name,'text-left w-40 shrink-0');label.type='button';label.onclick=()=>key==='neighborhood'?filterByZone(name):setCategoryFilter(name);row.append(label);const bar=officialElement('div',String(count),'rounded-full bg-sky-600 text-white px-3 py-1');bar.style.width=(count/max*60)+'%';row.append(bar);e.append(row);}if(!counts.length)e.append(officialElement('p','No publications match these filters.'));}
+function officialBars(id,key){
+ const e=document.getElementById(id);if(!e)return;e.replaceChildren();
+ const counts=officialCounts(key),max=counts[0]?.[1]||1;
+ for(const [name,count] of counts){
+  const row=officialElement('div','','official-bar-row');
+  const label=officialElement('button',name,'official-bar-label');label.type='button';
+  label.onclick=()=>{key==='neighborhood'?filterByZone(name):setCategoryFilter(name);fitReportPins();};
+  const track=officialElement('div','','official-bar-track'),bar=officialElement('div','','official-bar-fill');
+  bar.style.width=(count/max*100)+'%';track.append(bar);track.setAttribute('aria-hidden','true');
+  row.append(label,track,officialElement('span',String(count),'font-mono'));e.append(row);
+ }
+ if(!counts.length)e.append(officialElement('p','No publications match these filters.'));
+}
 function updateKPIs(){officialText('metric-total-count',currentFiltered.length);officialText('header-records-count',currentFiltered.length+' Publications');officialText('metric-avg-sev','Unknown');officialText('metric-top-crime',officialCounts('category')[0]?.[0]||'No matching data');officialText('metric-top-sector',officialCounts('neighborhood')[0]?.[0]||'No matching data');officialText('training-record-count','Unavailable');}
 function updateSphericalGraph(){officialText('source-locality-coverage',currentFiltered.filter(r=>r.neighborhood).length+' of '+currentFiltered.length+' selected publications have a source-named locality. Unlocated publications are excluded from area nodes; percentages use all selected publications.');const counts=Object.fromEntries(officialCounts('neighborhood'));const max=Math.max(...Object.values(counts),1);for(const s of SPHERE_SECTORS){s.count=counts[s.name]||0;s.avgSev='Unknown';s.nodeRadius=6+s.count/max*12;const cats={};for(const r of currentFiltered.filter(r=>r.neighborhood===s.name))cats[r.category]=(cats[r.category]||0)+1;s.dominant=Object.keys(cats).sort((a,b)=>cats[b]-cats[a])[0]||'No matching publications';}const top=officialCounts('neighborhood')[0];officialText('sphere-apex-sector',top?.[0]||'No matching data');officialText('sphere-apex-pct',top?Math.round(top[1]/currentFiltered.length*100)+'%':'Unavailable');officialText('sphere-entropy-score','Selected sample');officialBars('sphere-category-dispersion-list','category');}
 function updateCharts(){officialBars('sector-bar-container','neighborhood');officialBars('modalities-container','category');const body=document.getElementById('official-coverage-body');if(body){body.replaceChildren();for(const [unit,count] of officialCounts('neighborhood')){const row=document.createElement('tr');for(const v of [unit,String(count),'Unavailable'])row.append(officialElement('td',v,'p-3 text-xs'));body.append(row);}}updateSphericalGraph();renderEvidencePanels();}
@@ -2064,6 +2087,11 @@ function renderEvidencePanels() {
 }
 // Locality references and incident GPS coordinates remain separate in memory and CSV.
 const mapCategoryEnabled={property:true,assault:true,women:true,vandalism:true,other:true};
+let reportPinsInitiallyFitted=false;
+const mapCategoryLabels={property:'Property',assault:'Assault',women:'Women’s safety',vandalism:'Vandalism',other:'Other report'};
+const mapCategoryLetters={property:'P',assault:'A',women:'W',vandalism:'V',other:'R'};
+function fitReportPins(){if(!map||!markerClusterGroup)return;const layers=markerClusterGroup.getLayers();if(layers.length)map.fitBounds(L.latLngBounds(layers.map(l=>l.getLatLng())),{padding:[36,36],maxZoom:14,animate:false});}
+function centerBhopal(){fitReportPins();}
 const mapCategoryColors={property:'#f59e0b',assault:'#ef4444',women:'#d946ef',vandalism:'#10b981',other:'#8b5cf6'};
 function toggleMapCategory(key,checked){mapCategoryEnabled[key]=checked;renderMapLayers();}
 function renderMapLayers(){
@@ -2091,8 +2119,12 @@ function renderMapLayers(){
   for(const item of records){const line=officialElement('p',item.id+' · published '+item.date+' · '+item.occurrence_label+' ');line.append(officialSourceLink(item));popup.append(line);}
   const geo=officialElement('a','Published geographic reference');geo.href=ref.source_url;geo.target='_blank';geo.rel='noopener noreferrer';popup.append(geo);
   popup.append(officialElement('p','Linked publications may update the same investigation; this pin is not an independent incident count.','mt-2'));
-  L.circleMarker([ref.latitude,ref.longitude],{pane:'sourceLocalityPins',radius:10,color:mapCategoryColors[kind],fillColor:mapCategoryColors[kind],fillOpacity:.4,weight:3,dashArray:'3,2'}).bindPopup(popup).addTo(markerClusterGroup);
+  const symbol=officialElement('span','');symbol.style.setProperty('--pin-color',mapCategoryColors[kind]);symbol.append(officialElement('b',mapCategoryLetters[kind]));
+  const icon=L.divIcon({html:symbol.outerHTML,className:'official-report-pin',iconSize:[30,36],iconAnchor:[15,34],popupAnchor:[0,-30]});
+  const label=mapCategoryLabels[kind]+' · '+r.neighborhood+' · approximate locality';
+  L.marker([ref.latitude,ref.longitude],{pane:'sourceLocalityPins',icon,title:label,alt:label,keyboard:true}).bindTooltip(officialElement('span',label),{className:'official-report-tooltip',direction:'top',offset:[0,-32]}).bindPopup(popup).addTo(markerClusterGroup);
  }
+ if(groups.size&&!reportPinsInitiallyFitted){reportPinsInitiallyFitted=true;fitReportPins();}
  officialText('telemetry-node-count',groups.size);
  for(const key of Object.keys(mapCategoryEnabled))officialText('map-count-'+key,'('+currentFiltered.filter(r=>r.map_categories.includes(key)).length+' loaded)');
  const notice=document.getElementById('official-map-coverage');
