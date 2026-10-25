@@ -86,9 +86,15 @@ async def verify():
             await page.locator('#global-search-input').fill('narcotics')
             assert await page.evaluate('currentFiltered.length')==1
             await page.locator('#global-search-input').fill('')
+            nav=await page.locator('.nav-tab-btn').evaluate_all("es=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,top:e.getBoundingClientRect().top,padding:getComputedStyle(e).padding}))")
+            assert max(n['width'] for n in nav)-min(n['width'] for n in nav)<1,nav
+            assert len({n['height'] for n in nav})==1 and nav[0]['height']==44,nav
+            assert len({n['top'] for n in nav})==1,nav
+            assert len({n['padding'] for n in nav})==1,nav
             for tab in ['analytics','ai-risk','hotspots','records','sources']:
                 await page.locator('#tab-btn-'+tab).click()
                 assert await page.locator('#tab-pane-'+tab).is_visible()
+                assert await page.locator('#tab-btn-'+tab).evaluate("e=>getComputedStyle(e).padding")==nav[0]['padding']
             await page.locator('#tab-btn-records').click()
             assert await page.locator('#records-table-body tr').count()==10
             async with page.expect_download() as event:

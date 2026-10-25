@@ -545,15 +545,30 @@ tailwind.config = {{
     color: #004d6e !important;
     font-weight: 700;
   }}
-  /* Navigation Tab Bar - Fixed Padding and Zero Layout Shift */
+  /* One consistent row; narrow screens scroll rather than form uneven wrapped rows. */
+  #nav-tabs-bar {{
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(200px, 1fr));
+    align-items: stretch;
+    gap: 6px !important;
+    padding: 6px !important;
+    overflow-x: auto;
+    max-width: 100%;
+    border-radius: 22px;
+  }}
+  @media (min-width: 1024px) {{
+    #nav-tabs-bar {{ grid-template-columns: repeat(5, minmax(0, 1fr)); }}
+  }}
   .nav-tab-btn {{
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    padding: 8px 16px !important;
-    height: 38px !important;
-    max-height: 38px !important;
+    padding: 10px 12px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    min-width: 0;
+    width: 100%;
     box-sizing: border-box !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -580,7 +595,7 @@ tailwind.config = {{
   .nav-tab-btn.active {{
     background-color: #38bdf8 !important;
     color: #00364d !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     border-color: rgba(56, 189, 248, 0.4) !important;
     box-shadow: 0 0 16px rgba(56, 189, 248, 0.3) !important;
   }}
