@@ -2,7 +2,6 @@
 
 An interactive Bhopal safety dashboard built with Streamlit, Leaflet and a Material Active interface. The default app uses reviewed public police publications and published geographic references. It does not generate synthetic incidents or run the demonstration forecasting model.
 
-**Current snapshot:** 10 official publications, 48 published police-facility locations, and 8 approximate locality-reference pins. These selected historical reports are not a complete crime register or a live police feed.
 
 ## What the dashboard shows
 
