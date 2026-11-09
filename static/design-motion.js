@@ -102,6 +102,8 @@ function dsTilt() {
     card.classList.add('ds-tilt');
     card.addEventListener('pointermove', event => {
       const box = card.getBoundingClientRect(), x = (event.clientX - box.left) / box.width - 0.5, y = (event.clientY - box.top) / box.height - 0.5;
+      card.style.setProperty('--mx', `${(x + 0.5) * 100}%`);
+      card.style.setProperty('--my', `${(y + 0.5) * 100}%`);
       card.style.transform = `perspective(900px) rotateX(${(-y * 2.5).toFixed(2)}deg) rotateY(${(x * 2.5).toFixed(2)}deg)`;
     });
     card.addEventListener('pointerleave', () => { card.style.transform = ''; });
@@ -124,7 +126,33 @@ function dsMapScrollGuard() {
   map.getContainer().addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
 }
 
-window.addEventListener('load', () => setTimeout(dsMapScrollGuard, 1500));
+const dsMapReady = setInterval(() => {
+  if (typeof map === 'undefined' || !map || !markerClusterGroup) return;
+  clearInterval(dsMapReady);
+  dsMapScrollGuard();
+  dsPopupSafeArea();
+  window.addEventListener('resize', dsPopupSafeArea);
+  map.on('popupopen', () => document.body.classList.add('ds-popup-open'));
+  map.on('popupclose', () => document.body.classList.remove('ds-popup-open'));
+  const select = document.getElementById('basemap-select');
+  if (select) select.value = 'civic';
+  setBasemap('civic');
+}, 40);
+
+// Esri's dark canvas has no place names, so its label tiles are added on top.
+let dsDarkLabels = null;
+const dsLegacySetBasemap = window.setBasemap;
+window.setBasemap = function (type) {
+  dsLegacySetBasemap(type);
+  if (!dsDarkLabels) dsDarkLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { className: 'ds-map-labels', zIndex: 20, maxZoom: 16 });
+  const showLabels = type === 'civic' && document.documentElement.classList.contains('dark');
+  if (showLabels && !map.hasLayer(dsDarkLabels)) dsDarkLabels.addTo(map);
+  if (!showLabels && map.hasLayer(dsDarkLabels)) map.removeLayer(dsDarkLabels);
+};
+
+// The basemap follows the theme so glass panels keep their contrast.
+const dsLegacyToggleTheme = window.toggleTheme;
+window.toggleTheme = function () { dsLegacyToggleTheme(); updateMapTheme(); };
 
 
 // Native fullscreen is blocked inside the Streamlit embed and on iPhones, so the map expands to fill the page instead.
@@ -199,17 +227,34 @@ function dsShowEverything() {
   if (!police.checked) police.click();
   window.renderMapLayers();
   const points = [...markerClusterGroup.getLayers(), ...policeFeatureGroup.getLayers()].map(layer => layer.getLatLng());
-  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [24, 24], animate: !DS_REDUCED.matches });
+  dsFitPoints(points, !DS_REDUCED.matches);
 }
 
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
 const DS_VIEW_TITLES = { overview: 'Overview', analytics: 'Analytics', records: 'Records', sources: 'Data sources', hotspots: 'Hotspots', 'ai-risk': 'AI risk' };
-// A map inside a hidden view has no size and cannot move, so a fit waits until the map is shown.
-let dsFitPending = false;
-const dsLegacyFitPins = window.fitReportPins;
+// Fits keep markers clear of the floating panels.
+function dsMapPadding() {
+  const edge = (selector, side, fallback) => { const box = document.querySelector(selector)?.getBoundingClientRect(); return box && box.width ? box[side] : fallback; };
+  const wide = innerWidth >= 1024, gap = 24;
+  const insets = wide
+    ? { left: edge('.ds-filters', 'right', 0) + gap, top: edge('#ds-kpis', 'bottom', 0) + 72, right: innerWidth - edge('#ds-side', 'left', innerWidth) + gap, bottom: innerHeight - edge('#ds-map-footer', 'top', innerHeight) + gap }
+    : { left: 24, top: edge('.ds-map-card>div:first-child', 'bottom', 200) + 28, right: 64, bottom: Math.max(90, innerHeight - edge('#ds-map-footer', 'top', innerHeight) + 28) };
+  return { paddingTopLeft: [insets.left, insets.top], paddingBottomRight: [insets.right, insets.bottom] };
+}
+// Popups pan and shrink to stay in the clear map area, so their controls are never under a panel.
+function dsPopupSafeArea() {
+  const padding = dsMapPadding();
+  L.Popup.mergeOptions({
+    autoPanPaddingTopLeft: padding.paddingTopLeft,
+    autoPanPaddingBottomRight: padding.paddingBottomRight,
+    maxHeight: Math.max(180, innerHeight - padding.paddingTopLeft[1] - padding.paddingBottomRight[1] - 48),
+  });
+}
+function dsFitPoints(points, animate) {
+  if (points.length) map.fitBounds(L.latLngBounds(points), { ...dsMapPadding(), maxZoom: 14, animate });
+}
 window.fitReportPins = function () {
-  if (document.body.dataset.view === 'overview') dsLegacyFitPins();
-  else dsFitPending = true;
+  if (map && markerClusterGroup) dsFitPoints(markerClusterGroup.getLayers().map(layer => layer.getLatLng()), false);
 };
 const dsLegacySwitchTab = window.switchTab, dsLegacyRender = window.renderRecordsTable;
 
@@ -219,7 +264,6 @@ window.switchTab = function (view) {
   if (view === 'overview') {
     document.querySelectorAll('.nav-tab-btn').forEach(button => button.classList.toggle('active', button.id === 'tab-btn-overview'));
     map.invalidateSize();
-    if (dsFitPending) { dsFitPending = false; dsLegacyFitPins(); }
   } else {
     dsLegacySwitchTab(view);
     if (view === 'analytics') requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));  // The canvas measures zero while its view is hidden.

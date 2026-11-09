@@ -1,5 +1,5 @@
 """Rearrange the generated page into the app shell defined in DESIGN.md."""
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 
 NAV_ITEMS = [
     ('overview', 'space_dashboard', 'Overview', False),
@@ -97,6 +97,14 @@ def apply_dashboard_shell(soup, total, facilities, pending):
     filters.insert(0, _fragment('<div id="ds-sheet-head"><h3>Filters and layers</h3><button type="button" id="ds-sheet-close" onclick="toggleMobileFilters()">Done</button></div>'))
 
     # Controls with no supporting data stay out of the working view; their empty states remain in the navigation.
+    for ident in ('overlay-corridors-chk', 'overlay-aizones-chk', 'overlay-anomalies-chk', 'overlay-hotspots-chk'):
+        soup.find(id=ident).find_parent('label')['class'] = ['ds-hidden']
+    soup.find('span', string='Crime analysis layers').parent['class'] = ['ds-hidden']
+    soup.find(id='sev-slider').parent['class'] = ['ds-hidden']
+    time_column = soup.find(id='time-filter-label').parent.parent
+    for node in list(time_column.parent.descendants):
+        if isinstance(node, NavigableString) and node.strip() == 'Occurrence-time evidence' and node.parent.name != 'span':
+            node.extract()
     what_to_see = soup.find(id='what-to-see-bar')
     what_to_see['class'] = ['ds-hidden']
     legend = soup.find(id='map-legend').extract()
@@ -114,8 +122,10 @@ def apply_dashboard_shell(soup, total, facilities, pending):
     telemetry = map_box.find_next_sibling('div')
     if telemetry:
         telemetry['class'] = ['ds-hidden']
-    map_box.insert_after(legend)
-    legend.insert_after(_fragment('<p id="ds-unmapped"></p>'))
+    map_footer = _fragment('<div id="ds-map-footer"></div>').find('div')
+    map_box.insert_after(map_footer)
+    map_footer.append(legend)
+    map_footer.append(_fragment('<p id="ds-unmapped"></p>'))
 
     analytics['class'] = ['ds-view']
     if footer:

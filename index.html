@@ -13,7 +13,7 @@
 <link href="https://server.arcgisonline.com" rel="preconnect"/>
 <link href="https://server.arcgisonline.com" rel="dns-prefetch"/>
 <link href="https://tile.openstreetmap.org" rel="dns-prefetch"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block" rel="stylesheet"/>
 
 <!-- High Speed Cloudflare CDN for Leaflet & Plugins -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" rel="stylesheet"/>
@@ -410,21 +410,23 @@ tailwind.config = {
     .official-report-tooltip{font-size:11px;font-weight:600}
     </style><style id="design-system">/* Implements DESIGN.md. Selectors are prefixed with `html body` to outrank the Tailwind CDN styles injected at runtime. */
 :root{
-  --canvas:247 245 240;--surface:255 255 255;--surface-2:241 238 231;--surface-3:231 227 218;
-  --ink:31 29 25;--ink-2:94 89 79;--ink-3:111 106 95;--hairline:31 29 25;
-  --accent:180 83 47;--on-accent:255 255 255;--positive:30 120 84;--danger:196 51 43;
+  --canvas:242 242 247;--surface:255 255 255;--surface-2:236 236 240;--surface-3:226 226 232;
+  --ink:29 29 31;--ink-2:82 82 88;--ink-3:104 104 110;--hairline:29 29 31;
+  --accent:0 102 214;--on-accent:255 255 255;--positive:30 120 84;--warning:170 90 0;--danger:215 40 38;
+  --glass-alpha:.76;--glass:255 255 255/var(--glass-alpha);--glass-edge:255 255 255;
   --font-text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-  --font-display:ui-serif,"New York","Iowan Old Style",Georgia,serif;
-  --r-card:12px;--r-well:8px;
-  --shadow-1:0 1px 2px rgb(31 29 25/.05),0 8px 24px -16px rgb(31 29 25/.18);
-  --shadow-float:0 12px 40px -12px rgb(0 0 0/.35);
+  --r-card:20px;--r-well:12px;
+  --shadow-1:0 1px 2px rgb(0 0 0/.08);
+  --shadow-float:0 8px 32px -8px rgb(0 0 0/.28);
   --ease-spring:cubic-bezier(.22,1,.36,1);--t-fast:160ms;--t-slow:620ms;
 }
 html.dark{
-  --canvas:20 19 17;--surface:29 27 24;--surface-2:38 36 32;--surface-3:50 47 42;
-  --ink:242 239 232;--ink-2:184 178 167;--ink-3:154 148 136;--hairline:242 239 232;
-  --accent:224 138 99;--on-accent:31 18 9;--positive:102 200 155;
-  --shadow-1:0 1px 2px rgb(0 0 0/.3),0 12px 28px -18px rgb(0 0 0/.6);
+  --canvas:14 14 16;--surface:28 28 30;--surface-2:38 38 42;--surface-3:50 50 54;
+  --ink:245 245 247;--ink-2:190 190 196;--ink-3:160 160 166;--hairline:245 245 247;
+  --accent:100 175 255;--on-accent:3 24 48;--positive:102 212 158;--warning:255 179 64;
+  --glass-alpha:.64;--glass:24 24 28/var(--glass-alpha);--glass-edge:255 255 255;
+  --shadow-1:0 1px 2px rgb(0 0 0/.3);
+  --shadow-float:0 12px 40px -10px rgb(0 0 0/.65);
 }
 
 /* Foundations */
@@ -454,102 +456,154 @@ html body :is(button,a,label[class*="rounded-full"]){transition:transform var(--
 html body :is(button,a):active:not(:disabled){transform:scale(.97)}
 html body #nav-tabs-bar .nav-tab-btn.active,html body #nav-tabs-bar .nav-tab-btn[aria-selected="true"]{box-shadow:none!important}
 
-/* Filter chips: the native checkbox stays operable and renders as a dot */
-html body #map-category-controls label{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;background:rgb(var(--surface-2));color:rgb(var(--ink-2));cursor:pointer}
-html body #map-category-controls input{appearance:none;-webkit-appearance:none;width:10px;height:10px;margin:0;border-radius:50%;border:1.5px solid rgb(var(--ink-3));background:transparent;box-shadow:none;cursor:pointer}
-html body #map-category-controls input:checked{background:rgb(var(--accent));border-color:rgb(var(--accent))}
-html body #map-category-controls label:has(input:checked){background:rgb(var(--accent)/.14);color:rgb(var(--ink));border-color:rgb(var(--accent)/.35)!important}
-
 /* Evidence bars */
 html body .official-bar-track{background:rgb(var(--hairline)/.1)}
 html body .official-bar-fill{background:rgb(var(--accent));transition:width var(--t-slow) var(--ease-spring)}
 html body .official-bar-label{color:rgb(var(--ink));font-size:13px}
 
-/* App shell */
+/* App shell: the map is the page, and every panel floats over it as glass */
 .ds-hidden{display:none!important}
-#ds-app{min-height:100dvh}
-#ds-main{display:flex;flex-direction:column;gap:12px;padding:8px 12px 88px;min-width:0}
+.ds-glass,.ds-kpi,.ds-panel,.ds-topbar,.ds-map-card>div:first-child,#ds-map-footer,.ds-statusbar,html body #ds-rail,html body #left-controls-wrapper,html body #analytics-section{background:rgb(var(--glass));-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border:1px solid rgb(var(--glass-edge)/.16);box-shadow:inset 0 1px 0 rgb(var(--glass-edge)/.2),var(--shadow-float);border-radius:var(--r-card)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root{--glass-alpha:.96}}
+@media(prefers-reduced-transparency:reduce){:root{--glass-alpha:.96}}
+
+#ds-app{position:relative;min-height:100dvh}
+#ds-main{position:relative;z-index:20;display:flex;flex-direction:column;gap:8px;padding:8px 8px 92px;min-width:0;pointer-events:none}
+#ds-main>*:not(#ds-overview),.ds-filters>*,#ds-side>*,.ds-map-card>div:first-child,#ds-map-footer{pointer-events:auto}
+html body .ds-map-box{position:fixed!important;inset:0;width:100%;height:100dvh;z-index:0;border:0!important;border-radius:0!important;pointer-events:auto}
+.ds-topbar,#ds-kpis,.ds-filters,.ds-map-card>div:first-child,#ds-map-footer,#ds-side,.ds-statusbar,#analytics-section{position:relative;z-index:1}
 .ds-brand{display:none}
-.ds-topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ds-topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px}
 .ds-view-heading{flex:1 1 auto;min-width:0}
 .ds-product{margin:0;font-size:11px;color:rgb(var(--ink-2))}
-#ds-view-title{margin:0;font-size:18px;line-height:1.25;font-weight:600}
+#ds-view-title{margin:0;font-size:18px;line-height:1.25;font-weight:600;letter-spacing:-.02em}
 .ds-topbar>.max-w-xl{order:3;flex:1 1 100%;max-width:none;margin:0}
+html body #global-search-input{background:rgb(var(--hairline)/.08)!important;border-color:transparent!important}
 .ds-zone{display:none;font-size:12px;color:rgb(var(--ink-2));white-space:nowrap}
-html body #ds-rail{position:fixed;inset:auto 0 0 0;z-index:1000;background:rgb(var(--surface));border-top:1px solid rgb(var(--hairline)/.12);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
+
+html body #ds-rail{position:fixed;inset:auto 8px calc(8px + env(safe-area-inset-bottom)) 8px;z-index:1000;padding:4px;border-radius:24px}
 .ds-rail-note{display:none}
-html body #nav-tabs-bar{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px;width:100%;overflow:visible!important}
-html body #nav-tabs-bar .nav-tab-btn{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:auto!important;min-width:0;height:auto!important;min-height:52px;padding:4px 2px!important;border-radius:var(--r-well)!important;background:transparent!important;color:rgb(var(--ink-2))!important;font-size:11px!important;font-weight:500!important;box-shadow:none!important}
-html body #nav-tabs-bar .nav-tab-btn .material-symbols-outlined{font-size:20px}
-html body #nav-tabs-bar .nav-tab-btn.active{background:rgb(var(--accent)/.14)!important;border-color:transparent!important;color:rgb(var(--accent))!important;font-weight:600!important}
-html body #nav-tabs-bar .nav-tab-btn:hover:not(.active){background:rgb(var(--hairline)/.06)!important;color:rgb(var(--ink))!important}
+html body #nav-tabs-bar{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px;width:100%;overflow:visible!important;background:transparent!important;border:0!important;padding:0!important}
+html body #nav-tabs-bar .nav-tab-btn{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:auto!important;min-width:0;height:auto!important;min-height:52px;padding:4px 2px!important;border:0!important;border-radius:20px!important;background:transparent!important;color:rgb(var(--ink-2))!important;font-size:11px!important;font-weight:500!important;box-shadow:none!important}
+html body #nav-tabs-bar .nav-tab-btn .material-symbols-outlined{font-size:21px}
+html body #nav-tabs-bar .nav-tab-btn.active{background:rgb(var(--hairline)/.14)!important;color:rgb(var(--accent))!important;font-weight:600!important}
+html body #nav-tabs-bar .nav-tab-btn:hover:not(.active){background:rgb(var(--hairline)/.07)!important;color:rgb(var(--ink))!important}
 .ds-nav-tag{display:none}
 
-#ds-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.ds-kpi,.ds-panel{background:rgb(var(--surface));border:1px solid rgb(var(--hairline)/.12);border-radius:var(--r-card);padding:12px;min-width:0}
-.ds-kpi{position:relative}
+#ds-kpis{display:flex;gap:8px;margin:0 -8px;padding:0 8px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
+#ds-kpis::-webkit-scrollbar{display:none}
+.ds-panel{padding:14px;min-width:0}
+.ds-kpi{position:relative;flex:0 0 156px;padding:12px 14px;min-width:0;overflow:hidden;scroll-snap-align:center}
+.ds-kpi::after{content:"";position:absolute;inset:0;background:radial-gradient(180px circle at var(--mx,50%) var(--my,0%),rgb(var(--glass-edge)/.12),transparent 70%);opacity:0;transition:opacity var(--t-fast);pointer-events:none}
+.ds-kpi:hover::after{opacity:1}
 .ds-kpi-label{margin:0;font-size:12px;color:rgb(var(--ink-2))}
-.ds-kpi-value{margin:4px 0 2px;font-size:24px;line-height:1.15;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-#ds-kpi-category .ds-kpi-value{font-size:17px;line-height:1.65}
-.ds-kpi-note{margin:0;font-size:12px;color:rgb(var(--ink-3))}
-.ds-kpi.is-stale .ds-kpi-value{color:rgb(var(--accent))}
-#ds-spark{position:absolute;right:12px;top:12px;display:flex;align-items:flex-end;gap:3px;height:32px}
-#ds-spark i{display:block;width:6px;border-radius:2px;background:rgb(var(--accent)/.55)}
+.ds-kpi-value{margin:4px 0 2px;font-size:22px;line-height:1.15;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#ds-kpi-category .ds-kpi-value{font-size:16px;line-height:1.6}
+.ds-kpi-note{margin:0;font-size:12px;color:rgb(var(--ink-2))}
+.ds-kpi.is-stale .ds-kpi-value{color:rgb(var(--warning))}
+#ds-spark{position:absolute;right:14px;top:12px;display:flex;align-items:flex-end;gap:3px;height:28px}
+#ds-spark i{display:block;width:6px;border-radius:2px;background:rgb(var(--accent)/.7)}
 
-#ds-overview{display:flex;flex-direction:column;gap:12px}
-body[data-view="overview"] #analytics-section,body:not([data-view="overview"]) #ds-overview,body:not([data-view="overview"]) #ds-kpis{display:none}
+#ds-overview{display:flex;flex-direction:column;gap:8px;pointer-events:none}
+body:not([data-view="overview"]) #ds-kpis,body:not([data-view="overview"]) .ds-filters,body:not([data-view="overview"]) #ds-side,body:not([data-view="overview"]) .ds-map-card>div:first-child,body:not([data-view="overview"]) #ds-map-footer,body[data-view="overview"] #analytics-section{display:none!important}
 .ds-filters{display:flex;flex-direction:column;gap:8px}
-html body #left-controls-wrapper{gap:8px}
-html body #left-controls-wrapper>div{background:rgb(var(--surface))!important;padding:12px!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.ds-filters>button{background:rgb(var(--glass))!important;-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);border-radius:var(--r-card)!important;min-height:48px}
+html body #left-controls-wrapper{gap:10px;padding:12px}
+html body #left-controls-wrapper>div{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+html body #left-controls-wrapper>div>div:first-child>span:last-child{display:none}
+html body #left-controls-wrapper [class*="rounded-xl"]{background:rgb(var(--hairline)/.06)!important;border-color:transparent!important}
+html body #left-controls-wrapper input[type="checkbox"]{accent-color:rgb(var(--accent))}
+html body #left-controls-wrapper select{background:rgb(var(--hairline)/.08)!important;border-color:transparent!important;border-radius:10px!important}
+html body #left-controls-wrapper [class*="grid-cols-2"][class*="bg-surface"],html body #left-controls-wrapper [class*="grid-cols-3"][class*="bg-surface"]{background:rgb(var(--hairline)/.08)!important;border:0!important;border-radius:12px!important}
+html body #left-controls-wrapper [class*="grid-cols-"] button{border-radius:9px!important;box-shadow:none!important}
+html body #apply-filters-btn{background:rgb(var(--accent))!important;background-image:none!important;color:rgb(var(--on-accent))!important;box-shadow:none!important;border-radius:12px!important}
+html body #reset-filters-btn{border-radius:12px!important;background:rgb(var(--hairline)/.1)!important}
 .ds-category-chips{display:flex;flex-wrap:wrap;gap:4px;font-size:12px}
-html body .ds-category-chips label{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:4px 10px;background:rgb(var(--surface-2));color:rgb(var(--ink-2));cursor:pointer}
-html body .ds-category-chips input{appearance:none;-webkit-appearance:none;width:10px;height:10px;margin:0;border-radius:50%;border:1.5px solid rgb(var(--ink-3));background:transparent;box-shadow:none;cursor:pointer}
+html body .ds-category-chips label{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:4px 10px;background:rgb(var(--hairline)/.08);color:rgb(var(--ink-2));border-color:transparent!important;cursor:pointer}
+html body .ds-category-chips input{appearance:none;-webkit-appearance:none;width:10px;height:10px;margin:0;border-radius:50%;border:1.5px solid rgb(var(--ink-2));background:transparent;box-shadow:none;cursor:pointer}
 html body .ds-category-chips input:checked{background:rgb(var(--accent));border-color:rgb(var(--accent))}
-html body .ds-category-chips label:has(input:checked){background:rgb(var(--accent)/.14);color:rgb(var(--ink));border-color:rgb(var(--accent)/.35)!important}
-.ds-map-card{display:flex;flex-direction:column;gap:8px;background:rgb(var(--surface));border:1px solid rgb(var(--hairline)/.12);border-radius:var(--r-card);padding:8px;min-height:0;height:100%}
-.ds-map-card>div:first-child{padding:0 4px 8px!important;margin:0!important}
-.ds-map-box{height:52vh;min-height:320px;border-radius:var(--r-well);border:0!important}
-html body #map-legend{padding:0 4px!important;margin:0!important;border:0!important;font-size:11px}
+html body .ds-category-chips label:has(input:checked){background:rgb(var(--accent)/.2);color:rgb(var(--ink))}
+
+.ds-map-card{display:flex;flex-direction:column;gap:8px;min-height:0;height:100%;pointer-events:none}
+.ds-map-card>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px!important;margin:0!important;border-radius:20px}
+html body .ds-map-card>div:first-child [class*="rounded-full"][class*="bg-surface-container-lowest"]:has(.material-symbols-outlined):not(button),.ds-map-card>div:first-child>div:first-child>span:last-child{display:none}
+.ds-map-card>div:first-child button,.ds-map-card>div:first-child select{cursor:pointer}
+html body #basemap-select{background:rgb(var(--hairline)/.08)!important;border-color:transparent!important}
+#ds-show-everything{padding:6px 14px;border-radius:999px;background:rgb(var(--accent));color:rgb(var(--on-accent));font-size:12px;font-weight:600}
+html body .ds-map-action{padding:6px 14px;border-radius:999px;background:rgb(var(--hairline)/.1);color:rgb(var(--ink));font-size:12px}
+#ds-map-footer{display:flex;flex-direction:column;gap:6px;margin-top:44dvh;padding:10px 12px}
+.ds-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:rgb(var(--ink-2))}
+.ds-legend-item{display:inline-flex;align-items:center;gap:6px}
+.ds-legend-item b{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--swatch);color:#fff;font-size:11px;font-weight:700}
+.ds-legend-item.is-thana b{border-radius:5px}
+.ds-legend-item.is-empty b{background:transparent;color:var(--swatch);box-shadow:inset 0 0 0 1.5px var(--swatch)}
+.ds-legend-item strong{font-weight:500;color:rgb(var(--ink))}
+#ds-unmapped{margin:0;font-size:12px;color:rgb(var(--ink-2))}
+#ds-unmapped:empty{display:none}
+#ds-unmapped strong{font-weight:600;color:rgb(var(--ink))}
+html body .leaflet-top.leaflet-left{left:auto;right:8px;top:44%}
+html body .leaflet-bottom.leaflet-right{bottom:76px}
+html body .leaflet-touch .leaflet-bar,html body .leaflet-bar{border:1px solid rgb(var(--glass-edge)/.16)!important;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-float)}
+html body .leaflet-bar a{background:rgb(var(--glass));-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:rgb(var(--ink));border-color:rgb(var(--hairline)/.14)}
+html body .leaflet-control-attribution{background:rgb(var(--glass))!important;color:rgb(var(--ink-2));border-radius:8px 0 0 0}
+
 #ds-side{display:flex;flex-direction:column;gap:8px;min-height:0}
 .ds-panel h3{margin:0 0 8px;font-size:13px;font-weight:600}
 #ds-feed{list-style:none;margin:0;padding:0}
-#ds-feed li{display:grid;gap:2px;padding:8px 0;border-top:1px solid rgb(var(--hairline)/.1);font-size:12px}
+#ds-feed li{display:grid;gap:2px;padding:10px 0;border-top:1px solid rgb(var(--hairline)/.1);font-size:12px}
 #ds-feed li:first-child{border-top:0;padding-top:0}
-#ds-feed time{color:rgb(var(--ink-3));font-variant-numeric:tabular-nums}
+#ds-feed time{color:rgb(var(--ink-2));font-variant-numeric:tabular-nums}
 #ds-feed strong{font-weight:600;font-size:13px}
 #ds-feed span{color:rgb(var(--ink-2))}
 .ds-feed-actions{display:flex;gap:12px}
-.ds-feed-actions button{color:rgb(var(--accent));text-decoration:underline}
-html body #official-map-coverage{color:rgb(var(--ink-2));font-size:12px;max-height:112px;overflow-y:auto}
-html body #analytics-section{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0!important;gap:12px}
-html body #spherical-distribution-card,html body .official-analytics-card,html body footer{box-shadow:none!important}
-.ds-statusbar{font-size:12px;color:rgb(var(--ink-2));padding:4px}
+.ds-feed-actions button{color:rgb(var(--accent));cursor:pointer}
+html body #official-map-coverage{color:rgb(var(--ink-2));font-size:12px}
+html body #analytics-section{padding:16px!important;gap:12px;--glass-alpha:.82}
+html body #spherical-distribution-card,html body .official-analytics-card,html body footer{background:rgb(var(--hairline)/.05)!important;background-image:none!important;border-color:transparent!important;box-shadow:none!important}
+html body #tab-pane-analytics table,html body #records-table thead,html body #records-table thead tr{background:transparent!important}
+html body [id^="tab-pane-"] .overflow-x-auto{background:rgb(var(--hairline)/.04)!important;border-color:rgb(var(--hairline)/.1)!important}
+html body #records-table tbody tr:hover{background:rgb(var(--hairline)/.06)}
+.ds-statusbar{font-size:12px;color:rgb(var(--ink-2));padding:8px 12px}
 .ds-statusbar :is(b,strong){display:inline!important;margin:0 0 0 8px;color:rgb(var(--ink));font-weight:600}
+html body.ds-map-expanded :is(#ds-rail,.ds-topbar,#ds-kpis,.ds-filters,#ds-side,.ds-statusbar){display:none!important}
+html body.ds-map-expanded #ds-map-footer{margin-top:auto}
+html body.ds-map-expanded #ds-overview{flex:1}
+html body.ds-map-expanded #ds-main{min-height:100dvh;padding-bottom:8px}
 
-@media(min-width:768px){#ds-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.ds-topbar>.max-w-xl{order:0;flex:0 1 360px}.ds-zone{display:inline}}
+@media(min-width:768px){.ds-topbar>.max-w-xl{order:0;flex:0 1 360px}.ds-zone{display:inline}}
 @media(min-width:1024px){
-  html,html body{height:100%}
-  #ds-app{display:grid;grid-template-columns:208px minmax(0,1fr);height:100dvh;min-height:620px}
-  html body #ds-rail{position:static;display:flex;flex-direction:column;gap:16px;padding:12px;border-top:0;border-right:1px solid rgb(var(--hairline)/.12)}
-  .ds-brand{display:flex;align-items:center;gap:8px;padding:4px}
-  .ds-brand h1{font-size:13px!important;line-height:1.25!important;font-weight:600!important}
-  .ds-brand span.text-\[10px\]{display:none}
-  .ds-brand>div:first-child{width:32px!important;height:32px!important;border-radius:var(--r-well)!important}
+  :root{--rail:84px;--filters:272px;--side:304px}
+  #ds-app{height:100dvh;min-height:620px;overflow:hidden}
+  html body #ds-rail{position:absolute;inset:12px auto 12px 12px;width:var(--rail);display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:10px 6px;border-radius:28px}
+  .ds-brand{display:flex;justify-content:center;padding:2px 0 4px}
+  .ds-brand>div:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .ds-brand>div:first-child{width:40px!important;height:40px!important;border-radius:13px!important}
   .ds-product{display:none}
   html body #nav-tabs-bar{display:flex!important;flex-direction:column;flex:1}
-  html body #nav-tabs-bar .nav-tab-btn{flex-direction:row!important;justify-content:flex-start!important;gap:10px;min-height:44px;padding:0 10px!important;font-size:13px!important}
-  .ds-nav-tag{display:inline;margin-left:auto;font-size:11px;color:rgb(var(--ink-3));font-weight:400}
-  .ds-rail-note{display:block;margin:0;font-size:12px;color:rgb(var(--ink-3));padding:4px}
-  #ds-main{display:flex;height:100dvh;min-height:620px;padding:10px 12px 4px;gap:10px;overflow:hidden}
-  #ds-overview{flex:1;display:grid;grid-template-columns:264px minmax(0,1fr) 296px;min-height:0;gap:10px}
-  .ds-filters{min-height:0;overflow-y:auto}
+  html body #nav-tabs-bar .nav-tab-btn{min-height:60px;padding:6px 2px!important}
+  .ds-nav-tag{display:block;font-size:11px;font-weight:400;color:rgb(var(--ink-2))}
+  #ds-main{position:absolute;inset:12px 12px 12px calc(var(--rail) + 24px);padding:0;gap:10px}
+  #ds-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:0;overflow:visible}
+  #ds-overview{flex:1;display:grid;grid-template-columns:var(--filters) minmax(0,1fr) var(--side);gap:10px;min-height:0}
+  .ds-filters{min-height:0;overflow:hidden}
+  html body #left-controls-wrapper{max-height:100%;overflow-y:auto;scrollbar-width:thin}
   #map-frame-container{min-height:0}
-  .ds-map-box{flex:1;height:auto;min-height:0}
+  .ds-map-card>div:first-child{align-self:center;max-width:100%}
+  #ds-map-footer{margin-top:auto}
   #ds-side{overflow:hidden}
-  .ds-feed-panel{flex:1;min-height:0;overflow-y:auto}
+  .ds-feed-panel{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
+  html body #official-map-coverage{max-height:104px;overflow-y:auto}
   html body #analytics-section{flex:1;min-height:0;overflow-y:auto}
-  .ds-statusbar{padding:0 4px}
+  html body .leaflet-top.leaflet-left{right:calc(var(--side) + 22px);top:46%}
+  html body .leaflet-bottom.leaflet-right{right:calc(var(--side) + 22px);bottom:58px}
+  .ds-statusbar{padding:7px 14px}
 }
+
+html body .material-symbols-outlined{display:inline-block;width:1em;height:1em;line-height:1;overflow:hidden;white-space:nowrap;flex:none}
+html body #left-controls-wrapper input[type="checkbox"]:checked{background-color:rgb(var(--accent))!important;border-color:rgb(var(--accent))!important}
+html body #left-controls-wrapper [class*="sm:grid-cols-2"]{grid-template-columns:minmax(0,1fr)!important}
+body:not([data-view="overview"]) #ds-overview{flex:0 0 0!important;min-height:0;gap:0}
+.leaflet-tile-pane .ds-map-labels{z-index:20}
 
 /* Metadata */
 html body #telemetry-node-count{margin-right:.35em}
@@ -562,57 +616,28 @@ html body .leaflet-popup-content-wrapper{box-shadow:var(--shadow-float)}
 html body [id^="tab-pane-"]:not(.hidden){animation:ds-pane 360ms var(--ease-spring)}
 @keyframes ds-pane{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* Expanded map */
-html body.ds-map-expanded #map-frame-container{position:fixed;inset:0;z-index:1100;padding:8px;background:rgb(var(--canvas))}
-html body.ds-map-expanded .ds-map-box{flex:1;height:auto;min-height:0}
-
-/* Map legend: every category is listed, including those with nothing to plot */
-.ds-legend{display:flex;flex-wrap:wrap;gap:4px 14px;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
-.ds-legend-item{display:inline-flex;align-items:center;gap:6px}
-.ds-legend-item b{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--swatch);color:#fff;font-size:11px;font-weight:700}
-.ds-legend-item.is-thana b{border-radius:5px}
-.ds-legend-item.is-empty b{background:transparent;color:var(--swatch);box-shadow:inset 0 0 0 1.5px var(--swatch)}
-.ds-legend-item strong{font-weight:500;color:rgb(var(--ink))}
-#ds-unmapped{margin:0;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
-#ds-unmapped:empty{display:none}
-#ds-unmapped strong{font-weight:600;color:rgb(var(--ink))}
-#ds-show-everything{padding:4px 12px;border-radius:999px;background:rgb(var(--accent));color:rgb(var(--on-accent));font-size:12px;font-weight:600}
-html body .ds-map-action{padding:4px 12px;border-radius:999px;background:rgb(var(--surface-2));color:rgb(var(--ink));font-size:12px}
-
 /* Phone and tablet patterns */
 html body :is([class*="text-[9px]"],[class*="text-[8px]"]){font-size:11px!important}
 html body #spherical-graph-canvas{touch-action:pan-y}
 html body .official-analytics-card:has(#modalities-container){display:none}
 #ds-sheet-head,#ds-feed-more{display:none}
-.ds-collapse-toggle{font:inherit;text-align:left}
+.ds-collapse-toggle{font:inherit;text-align:left;cursor:pointer}
 @media(max-width:1023px){
-  #ds-kpis{display:flex;gap:8px;margin:0 -12px;padding:0 12px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
-  #ds-kpis::-webkit-scrollbar{display:none}
-  .ds-kpi{flex:0 0 156px;padding:10px 12px;scroll-snap-align:center}
-  .ds-kpi-value{font-size:20px}
-  #ds-kpi-category .ds-kpi-value{font-size:15px;line-height:1.55}
-  #ds-spark{height:24px;top:10px}
-  html body #map-frame-container [class*="bg-surface-container-lowest"]:has(.material-symbols-outlined):not(button){display:none}
-  .ds-map-box{height:50vh;min-height:300px}
   #ds-feed li:nth-child(n+4){display:none}
-  #ds-feed-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:8px;border-radius:var(--r-well);background:rgb(var(--surface-2));color:rgb(var(--ink));font-weight:600}
-  html body #official-map-coverage{max-height:none;overflow:visible}
-
-  html body #left-controls-wrapper:not(.hidden){position:fixed;inset:48px 0 calc(61px + env(safe-area-inset-bottom)) 0;z-index:990;overflow-y:auto;overscroll-behavior:contain;padding:0 12px 16px;background:rgb(var(--canvas));border-radius:16px 16px 0 0;border-top:1px solid rgb(var(--hairline)/.16);box-shadow:var(--shadow-float)}
-  #ds-sheet-head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;padding:6px 0;background:rgb(var(--canvas))}
+  #ds-feed-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:8px;border-radius:12px;background:rgb(var(--hairline)/.1);color:rgb(var(--ink));font-weight:600}
+  html body #left-controls-wrapper:not(.hidden){position:fixed;inset:64px 8px calc(76px + env(safe-area-inset-bottom)) 8px;z-index:990;overflow-y:auto;overscroll-behavior:contain;--glass-alpha:.9}
+  #ds-sheet-head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:-12px;z-index:2}
   #ds-sheet-head h3{margin:0;font-size:15px;font-weight:600}
   #ds-sheet-close{min-height:44px;padding:0 12px;color:rgb(var(--accent));font-weight:600}
-
   .ds-collapsible.is-open>*,.ds-collapsible>h3{display:block}
   .ds-collapsible:not(.is-open)>:not(h3){display:none}
   .ds-collapse-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px}
   .ds-collapse-toggle::after{content:"+";font-size:18px;color:rgb(var(--ink-2))}
   .ds-collapse-toggle[aria-expanded="true"]::after{content:"\2212"}
-
   html body :is(#global-search-input,#records-search-input,select){font-size:16px!important;min-height:44px}
   html body .ds-topbar a[href^="tel"]{min-height:44px}
   html body #left-controls-wrapper :is(label,button){min-height:44px}
-  html body #map-frame-container button,html body #analytics-section .ds-view button:not(.official-bar-label){min-height:44px;min-width:44px}
+  html body #map-frame-container button{min-height:44px;min-width:44px}
   html body #analytics-section button:not(.official-bar-label):not(.ds-collapse-toggle){min-height:44px}
   html body .official-bar-row{min-height:44px;padding:0}
   html body .official-bar-label{min-height:44px;display:flex;align-items:center}
@@ -620,12 +645,24 @@ html body .official-analytics-card:has(#modalities-container){display:none}
   .ds-feed-actions :is(a,button){display:inline-flex;align-items:center;min-height:44px}
   html body #tab-pane-sources li a,html body #tab-pane-sources p a,html body #occurrence-evidence a,html body #severity-evidence a{display:inline-block;padding:14px 0}
   html body .leaflet-touch .leaflet-bar a{width:44px;height:44px;line-height:44px}
+  body.ds-popup-open .leaflet-control-zoom{display:none}
+  .ds-filters:has(#left-controls-wrapper:not(.hidden)){z-index:40}
+  .ds-map-card>div:first-child{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+  .ds-map-card>div:first-child>div:first-child{display:none}
+  .ds-map-card>div:first-child>div{flex:none}
+  html body #basemap-select{width:112px}
+  .ds-product{display:none}
+  .ds-kpi{flex-basis:176px;padding:8px 12px}
+  .ds-kpi-value{font-size:20px;margin:2px 0}
+  #ds-kpi-category .ds-kpi-value{font-size:15px;line-height:1.5}
+  .ds-kpi-note{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ds-filters>button>div>span:last-child{display:none}
 }
 @media(max-width:767px){
   html body #tab-pane-records .overflow-x-auto{max-height:none;overflow:visible;border:0;background:transparent!important}
   html body #records-table,html body #records-table tbody,html body #records-table tr,html body #records-table td{display:block;width:100%}
   html body #records-table thead{display:none}
-  html body #records-table tr{margin-bottom:8px;padding:8px 12px;background:rgb(var(--surface));border:1px solid rgb(var(--hairline)/.12);border-radius:var(--r-card)}
+  html body #records-table tr{margin-bottom:8px;padding:8px 12px;background:rgb(var(--hairline)/.06);border:0;border-radius:14px}
   html body #records-table td{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;padding:6px 0!important;font-size:13px;text-align:left}
   html body #records-table td::before{content:attr(data-label);font-size:12px;color:rgb(var(--ink-2))}
   html body #records-table td>*{grid-column:2}
@@ -737,7 +774,7 @@ html body .official-analytics-card:has(#modalities-container){display:none}
 </div>
 <span class="font-mono text-[9px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full">48 facilities</span>
 </label>
-<label class="flex items-center justify-between p-2 px-3 rounded-xl bg-surface-container-lowest/80 border border-white/5 hover:bg-surface-container-high cursor-pointer fluid-transition">
+<label class="ds-hidden">
 <div class="flex items-center gap-2 text-[11px]">
 <input class="accent-emerald-400 rounded cursor-pointer w-3.5 h-3.5 bg-surface-container" id="overlay-corridors-chk" onchange="toggleCorridorsOverlay(this.checked)" type="checkbox"/>
 <span class="text-on-surface font-medium">Safe Corridors</span>
@@ -746,23 +783,23 @@ html body .official-analytics-card:has(#modalities-container){display:none}
 </label>
 </div>
 <!-- Analysis overlays -->
-<div class="flex flex-col gap-1.5">
+<div class="ds-hidden">
 <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider font-mono">Crime analysis layers</span>
-<label class="flex items-center justify-between p-2 px-3 rounded-xl bg-surface-container-lowest/80 border border-white/5 hover:bg-surface-container-high cursor-pointer fluid-transition">
+<label class="ds-hidden">
 <div class="flex items-center gap-2 text-[11px]">
 <input class="accent-sky-400 rounded cursor-pointer w-3.5 h-3.5 bg-surface-container" id="overlay-aizones-chk" onchange="toggleAiZonesLayer(this.checked)" type="checkbox"/>
 <span class="text-on-surface font-medium">AI Risk Zones</span>
 </div>
 <span class="font-mono text-[9px] text-sky-400 font-bold bg-sky-950/60 px-2 py-0.5 rounded-full">Awaiting data</span>
 </label>
-<label class="flex items-center justify-between p-2 px-3 rounded-xl bg-surface-container-lowest/80 border border-white/5 hover:bg-surface-container-high cursor-pointer fluid-transition">
+<label class="ds-hidden">
 <div class="flex items-center gap-2 text-[11px]">
 <input class="accent-rose-500 rounded cursor-pointer w-3.5 h-3.5 bg-surface-container" id="overlay-anomalies-chk" onchange="toggleAnomaliesLayer(this.checked)" type="checkbox"/>
 <span class="text-on-surface font-medium">Unusual Activity</span>
 </div>
 <span class="font-mono text-[9px] text-rose-400 font-bold bg-rose-950/60 px-2 py-0.5 rounded-full">Awaiting data</span>
 </label>
-<label class="flex items-center justify-between p-2 px-3 rounded-xl bg-surface-container-lowest/80 border border-white/5 hover:bg-surface-container-high cursor-pointer fluid-transition">
+<label class="ds-hidden">
 <div class="flex items-center gap-2 text-[11px]">
 <input class="accent-amber-500 rounded cursor-pointer w-3.5 h-3.5 bg-surface-container" id="overlay-hotspots-chk" onchange="toggleHotspotsLayer(this.checked)" type="checkbox"/>
 <span class="text-on-surface font-medium">Crime Hotspots</span>
@@ -788,7 +825,7 @@ html body .official-analytics-card:has(#modalities-container){display:none}
 </div>
 <select class="w-full bg-surface-container-lowest/90 text-on-surface text-[11px] px-3 py-2 rounded-xl border border-white/10 focus:border-primary focus:outline-none cursor-pointer" id="cat-filter-select" onchange="setCategoryFilter(this.value)"><option value="ALL">All categories</option><option value="Excise enforcement">Excise enforcement</option><option value="Narcotics enforcement">Narcotics enforcement</option><option value="Property crime">Property crime</option><option value="Violent Assault">Violent Assault</option><option value="Weapons enforcement">Weapons enforcement</option><option value="Women Safety Concerns">Women Safety Concerns</option><option value="map:property">Property (all source tags)</option><option value="map:assault">Assault</option><option value="map:women">Women’s / girls’ safety</option><option value="map:vandalism">Vandalism — 0 loaded</option></select>
 </div>
-Occurrence-time evidence
+
 <div class="flex flex-col gap-1.5">
 <div class="flex items-center justify-between text-[10px]">
 <span class="text-on-surface-variant font-bold uppercase tracking-wider font-mono">Occurrence-time evidence</span>
@@ -816,7 +853,7 @@ Occurrence-time evidence
 </div>
 </div>
 <!-- Minimum Severity -->
-<div class="flex flex-col gap-1.5">
+<div class="ds-hidden">
 <div class="flex items-center justify-between text-[10px]">
 <span class="text-on-surface-variant font-bold uppercase tracking-wider font-mono">Minimum Severity</span>
 <span class="font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20" id="sev-slider-val">No official score</span>
@@ -889,7 +926,7 @@ Occurrence-time evidence
 <!-- Map Container -->
 <div class="relative ds-map-box overflow-hidden">
 <div class="w-full h-full" id="leaflet-map"></div>
-</div><div aria-label="Map legend" class="ds-legend" id="map-legend"></div><p id="ds-unmapped"></p>
+</div><div id="ds-map-footer"><div aria-label="Map legend" class="ds-legend" id="map-legend"></div><p id="ds-unmapped"></p></div>
 <!-- Bottom Map Ribbon -->
 <div class="ds-hidden">
 <div class="flex items-center gap-2 flex-wrap">
@@ -2417,6 +2454,8 @@ function dsTilt() {
     card.classList.add('ds-tilt');
     card.addEventListener('pointermove', event => {
       const box = card.getBoundingClientRect(), x = (event.clientX - box.left) / box.width - 0.5, y = (event.clientY - box.top) / box.height - 0.5;
+      card.style.setProperty('--mx', `${(x + 0.5) * 100}%`);
+      card.style.setProperty('--my', `${(y + 0.5) * 100}%`);
       card.style.transform = `perspective(900px) rotateX(${(-y * 2.5).toFixed(2)}deg) rotateY(${(x * 2.5).toFixed(2)}deg)`;
     });
     card.addEventListener('pointerleave', () => { card.style.transform = ''; });
@@ -2439,7 +2478,33 @@ function dsMapScrollGuard() {
   map.getContainer().addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
 }
 
-window.addEventListener('load', () => setTimeout(dsMapScrollGuard, 1500));
+const dsMapReady = setInterval(() => {
+  if (typeof map === 'undefined' || !map || !markerClusterGroup) return;
+  clearInterval(dsMapReady);
+  dsMapScrollGuard();
+  dsPopupSafeArea();
+  window.addEventListener('resize', dsPopupSafeArea);
+  map.on('popupopen', () => document.body.classList.add('ds-popup-open'));
+  map.on('popupclose', () => document.body.classList.remove('ds-popup-open'));
+  const select = document.getElementById('basemap-select');
+  if (select) select.value = 'civic';
+  setBasemap('civic');
+}, 40);
+
+// Esri's dark canvas has no place names, so its label tiles are added on top.
+let dsDarkLabels = null;
+const dsLegacySetBasemap = window.setBasemap;
+window.setBasemap = function (type) {
+  dsLegacySetBasemap(type);
+  if (!dsDarkLabels) dsDarkLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { className: 'ds-map-labels', zIndex: 20, maxZoom: 16 });
+  const showLabels = type === 'civic' && document.documentElement.classList.contains('dark');
+  if (showLabels && !map.hasLayer(dsDarkLabels)) dsDarkLabels.addTo(map);
+  if (!showLabels && map.hasLayer(dsDarkLabels)) map.removeLayer(dsDarkLabels);
+};
+
+// The basemap follows the theme so glass panels keep their contrast.
+const dsLegacyToggleTheme = window.toggleTheme;
+window.toggleTheme = function () { dsLegacyToggleTheme(); updateMapTheme(); };
 
 
 // Native fullscreen is blocked inside the Streamlit embed and on iPhones, so the map expands to fill the page instead.
@@ -2514,17 +2579,34 @@ function dsShowEverything() {
   if (!police.checked) police.click();
   window.renderMapLayers();
   const points = [...markerClusterGroup.getLayers(), ...policeFeatureGroup.getLayers()].map(layer => layer.getLatLng());
-  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [24, 24], animate: !DS_REDUCED.matches });
+  dsFitPoints(points, !DS_REDUCED.matches);
 }
 
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
 const DS_VIEW_TITLES = { overview: 'Overview', analytics: 'Analytics', records: 'Records', sources: 'Data sources', hotspots: 'Hotspots', 'ai-risk': 'AI risk' };
-// A map inside a hidden view has no size and cannot move, so a fit waits until the map is shown.
-let dsFitPending = false;
-const dsLegacyFitPins = window.fitReportPins;
+// Fits keep markers clear of the floating panels.
+function dsMapPadding() {
+  const edge = (selector, side, fallback) => { const box = document.querySelector(selector)?.getBoundingClientRect(); return box && box.width ? box[side] : fallback; };
+  const wide = innerWidth >= 1024, gap = 24;
+  const insets = wide
+    ? { left: edge('.ds-filters', 'right', 0) + gap, top: edge('#ds-kpis', 'bottom', 0) + 72, right: innerWidth - edge('#ds-side', 'left', innerWidth) + gap, bottom: innerHeight - edge('#ds-map-footer', 'top', innerHeight) + gap }
+    : { left: 24, top: edge('.ds-map-card>div:first-child', 'bottom', 200) + 28, right: 64, bottom: Math.max(90, innerHeight - edge('#ds-map-footer', 'top', innerHeight) + 28) };
+  return { paddingTopLeft: [insets.left, insets.top], paddingBottomRight: [insets.right, insets.bottom] };
+}
+// Popups pan and shrink to stay in the clear map area, so their controls are never under a panel.
+function dsPopupSafeArea() {
+  const padding = dsMapPadding();
+  L.Popup.mergeOptions({
+    autoPanPaddingTopLeft: padding.paddingTopLeft,
+    autoPanPaddingBottomRight: padding.paddingBottomRight,
+    maxHeight: Math.max(180, innerHeight - padding.paddingTopLeft[1] - padding.paddingBottomRight[1] - 48),
+  });
+}
+function dsFitPoints(points, animate) {
+  if (points.length) map.fitBounds(L.latLngBounds(points), { ...dsMapPadding(), maxZoom: 14, animate });
+}
 window.fitReportPins = function () {
-  if (document.body.dataset.view === 'overview') dsLegacyFitPins();
-  else dsFitPending = true;
+  if (map && markerClusterGroup) dsFitPoints(markerClusterGroup.getLayers().map(layer => layer.getLatLng()), false);
 };
 const dsLegacySwitchTab = window.switchTab, dsLegacyRender = window.renderRecordsTable;
 
@@ -2534,7 +2616,6 @@ window.switchTab = function (view) {
   if (view === 'overview') {
     document.querySelectorAll('.nav-tab-btn').forEach(button => button.classList.toggle('active', button.id === 'tab-btn-overview'));
     map.invalidateSize();
-    if (dsFitPending) { dsFitPending = false; dsLegacyFitPins(); }
   } else {
     dsLegacySwitchTab(view);
     if (view === 'analytics') requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));  // The canvas measures zero while its view is hidden.

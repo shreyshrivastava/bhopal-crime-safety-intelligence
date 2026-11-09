@@ -161,6 +161,8 @@ def generate_dashboard(payload=None):
     for chip in soup.find_all('span',string=lambda s:s and s.startswith('Bhopal Grid:')): chip.decompose()
     soup.title.string = 'Bhopal Safety Intelligence'
     soup.find('meta',attrs={'name':'viewport'})['content'] = 'width=device-width, initial-scale=1.0'
+    icons = soup.find('link',href=lambda h:h and 'Material+Symbols' in h)
+    icons['href'] = icons['href'].replace('display=swap','display=block')
     roboto = soup.find('link',href=lambda h:h and 'Roboto+Flex' in h)
     if roboto: roboto.decompose()
     tokens = soup.new_tag('script',id='design-tokens')

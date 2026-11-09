@@ -1,8 +1,8 @@
 # Bhopal Safety Intelligence — Style Reference
 
-**Direction: civic instrument.** This is a dashboard application, not a website. A calm public record, not a threat console. Apple's Human Interface Guidelines supply the clarity, system type, materials and restraint. Claude's design language supplies warm paper neutrals, a single clay accent and a serif voice for moments of reading.
+**Direction: glass over the city.** This is a dashboard application. The map fills the screen and every panel floats over it as Apple-style glass, as in Apple Maps. Structure follows open dashboard patterns from shadcn/ui and listings on 21st.dev.
 
-**Anchor:** the dot-lattice sphere in Analytics. It is the only 3D data view.
+**Anchor:** the full-bleed map under glass panels.
 
 Implementation: tokens and components in `static/design-system.css`, motion and 3D in `static/design-motion.js`. `dashboard.py` injects both. Regenerate `index.html` with `scripts/export_official_html.py`.
 
@@ -12,18 +12,16 @@ Values are RGB triples on `:root` (light) and `html.dark` (dark), used as `rgb(v
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--canvas` | 247 245 240 | 20 19 17 | Page background |
-| `--surface` | 255 255 255 | 29 27 24 | Primary cards |
-| `--surface-2` | 241 238 231 | 38 36 32 | Nested wells, inputs, inactive chips |
-| `--surface-3` | 231 227 218 | 50 47 42 | Hover and pressed fills |
-| `--ink` | 31 29 25 | 242 239 232 | Primary text |
-| `--ink-2` | 94 89 79 | 184 178 167 | Secondary text |
-| `--ink-3` | 111 106 95 | 154 148 136 | Captions; never below 11px |
-| `--hairline` | 31 29 25 | 242 239 232 | Borders, at 12% alpha |
-| `--accent` | 180 83 47 | 224 138 99 | Selected state, links, the one primary action |
-| `--on-accent` | 255 255 255 | 31 18 9 | Text on accent fills |
-| `--positive` | 30 120 84 | 102 200 155 | Verified or healthy status |
-| `--danger` | 196 51 43 | 196 51 43 | Dial 112 only |
+| `--canvas` | 242 242 247 | 14 14 16 | Behind the map while it loads |
+| `--glass` | white at 76% | 24 24 28 at 64% | Every floating panel |
+| `--glass-edge` | white | white | Panel rim, at 16% and 20% alpha |
+| `--ink` | 29 29 31 | 245 245 247 | Primary text |
+| `--ink-2` | 82 82 88 | 190 190 196 | Secondary text on glass |
+| `--hairline` | 29 29 31 | 245 245 247 | Dividers and control fills, at 6 to 14% alpha |
+| `--accent` | 0 102 214 | 100 175 255 | Selected state, links, the one primary action |
+| `--on-accent` | 255 255 255 | 3 24 48 | Text on accent fills |
+| `--warning` | 170 90 0 | 255 179 64 | Stale data |
+| `--danger` | 215 40 38 | 215 40 38 | Dial 112 only |
 
 Map category colors (property, assault, women's safety, vandalism, facility) are data colors. Do not reuse them for interface chrome.
 
@@ -44,10 +42,10 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 ## Tokens — Spacing & Shapes
 
 - Spacing steps: 4, 8, 12, 16, 24, 32, 48.
-- Radii: `--r-card` 12px, `--r-well` 8px, full for chips and buttons.
+- Radii: `--r-card` 20px, `--r-well` 12px, full for chips and buttons.
 - Borders: 1px hairline at 12% alpha. A card has a border or a shadow at rest, never a colored glow.
 - Shadow: `--shadow-1` for cards; `--shadow-float` for floating layers such as tooltips and popups.
-- Material: the sticky header uses blur(20px) over 72% canvas. Blur is for layers above content only.
+- Glass recipe: `--glass` with blur(28px) saturate(180%), a 1px rim and a top inner highlight. Use it for layers above the map only. Nested controls use hairline fills without blur. Glass turns nearly opaque when transparency is reduced or blur is unsupported.
 
 ## Motion
 
@@ -66,7 +64,7 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 
 ## Components
 
-- **Rail:** 208px left navigation on desktop, six-item bottom bar on phones. Views without data are marked "No data".
+- **Rail:** floating 84px glass rail with icon over label on desktop, floating six-item tab bar on phones. Views without data are marked "No data".
 - **Top bar:** view title, search, active area, Dial 112, theme.
 - **KPI strip:** exactly four cards, each with a value and one line of context, reading the same selection as the map.
 - **Publication feed:** newest first, with Show on map and the official source.
@@ -81,15 +79,17 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 
 ## Layout
 
-- At 1024px and wider the shell fills one viewport: rail, then top bar, KPI strip, workspace and status bar. Only panels scroll, never the page.
-- Overview workspace: filters 264px, map fills the remainder, feed 296px.
+- At 1024px and wider the map fills the viewport. An 84px glass rail floats left, with top bar, KPI strip, filters 272px, feed 304px and status bar floating over the map. Only panels scroll.
+- Map fits use padding measured from the panels, so markers stay in the clear area.
+- Other views float one glass sheet over the map.
+- Map popups pan and cap their height to stay inside the clear area.
 - Selecting a category or locality in any panel filters the map, KPIs, charts and records together.
-- Below 1024px the content stacks and scrolls: a swipeable KPI row, filters toggle, map, report types, then a three-item feed that links to Records.
+- Below 1024px the map stays fixed behind the page. Glass cards scroll over it, with a floating tab bar: a swipeable KPI row, filters toggle, map tools, then legend, report types and a three-item feed that links to Records.
 - On phones, filters open as a sheet above the tab bar so the map keeps its place. Records become labeled cards. Long legal evidence starts collapsed.
 - Every phone control is at least 44px tall, and form fields use 16px text so iOS does not zoom on focus. Coverage caveats are never clipped.
 - Breakpoints follow Tailwind: 640, 768, 1024, 1280. No horizontal page scroll at 390px.
 - Page zoom must stay enabled.
-- The map's full-screen button expands the map within the page. Native fullscreen is blocked in the Streamlit embed and on iPhones.
+- The map's full-screen button hides the panels. Native fullscreen is blocked in the Streamlit embed and on iPhones.
 - Under Streamlit, `app.py` reserves a 40px bottom strip with the "Built with Streamlit" mark. Keep its right 170px clear for the Community Cloud badge, and never overlap it or hide the badge.
 
 ## Do's and Don'ts
@@ -99,7 +99,7 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 - Do use the accent for selection and action only.
 - Don't show AI, accuracy or risk claims without validated data behind them.
 - Don't plot or imply incident coordinates. Sphere positions are layout only and must say so.
-- Don't add gradients, neon glows, or a second accent.
+- Don't add neon glows or a second accent. Don't put glass on glass with blur.
 - Don't animate anything that does not explain state, hierarchy or direct manipulation.
 
 ## Agent Prompt Guide
