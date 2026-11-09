@@ -117,6 +117,8 @@ function dsMapScrollGuard() {
     map.invalidateSize();
     return flyTo(...args);
   };
+  map.on('moveend', dsRenderLegend);
+  dsRenderLegend();
   map.scrollWheelZoom.disable();
   map.on('click', () => map.scrollWheelZoom.enable());
   map.getContainer().addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
@@ -142,6 +144,62 @@ document.addEventListener('keydown', event => {
 
 function centerBhopal() {
   if (map) map.flyTo([23.25, 77.417], 13, { animate: !DS_REDUCED.matches, duration: 0.8 });
+}
+
+// Map legend: counts come from the markers actually drawn, and categories with no mapped report say why.
+const DS_THANA_COLOR = '#0284c7';
+
+function dsLegendItem(letter, color, label, state, modifiers = '') {
+  const item = officialElement('span', '', `ds-legend-item ${modifiers}`);
+  item.style.setProperty('--swatch', color);
+  item.append(officialElement('b', letter), officialElement('strong', label), officialElement('span', state));
+  return item;
+}
+
+function dsRenderLegend() {
+  const legend = document.getElementById('map-legend');
+  if (!legend || !map || !markerClusterGroup) return;
+  const titles = markerClusterGroup.getLayers().map(layer => layer.options.title || '');
+  const items = Object.keys(mapCategoryEnabled).map(key => {
+    const pins = titles.filter(title => title.startsWith(mapCategoryLabels[key] + ' · ')).length;
+    const reports = currentFiltered.filter(record => record.map_categories.includes(key)).length;
+    const state = pins ? `${pins} ${pins === 1 ? 'pin' : 'pins'}`
+      : !mapCategoryEnabled[key] ? 'Hidden'
+      : reports ? (titles.length && currentFiltered.some(r => r.map_categories.includes(key) && r.map_reference) ? 'Shown under another pin' : 'No mapped location')
+      : 'No verified records';
+    return dsLegendItem(mapCategoryLetters[key], mapCategoryColors[key], mapCategoryLabels[key], state, pins ? '' : 'is-empty');
+  });
+  const thanas = policeFeatureGroup ? policeFeatureGroup.getLayers() : [], bounds = map.getBounds();
+  const inView = thanas.filter(layer => bounds.contains(layer.getLatLng())).length;
+  items.push(dsLegendItem('T', DS_THANA_COLOR, 'Thanas', thanas.length ? `${inView} of ${thanas.length} in view` : 'Hidden', `is-thana ${thanas.length ? '' : 'is-empty'}`));
+  legend.replaceChildren(...items);
+
+  const unmapped = document.getElementById('ds-unmapped');
+  const without = currentFiltered.filter(record => !record.map_reference);
+  unmapped.replaceChildren();
+  if (without.length) {
+    unmapped.append(officialElement('strong', 'Not on the map: '));
+    without.forEach(record => {
+      unmapped.append(`${record.category}, because the police post does not establish a location. `, officialSourceLink(record), ' ');
+    });
+  }
+}
+
+const dsLegacyRenderMap = window.renderMapLayers, dsLegacyRenderPolice = window.renderPoliceLayer;
+window.renderMapLayers = function () { dsLegacyRenderMap(); dsRenderLegend(); };
+window.renderPoliceLayer = function () { dsLegacyRenderPolice(); dsRenderLegend(); };
+
+function dsShowEverything() {
+  resetAllFilters();
+  for (const key of Object.keys(mapCategoryEnabled)) {
+    mapCategoryEnabled[key] = true;
+    document.getElementById('map-category-' + key).checked = true;
+  }
+  const police = document.getElementById('overlay-police-chk');
+  if (!police.checked) police.click();
+  window.renderMapLayers();
+  const points = [...markerClusterGroup.getLayers(), ...policeFeatureGroup.getLayers()].map(layer => layer.getLatLng());
+  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [24, 24], animate: !DS_REDUCED.matches });
 }
 
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
@@ -176,9 +234,11 @@ window.scrollToMap = window.navigateToMap = () => window.switchTab('overview');
 function dsSetNumber(key, value) {
   const element = document.querySelector(`[data-ds-kpi="${key}"]`);
   if (!element) return;
-  const from = Number(element.textContent), start = performance.now();
+  const from = Number(element.textContent), start = performance.now(), run = (element.dsRun || 0) + 1;
+  element.dsRun = run;  // A newer update cancels any count still animating.
   if (DS_REDUCED.matches || !Number.isFinite(from) || from === value) { element.textContent = value; return; }
   const tick = now => {
+    if (element.dsRun !== run) return;
     const progress = Math.min(1, (now - start) / 420);
     element.textContent = Math.round(from + (value - from) * (1 - Math.pow(1 - progress, 3)));
     if (progress < 1) requestAnimationFrame(tick);

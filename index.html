@@ -566,6 +566,19 @@ html body [id^="tab-pane-"]:not(.hidden){animation:ds-pane 360ms var(--ease-spri
 html body.ds-map-expanded #map-frame-container{position:fixed;inset:0;z-index:1100;padding:8px;background:rgb(var(--canvas))}
 html body.ds-map-expanded .ds-map-box{flex:1;height:auto;min-height:0}
 
+/* Map legend: every category is listed, including those with nothing to plot */
+.ds-legend{display:flex;flex-wrap:wrap;gap:4px 14px;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
+.ds-legend-item{display:inline-flex;align-items:center;gap:6px}
+.ds-legend-item b{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--swatch);color:#fff;font-size:11px;font-weight:700}
+.ds-legend-item.is-thana b{border-radius:5px}
+.ds-legend-item.is-empty b{background:transparent;color:var(--swatch);box-shadow:inset 0 0 0 1.5px var(--swatch)}
+.ds-legend-item strong{font-weight:500;color:rgb(var(--ink))}
+#ds-unmapped{margin:0;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
+#ds-unmapped:empty{display:none}
+#ds-unmapped strong{font-weight:600;color:rgb(var(--ink))}
+#ds-show-everything{padding:4px 12px;border-radius:999px;background:rgb(var(--accent));color:rgb(var(--on-accent));font-size:12px;font-weight:600}
+html body .ds-map-action{padding:4px 12px;border-radius:999px;background:rgb(var(--surface-2));color:rgb(var(--ink));font-size:12px}
+
 /* Phone and tablet patterns */
 html body :is([class*="text-[9px]"],[class*="text-[8px]"]){font-size:11px!important}
 html body #spherical-graph-canvas{touch-action:pan-y}
@@ -833,7 +846,7 @@ Occurrence-time evidence
 <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>Reported locality pins</span>
 </div>
 <!-- High-Performance OpenStreetMap Standard Engine -->
-<div class="flex items-center gap-1.5 flex-wrap"><select aria-label="Basemap" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10" id="basemap-select" onchange="setBasemap(this.value)"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select><button class="rounded-full bg-primary-container text-on-primary-container text-xs px-3 py-1" id="fit-report-pins" onclick="fitReportPins()" type="button">Show all report pins</button>
+<div class="flex items-center gap-1.5 flex-wrap"><select aria-label="Basemap" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10" id="basemap-select" onchange="setBasemap(this.value)"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select><button id="ds-show-everything" onclick="dsShowEverything()" type="button">Show everything</button><button class="ds-map-action" id="fit-report-pins" onclick="fitReportPins()" type="button">Report pins</button>
 <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-surface-container-lowest/90 border border-slate-200 dark:border-white/5 text-[10px] md:text-[11px] font-mono text-slate-700 dark:text-on-surface">
 <span class="material-symbols-outlined text-primary text-[14px]">public</span>
 <span class="font-bold">OpenStreetMap Standard</span>
@@ -876,21 +889,7 @@ Occurrence-time evidence
 <!-- Map Container -->
 <div class="relative ds-map-box overflow-hidden">
 <div class="w-full h-full" id="leaflet-map"></div>
-</div><div class="flex items-center justify-between pb-2 mb-2 text-[10px] md:text-[11px] font-mono border-b border-white/5 flex-wrap gap-2 text-on-surface-variant" id="map-legend">
-<div class="flex items-center gap-2 md:gap-3 flex-wrap">
-<span class="text-on-surface font-bold">LEGEND:</span>
-<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B] shadow-sm"></span><span class="text-on-surface">Property</span></span>
-<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#EF4444] shadow-sm"></span><span class="text-on-surface">Assault</span></span>
-<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D946EF] shadow-sm"></span><span class="text-on-surface">Women's Safety</span></span>
-<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#10B981] shadow-sm"></span><span class="text-on-surface">Vandalism</span></span>
-<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0284C7] shadow-sm"></span><span class="text-on-surface">Thana</span></span>
-<span class="flex items-center gap-1.5"><span class="w-4 h-1 rounded-full bg-[#10B981] inline-block"></span><span class="text-on-surface">Unverified corridor layer</span></span>
-</div>
-<div class="flex items-center gap-1 text-[10px]">
-<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">Clusters</span>
-<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant">Heatmap</span>
-</div>
-</div>
+</div><div aria-label="Map legend" class="ds-legend" id="map-legend"></div><p id="ds-unmapped"></p>
 <!-- Bottom Map Ribbon -->
 <div class="ds-hidden">
 <div class="flex items-center gap-2 flex-wrap">
@@ -1198,7 +1197,7 @@ Occurrence-time evidence
     applyTileUrl(BASEMAP_TILES.osm, BASEMAP_ATTRIBUTIONS.osm, 19);
 
     markerClusterGroup = L.markerClusterGroup({
-      maxClusterRadius: 30, disableClusteringAtZoom: 10,
+      maxClusterRadius: 30, disableClusteringAtZoom: 1,
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false
     }).addTo(map);
@@ -2201,7 +2200,7 @@ function downloadCSV() {
  const csv=[headings.join(','),...currentFiltered.map(r=>columns.map(c=>cell(c==='map_reference'?JSON.stringify(r.map_reference):r[c])).join(','))].join('\r\n');
  const u=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='bhopal-official-publications.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
 }
-function renderPoliceLayer(){policeFeatureGroup.clearLayers();if(!showPolice)return;for(const ps of POLICE_STATIONS){const icon=L.divIcon({html:'<div style="background:#0284c7;color:white;border:2px solid white;border-radius:8px;padding:3px;line-height:1">P</div>',className:'',iconSize:[24,24]});const popup=officialElement('div','');popup.append(officialElement('strong',ps.name));popup.append(officialElement('p','Published police facility location. Not a crime location.'));const source=officialElement('a','Official map and contacts');source.href=ps.contact_url;source.target='_blank';source.rel='noopener noreferrer';popup.append(source);L.marker([ps.lat,ps.lon],{icon}).bindPopup(popup).addTo(policeFeatureGroup);}}
+function renderPoliceLayer(){policeFeatureGroup.clearLayers();if(!showPolice)return;for(const ps of POLICE_STATIONS){const icon=L.divIcon({html:'<div style="background:#0284c7;color:white;border:2px solid white;border-radius:8px;padding:3px;line-height:1">T</div>',className:'',iconSize:[24,24]});const popup=officialElement('div','');popup.append(officialElement('strong',ps.name));popup.append(officialElement('p','Published police facility location. Not a crime location.'));const source=officialElement('a','Official map and contacts');source.href=ps.contact_url;source.target='_blank';source.rel='noopener noreferrer';popup.append(source);L.marker([ps.lat,ps.lon],{icon}).bindPopup(popup).addTo(policeFeatureGroup);}}
 window.addEventListener('DOMContentLoaded',()=>{updateKPIs();updateCharts();renderRecordsTable();});
 function setBasemap(type){currentBasemap=type;const dark=document.documentElement.classList.contains('dark');const key=type==='civic'?(dark?'civic_dark':'civic_light'):type;applyTileUrl(BASEMAP_TILES[key],BASEMAP_ATTRIBUTIONS[key],19);}
 function updateMapTheme(){if(currentBasemap==='civic')setBasemap('civic');}
@@ -2433,6 +2432,8 @@ function dsMapScrollGuard() {
     map.invalidateSize();
     return flyTo(...args);
   };
+  map.on('moveend', dsRenderLegend);
+  dsRenderLegend();
   map.scrollWheelZoom.disable();
   map.on('click', () => map.scrollWheelZoom.enable());
   map.getContainer().addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
@@ -2458,6 +2459,62 @@ document.addEventListener('keydown', event => {
 
 function centerBhopal() {
   if (map) map.flyTo([23.25, 77.417], 13, { animate: !DS_REDUCED.matches, duration: 0.8 });
+}
+
+// Map legend: counts come from the markers actually drawn, and categories with no mapped report say why.
+const DS_THANA_COLOR = '#0284c7';
+
+function dsLegendItem(letter, color, label, state, modifiers = '') {
+  const item = officialElement('span', '', `ds-legend-item ${modifiers}`);
+  item.style.setProperty('--swatch', color);
+  item.append(officialElement('b', letter), officialElement('strong', label), officialElement('span', state));
+  return item;
+}
+
+function dsRenderLegend() {
+  const legend = document.getElementById('map-legend');
+  if (!legend || !map || !markerClusterGroup) return;
+  const titles = markerClusterGroup.getLayers().map(layer => layer.options.title || '');
+  const items = Object.keys(mapCategoryEnabled).map(key => {
+    const pins = titles.filter(title => title.startsWith(mapCategoryLabels[key] + ' · ')).length;
+    const reports = currentFiltered.filter(record => record.map_categories.includes(key)).length;
+    const state = pins ? `${pins} ${pins === 1 ? 'pin' : 'pins'}`
+      : !mapCategoryEnabled[key] ? 'Hidden'
+      : reports ? (titles.length && currentFiltered.some(r => r.map_categories.includes(key) && r.map_reference) ? 'Shown under another pin' : 'No mapped location')
+      : 'No verified records';
+    return dsLegendItem(mapCategoryLetters[key], mapCategoryColors[key], mapCategoryLabels[key], state, pins ? '' : 'is-empty');
+  });
+  const thanas = policeFeatureGroup ? policeFeatureGroup.getLayers() : [], bounds = map.getBounds();
+  const inView = thanas.filter(layer => bounds.contains(layer.getLatLng())).length;
+  items.push(dsLegendItem('T', DS_THANA_COLOR, 'Thanas', thanas.length ? `${inView} of ${thanas.length} in view` : 'Hidden', `is-thana ${thanas.length ? '' : 'is-empty'}`));
+  legend.replaceChildren(...items);
+
+  const unmapped = document.getElementById('ds-unmapped');
+  const without = currentFiltered.filter(record => !record.map_reference);
+  unmapped.replaceChildren();
+  if (without.length) {
+    unmapped.append(officialElement('strong', 'Not on the map: '));
+    without.forEach(record => {
+      unmapped.append(`${record.category}, because the police post does not establish a location. `, officialSourceLink(record), ' ');
+    });
+  }
+}
+
+const dsLegacyRenderMap = window.renderMapLayers, dsLegacyRenderPolice = window.renderPoliceLayer;
+window.renderMapLayers = function () { dsLegacyRenderMap(); dsRenderLegend(); };
+window.renderPoliceLayer = function () { dsLegacyRenderPolice(); dsRenderLegend(); };
+
+function dsShowEverything() {
+  resetAllFilters();
+  for (const key of Object.keys(mapCategoryEnabled)) {
+    mapCategoryEnabled[key] = true;
+    document.getElementById('map-category-' + key).checked = true;
+  }
+  const police = document.getElementById('overlay-police-chk');
+  if (!police.checked) police.click();
+  window.renderMapLayers();
+  const points = [...markerClusterGroup.getLayers(), ...policeFeatureGroup.getLayers()].map(layer => layer.getLatLng());
+  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [24, 24], animate: !DS_REDUCED.matches });
 }
 
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
@@ -2492,9 +2549,11 @@ window.scrollToMap = window.navigateToMap = () => window.switchTab('overview');
 function dsSetNumber(key, value) {
   const element = document.querySelector(`[data-ds-kpi="${key}"]`);
   if (!element) return;
-  const from = Number(element.textContent), start = performance.now();
+  const from = Number(element.textContent), start = performance.now(), run = (element.dsRun || 0) + 1;
+  element.dsRun = run;  // A newer update cancels any count still animating.
   if (DS_REDUCED.matches || !Number.isFinite(from) || from === value) { element.textContent = value; return; }
   const tick = now => {
+    if (element.dsRun !== run) return;
     const progress = Math.min(1, (now - start) / 420);
     element.textContent = Math.round(from + (value - from) * (1 - Math.pow(1 - progress, 3)));
     if (progress < 1) requestAnimationFrame(tick);

@@ -100,6 +100,13 @@ def apply_dashboard_shell(soup, total, facilities, pending):
     what_to_see = soup.find(id='what-to-see-bar')
     what_to_see['class'] = ['ds-hidden']
     legend = soup.find(id='map-legend').extract()
+    legend.clear()
+    legend['class'] = ['ds-legend']
+    legend['aria-label'] = 'Map legend'
+    fit_button = soup.find(id='fit-report-pins')
+    fit_button.string = 'Report pins'
+    fit_button['class'] = ['ds-map-action']
+    fit_button.insert_before(_fragment('<button id="ds-show-everything" type="button" onclick="dsShowEverything()">Show everything</button>'))
     map_box = soup.find(id='leaflet-map').find_parent(class_='relative')
     map_box['class'] = ['relative', 'ds-map-box', 'overflow-hidden']
     map_card = map_box.parent
@@ -108,6 +115,7 @@ def apply_dashboard_shell(soup, total, facilities, pending):
     if telemetry:
         telemetry['class'] = ['ds-hidden']
     map_box.insert_after(legend)
+    legend.insert_after(_fragment('<p id="ds-unmapped"></p>'))
 
     analytics['class'] = ['ds-view']
     if footer:

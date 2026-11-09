@@ -156,6 +156,19 @@ html body [id^="tab-pane-"]:not(.hidden){animation:ds-pane 360ms var(--ease-spri
 html body.ds-map-expanded #map-frame-container{position:fixed;inset:0;z-index:1100;padding:8px;background:rgb(var(--canvas))}
 html body.ds-map-expanded .ds-map-box{flex:1;height:auto;min-height:0}
 
+/* Map legend: every category is listed, including those with nothing to plot */
+.ds-legend{display:flex;flex-wrap:wrap;gap:4px 14px;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
+.ds-legend-item{display:inline-flex;align-items:center;gap:6px}
+.ds-legend-item b{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--swatch);color:#fff;font-size:11px;font-weight:700}
+.ds-legend-item.is-thana b{border-radius:5px}
+.ds-legend-item.is-empty b{background:transparent;color:var(--swatch);box-shadow:inset 0 0 0 1.5px var(--swatch)}
+.ds-legend-item strong{font-weight:500;color:rgb(var(--ink))}
+#ds-unmapped{margin:0;padding:0 4px;font-size:12px;color:rgb(var(--ink-2))}
+#ds-unmapped:empty{display:none}
+#ds-unmapped strong{font-weight:600;color:rgb(var(--ink))}
+#ds-show-everything{padding:4px 12px;border-radius:999px;background:rgb(var(--accent));color:rgb(var(--on-accent));font-size:12px;font-weight:600}
+html body .ds-map-action{padding:4px 12px;border-radius:999px;background:rgb(var(--surface-2));color:rgb(var(--ink));font-size:12px}
+
 /* Phone and tablet patterns */
 html body :is([class*="text-[9px]"],[class*="text-[8px]"]){font-size:11px!important}
 html body #spherical-graph-canvas{touch-action:pan-y}

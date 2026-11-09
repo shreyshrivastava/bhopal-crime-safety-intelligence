@@ -75,6 +75,7 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 - **Filter chip:** full radius and a minimum 32px height (44px on touch). The checkbox renders as a dot; selected chips use an accent tint. Keep the native input for keyboard and assistive technology.
 - **Primary button:** `--accent` fill. One per view.
 - **Emergency link:** `--danger` solid, no glow. Always visible in the header.
+- **Map legend:** lists every category with its live count, including categories with nothing to plot. Reports without a location are named under the map, never given a guessed pin.
 - **Bars:** 8px track, accent fill, animated width.
 - **Focus:** 2px accent outline at 2px offset on every interactive element.
 

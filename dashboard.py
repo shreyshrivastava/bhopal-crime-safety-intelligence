@@ -110,7 +110,7 @@ def generate_dashboard(payload=None):
     particle_start = page.index('  const AMBIENT_PARTICLES =')
     particle_end = page.index('  function initSphericalGraph', particle_start)
     page = page[:particle_start] + '  const AMBIENT_PARTICLES = [];\n' + page[particle_end:]
-    page = page.replace('maxClusterRadius: 45,', 'maxClusterRadius: 30, disableClusteringAtZoom: 10,')
+    page = page.replace('maxClusterRadius: 45,', 'maxClusterRadius: 30, disableClusteringAtZoom: 1,')
     page = page.replace("let currentDateRange = '90';", "let currentDateRange = 'ALL';")
     page = page.replace("const matchCat = currentCategory === 'ALL' || c.category === currentCategory;", "const matchCat = currentCategory === 'ALL' || c.category === currentCategory || c.map_categories.includes(currentCategory.replace('map:', ''));")
     soup = BeautifulSoup(page,'html.parser')
