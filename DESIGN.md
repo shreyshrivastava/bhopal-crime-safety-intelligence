@@ -88,6 +88,7 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 - Every phone control is at least 44px tall, and form fields use 16px text so iOS does not zoom on focus. Coverage caveats are never clipped.
 - Breakpoints follow Tailwind: 640, 768, 1024, 1280. No horizontal page scroll at 390px.
 - Page zoom must stay enabled.
+- The map's full-screen button expands the map within the page. Native fullscreen is blocked in the Streamlit embed and on iPhones.
 - Under Streamlit, `app.py` reserves a 40px bottom strip with the "Built with Streamlit" mark. Keep its right 170px clear for the Community Cloud badge, and never overlap it or hide the badge.
 
 ## Do's and Don'ts

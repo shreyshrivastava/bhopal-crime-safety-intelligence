@@ -111,6 +111,12 @@ function dsTilt() {
 // Page scrolling must not be captured by the map until the visitor engages with it.
 function dsMapScrollGuard() {
   if (typeof map === 'undefined' || !map) return;
+  const flyTo = map.flyTo.bind(map);
+  map.flyTo = (...args) => {
+    if (document.body.dataset.view !== 'overview') window.switchTab('overview');
+    map.invalidateSize();
+    return flyTo(...args);
+  };
   map.scrollWheelZoom.disable();
   map.on('click', () => map.scrollWheelZoom.enable());
   map.getContainer().addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
@@ -119,8 +125,34 @@ function dsMapScrollGuard() {
 window.addEventListener('load', () => setTimeout(dsMapScrollGuard, 1500));
 
 
+// Native fullscreen is blocked inside the Streamlit embed and on iPhones, so the map expands to fill the page instead.
+function toggleMapFullscreen() {
+  const expanded = document.body.classList.toggle('ds-map-expanded');
+  const button = document.querySelector('button[onclick="toggleMapFullscreen()"]');
+  if (button) {
+    button.setAttribute('aria-pressed', String(expanded));
+    button.title = expanded ? 'Exit full screen' : 'Full screen';
+    button.querySelector('span').textContent = expanded ? 'fullscreen_exit' : 'fullscreen';
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() => map.invalidateSize()));
+}
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.body.classList.contains('ds-map-expanded')) toggleMapFullscreen();
+});
+
+function centerBhopal() {
+  if (map) map.flyTo([23.25, 77.417], 13, { animate: !DS_REDUCED.matches, duration: 0.8 });
+}
+
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
 const DS_VIEW_TITLES = { overview: 'Overview', analytics: 'Analytics', records: 'Records', sources: 'Data sources', hotspots: 'Hotspots', 'ai-risk': 'AI risk' };
+// A map inside a hidden view has no size and cannot move, so a fit waits until the map is shown.
+let dsFitPending = false;
+const dsLegacyFitPins = window.fitReportPins;
+window.fitReportPins = function () {
+  if (document.body.dataset.view === 'overview') dsLegacyFitPins();
+  else dsFitPending = true;
+};
 const dsLegacySwitchTab = window.switchTab, dsLegacyRender = window.renderRecordsTable;
 
 window.switchTab = function (view) {
@@ -128,7 +160,8 @@ window.switchTab = function (view) {
   officialText('ds-view-title', DS_VIEW_TITLES[view] || 'Overview');
   if (view === 'overview') {
     document.querySelectorAll('.nav-tab-btn').forEach(button => button.classList.toggle('active', button.id === 'tab-btn-overview'));
-    requestAnimationFrame(() => map.invalidateSize());
+    map.invalidateSize();
+    if (dsFitPending) { dsFitPending = false; dsLegacyFitPins(); }
   } else {
     dsLegacySwitchTab(view);
     if (view === 'analytics') requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));  // The canvas measures zero while its view is hidden.

@@ -152,6 +152,10 @@ html body .leaflet-popup-content-wrapper{box-shadow:var(--shadow-float)}
 html body [id^="tab-pane-"]:not(.hidden){animation:ds-pane 360ms var(--ease-spring)}
 @keyframes ds-pane{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+/* Expanded map */
+html body.ds-map-expanded #map-frame-container{position:fixed;inset:0;z-index:1100;padding:8px;background:rgb(var(--canvas))}
+html body.ds-map-expanded .ds-map-box{flex:1;height:auto;min-height:0}
+
 /* Phone and tablet patterns */
 html body :is([class*="text-[9px]"],[class*="text-[8px]"]){font-size:11px!important}
 html body #spherical-graph-canvas{touch-action:pan-y}

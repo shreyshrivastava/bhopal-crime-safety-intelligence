@@ -171,7 +171,7 @@ def generate_dashboard(payload=None):
     if graph: graph.insert(0,fragment(f'<p id="source-locality-coverage" class="text-xs text-on-surface-variant mb-2">{located} of {len(records)} publications have a source-named locality; {len(records)-located} unlocated publication(s) are excluded from area nodes. Percentages use all selected publications.</p>'))
     # Keep the original five panes and navigation; unsupported analytics explain exactly what is missing.
     for ident,title,detail in [
-        ('ai-risk','AI Risk Insights','Predictions need a representative history of incidents and testing against later data. Neither exists yet, so this view has no model or accuracy figure.'),
+        ('ai-risk','AI Risk Insights','Predictions need a representative history of incidents and testing against later data. Neither exists yet. No production model or accuracy claim is available.'),
         ('hotspots','Crime Hotspots','This snapshot has no verified incident coordinates, so there are no hotspots to show. The police unit that published a report is not treated as the place it happened.')]:
         pane=soup.find(id='tab-pane-'+ident)
         set_content(pane, f'<h2 class="text-xl font-bold">{title}</h2><div class="p-5 rounded-2xl bg-surface-container border border-white/10"><b>Not enough verified incident data yet</b><p class="text-sm mt-2 text-on-surface-variant">{detail}</p></div>')
@@ -187,7 +187,7 @@ def generate_dashboard(payload=None):
         card=charts.find_parent(class_=lambda v:v and 'rounded-[24px]' in v)
         set_content(card,'<h3 class="font-bold mb-3">Publications by source-named locality</h3><div id="sector-bar-container"></div>')
     for marker,title,detail in [
-        ('chart2-day-pct','Time of occurrence · source evidence','Event times are in IST. A post\'s date does not say when the event happened, so unknown and conflicting times stay listed.'),
+        ('chart2-day-pct','Time of occurrence · source evidence','Event times are in IST. Publication dates do not determine event times, so unknown and conflicting times stay listed.'),
         ('sev-count-2','Incident severity · source evidence','Police reports give no severity score. The legal sections they cite are listed below and are not turned into a rating.'),
         ('modalities-container','Publication categories','')]:
         node=soup.find(id=marker)
@@ -262,6 +262,8 @@ def generate_dashboard(payload=None):
     for ident in ['sphere-entropy-score','metric-avg-sev']:
         set_content(soup.find(id=ident),'Unavailable')
     map_header=soup.find(id='map-frame-container').find('button',attrs={'title':'Center on Bhopal'}).parent
+    center_icon=soup.find('button',attrs={'title':'Center on Bhopal'}).find('span')
+    center_icon.string='center_focus_strong'
     map_header.insert(0,fragment('<button id="fit-report-pins" type="button" onclick="fitReportPins()" class="rounded-full bg-primary-container text-on-primary-container text-xs px-3 py-1">Show all report pins</button>'))
     map_header.insert(0,fragment('<select id="basemap-select" aria-label="Basemap" onchange="setBasemap(this.value)" class="rounded-full bg-surface-container text-on-surface text-xs px-3 py-1 border border-white/10"><option value="osm">OpenStreetMap</option><option value="civic">Civic</option><option value="satellite">Satellite</option></select>'))
     # Keep legacy JS and the map engine. Replace only the data-specific render functions.
