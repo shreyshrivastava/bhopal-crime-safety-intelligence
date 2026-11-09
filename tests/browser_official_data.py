@@ -91,8 +91,8 @@ async def verify():
             await page.locator('#global-search-input').fill('')
             nav=await page.locator('.nav-tab-btn').evaluate_all("es=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,top:e.getBoundingClientRect().top,padding:getComputedStyle(e).padding}))")
             assert max(n['width'] for n in nav)-min(n['width'] for n in nav)<1,nav
-            assert len({n['height'] for n in nav})==1 and nav[0]['height']==44,nav
-            assert len({n['top'] for n in nav})==1,nav
+            assert len({n['height'] for n in nav})==1 and nav[0]['height']>=44,nav
+            assert len({n['top'] for n in nav}) in (1,len(nav)),nav  # One rail column or one bottom row.
             assert len({n['padding'] for n in nav})==1,nav
             for tab in ['analytics','ai-risk','hotspots','records','sources']:
                 await page.locator('#tab-btn-'+tab).click()
@@ -109,6 +109,7 @@ async def verify():
             assert all(r['IncidentLatitude']=='' and r['Severity']=='' for r in rows)
             await page.locator('#tab-btn-analytics').click()
             assert await page.locator('#occurrence-evidence').get_by_text('Exact time: 1',exact=True).is_visible()
+            if width<1024: await page.locator('.ds-collapse-toggle').click()  # Phones start this long list collapsed.
             assert await page.locator('#severity-evidence').get_by_text('NDPS Act, sections 8/21 · 1 publication(s)',exact=True).is_visible()
             await page.locator('#sphere-spin-toggle').click()
             assert not await page.evaluate('autoSpinSphere')

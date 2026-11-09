@@ -1,24 +1,24 @@
 # Bhopal Safety Intelligence
 
-An interactive Bhopal safety dashboard built with Streamlit, Leaflet and a Material Active interface. The default app uses reviewed public police publications and published geographic references. It does not generate synthetic incidents or run the demonstration forecasting model.
+An interactive Bhopal safety dashboard built with Streamlit and Leaflet. The default app uses reviewed public police publications and published geographic references. It does not generate synthetic incidents or run the demonstration forecasting model.
 
-**Current snapshot:** 10 official publications, 48 published police-facility locations, and 8 approximate locality-reference pins. These selected historical reports are not a complete crime register or a live police feed.
+Current snapshot: 10 official publications, 48 published police-facility locations, and 8 approximate locality-reference pins. These selected historical reports are not a complete crime register or a live police feed.
 
 ## What the dashboard shows
 
 - An interactive map with OpenStreetMap, Civic and Satellite basemaps, dark/light themes, and independent police-facility visibility.
 - Source-linked locality pins, colored by property, assault and other reported offenses/enforcement actions. Related recovery updates share a pin.
 - Women's/girls' safety and vandalism filters that retain missing-data states instead of inventing records.
-- A rotatable 3D chart and bars based on **source-named localities and publication counts**. Police units such as Bhopal Crime Branch are kept as reporting metadata, not area nodes. Chart positions are illustrative layout, not geographic coordinates.
+- A rotatable 3D chart and bars based on source-named localities and publication counts. Police units such as Bhopal Crime Branch are kept as reporting metadata, not area nodes. Chart positions are illustrative layout, not geographic coordinates.
 - Search, category/locality/date filters, source records, and CSV export with provenance and missing values preserved.
 - Occurrence-time evidence distinguishing exact times, reported windows, unspecified times and conflicting chronology.
 - Published offense/legal-section evidence in the severity panel. No numeric severity scores are assigned.
 
-The original navigation and controls remain available. AI risk estimates, incident-density heatmaps, safe-corridor claims and neighborhood safety ratings await suitable verified data and validation; the production app does not fill these gaps with simulated values.
+AI risk estimates, incident-density heatmaps, safe-corridor claims and neighborhood safety ratings await suitable verified data and validation; the production app does not fill these gaps with simulated values.
 
 ## Understand the map before using it
 
-**Pins are approximate locality references, not exact crime-scene GPS coordinates.** The reports do not establish precise incident coordinates. Each popup identifies the reference landmark, its geographic source, the precision limit and the linked official police publication(s).
+Pins mark approximate localities. They are not crime-scene GPS coordinates. The reports do not establish precise incident coordinates. Each popup identifies the reference landmark, its geographic source, the precision limit and the linked official police publication(s).
 
 The snapshot has nine locatable publications represented by eight grouped pins. Two Kolar publications update the same investigation. One additional girls' safety report has no established publishable occurrence locality and remains unpinned. Victim/informant residential addresses and the reporting police station are not substituted for its crime location.
 
@@ -104,7 +104,7 @@ With the local app running on port 8507, run the browser checks:
 .venv/bin/python tests/browser_official_data.py
 ```
 
-**Validation:** 21 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
+21 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
 
 See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artifacts/browser-results.json) and [unit-test log](artifacts/unit-tests.txt). Screenshots and downloaded source-review material remain local and are excluded from Git.
 
@@ -113,8 +113,11 @@ See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artif
 | Component | Purpose |
 | --- | --- |
 | `app.py` | Default Streamlit host for official data |
-| `dashboard.py` | Connects reviewed facts and geographic references to the existing dashboard shell |
-| `ui_builder.py` | Original Material Active HTML/CSS/Leaflet shell |
+| `dashboard.py` | Connects reviewed facts and geographic references to the dashboard |
+| `dashboard_shell.py` | Arranges the page into the dashboard layout: rail, KPI strip and panels |
+| `DESIGN.md` | Colors, type, layout and motion rules. Read before changing the UI |
+| `static/design-system.css`, `static/design-motion.js` | Dashboard styling, phone layouts, 3D chart and motion |
+| `ui_builder.py` | Base HTML, CSS and Leaflet page |
 | `static/official-dashboard.js` | Official-record rendering, source filters, locality pins and evidence panels |
 | `data/official_sources.py` | Snapshot validation and reviewed publication refresh |
 | `data/reviewed_facts.py` | Reviewed source facts and map-category tags |

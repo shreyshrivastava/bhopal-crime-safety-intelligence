@@ -4,12 +4,14 @@ import json
 import re
 from pathlib import Path
 from collections import Counter
+from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 from bs4 import BeautifulSoup
 from data.official_sources import load_snapshot
 from data.reviewed_facts import MAP_CATEGORIES
 from data.update_monitor import load_report
+from dashboard_shell import apply_dashboard_shell
 from ui_builder import generate_material_active_html
 
 FACILITIES = Path(__file__).resolve().parent/'data/official/stations.json'
@@ -39,6 +41,27 @@ def load_map_references():
     except (OSError,ValueError,TypeError,KeyError):return {}
 
 
+def human_time(value):
+    """Format an ISO timestamp for readers, in Bhopal's time zone."""
+    try:
+        moment = datetime.fromisoformat(value).astimezone(timezone(timedelta(hours=5, minutes=30)))
+    except (TypeError, ValueError):
+        return 'Unavailable'
+    return f"{moment.day} {moment:%b %Y}, {moment:%I:%M %p} IST".replace(', 0', ', ', 1)
+
+
+# Tailwind's Material role names resolve to the DESIGN.md tokens, so existing utilities follow the theme.
+DESIGN_TOKEN_MAP = {
+    'background':'canvas','surface':'canvas','surface-dim':'canvas','surface-container-lowest':'canvas',
+    'surface-container-low':'surface','surface-container':'surface-2','surface-variant':'surface-2',
+    'surface-container-high':'surface-3','surface-container-highest':'surface-3','surface-bright':'surface-3',
+    'on-background':'ink','on-surface':'ink','on-surface-variant':'ink-2','outline':'ink-3','outline-variant':'hairline',
+    'primary':'accent','primary-container':'accent','surface-tint':'accent','on-primary':'on-accent','on-primary-container':'on-accent',
+    'tertiary':'positive','tertiary-fixed-dim':'positive',
+    'secondary':'ink-2','secondary-fixed-dim':'ink-2','secondary-container':'surface-2','on-secondary-container':'ink','on-secondary':'ink',
+}
+
+
 def _json(value):
     return json.dumps(value, ensure_ascii=False, allow_nan=False).replace('<', '\\u003c')
 
@@ -51,7 +74,7 @@ def generate_dashboard(payload=None):
     # The legacy engines receive no fabricated incident rows, and none of the AI engines run.
     empty = pd.DataFrame(columns=['neighborhood','category','offense_type','severity'])
     page = generate_material_active_html(empty, pd.DataFrame(),
-        refresh_date=payload.get('retrieved_at') or 'Unavailable',
+        refresh_date=human_time(payload.get('retrieved_at')),
         ingestion_metadata={'status':'Official Bhopal Police publications · historical snapshot' if rows else 'Data unavailable · no synthetic fallback','is_live':False},
         validation_report={'quality_score':100 if rows else 0,'valid_records':len(rows),'dropped_records':0},
         temporal_metrics={}, model_results={'metrics':{'r2':0},'sector_predictions':[], 'feature_importances':{}},
@@ -101,14 +124,14 @@ def generate_dashboard(payload=None):
             if text.parent.name not in ('script','style'): text.replace_with(new)
     for old,new in {
         '3D City Safety Distribution':'3D Publication Distribution',
-        'Interactive 3D view showing crime levels and safety across 9 areas in Bhopal. Drag to rotate the globe.':'Reviewed publications by source-named locality. Police units are excluded. Drag to rotate; positions are chart layout, not geographic coordinates.',
+        'Interactive 3D view showing crime levels and safety across 9 areas in Bhopal. Drag to rotate the globe.':'Reviewed posts by the locality they name. Police units are left out. Drag to rotate. Positions are chart layout only, not places on a map.',
         'Highest Crime Area':'Most represented source locality',
         'Crime Breakdown by Type':'Publication categories','4 IPC Categories':'Reviewed source categories',
         'Area Safety Balance Index':'Coverage limitations', 'Spread score across 9 Bhopal areas':'Selected publications; not a measure of safety',
-        'Balanced Distribution':'Not a citywide incident census',
+        'Balanced Distribution':'Not a count of all crime in the city',
         'Crime Trends & Area Breakdown':'Source Trends & Locality Breakdown',
-        'Crime counts by area, time of day, and severity — all charts update automatically when you change filters.':'Counts use reviewed source facts. Exact times, reported windows and unknown times are separate; no numeric severity is assigned.',
-        'Crime Records':'Crime Records · Source Reports',
+        'Crime counts by area, time of day, and severity — all charts update automatically when you change filters.':'Counts come from reviewed police posts. Exact times, time windows and unknown times are counted separately. No severity score is assigned.',
+        'Crime Records':'Records',
         'Sector / Locality':'Reporting unit','Date':'Published date',
         'Automated 24h rolling cache':'Reviewed official snapshot; explicit refresh',
         '80% Accurate':'Not yet validated',
@@ -116,9 +139,9 @@ def generate_dashboard(payload=None):
         '0 alerts':'Awaiting data','0 areas':'Awaiting data',
         '10 PS • 3 Corridors • 9 AI Halos • 0 Hotspots':f'{len(facilities)} published facilities · incident layers await data',
         'Bhopal Area Safety Ratings':'Locality coverage · risk scores unavailable',
-        'Crime Incident Records':'Crime Records · Official Source Reports',
-        'Reported crime incidents across Bhopal. Tap any row to see it on the map.':'Reviewed police publications. Open the official source for details; missing incident coordinates are not inferred.',
-        'Tap any record to see its exact location on the map':'Source links open the official publication; reporting units are not incident locations.',
+        'Crime Incident Records':'Official source reports',
+        'Reported crime incidents across Bhopal. Tap any row to see it on the map.':'Reviewed police posts. Open the official source for details. Coordinates the source does not give are left blank.',
+        'Tap any record to see its exact location on the map':'Links open the official post. The police unit that reported a case is not its location.',
         'Quality: 100% Validated':'Schema checked · coverage incomplete',
         'Area':'Source locality', 'Date Range':'Publication date range', 'Time of Day':'Occurrence-time evidence',
         'Safe Corridor':'Unverified corridor layer',
@@ -130,17 +153,28 @@ def generate_dashboard(payload=None):
     update_report = load_report()
     checked_at = payload.get('retrieved_at') or ''
     pending = len(update_report['pending_review']) if update_report else None
-    status = fragment(f'<div id="official-update-status" role="status" data-checked-at="{html.escape(checked_at,quote=True)}" class="px-4 py-3 rounded-2xl bg-surface-container border border-white/10 text-xs">Daily official-source check · Last successful refresh: {html.escape(checked_at or "Unavailable")} · '+(f'{pending} unreviewed public posts awaiting review.' if pending is not None else 'Discovery status unavailable.')+'</div>')
+    status = fragment(f'<div id="official-update-status" role="status" data-checked-at="{html.escape(checked_at,quote=True)}" class="px-4 py-3 rounded-2xl bg-surface-container border border-white/10 text-xs">Official source checked daily. Last refresh: {html.escape(human_time(checked_at))}. '+(f'{pending} public posts are waiting for review.' if pending is not None else 'Discovery status unavailable.')+'</div>')
     soup.find('header').insert_after(status)
+    for badge in soup.find_all('span',string='M3 AI'): badge.decompose()
+    subtitle = soup.find(string='Bhopal Crime & Safety Intelligence Portal')
+    if subtitle: subtitle.replace_with('Reviewed official publications')
+    for chip in soup.find_all('span',string=lambda s:s and s.startswith('Bhopal Grid:')): chip.decompose()
+    soup.title.string = 'Bhopal Safety Intelligence'
+    soup.find('meta',attrs={'name':'viewport'})['content'] = 'width=device-width, initial-scale=1.0'
+    roboto = soup.find('link',href=lambda h:h and 'Roboto+Flex' in h)
+    if roboto: roboto.decompose()
+    tokens = soup.new_tag('script',id='design-tokens')
+    tokens.string = 'Object.assign(tailwind.config.theme.extend.colors,'+_json({k:f'rgb(var(--{v}) / <alpha-value>)' for k,v in DESIGN_TOKEN_MAP.items()})+');'
+    soup.find(id='tailwind-config').insert_after(tokens)
     graph=soup.find(id='spherical-distribution-card')
     located=sum(bool(r['neighborhood']) for r in records)
     if graph: graph.insert(0,fragment(f'<p id="source-locality-coverage" class="text-xs text-on-surface-variant mb-2">{located} of {len(records)} publications have a source-named locality; {len(records)-located} unlocated publication(s) are excluded from area nodes. Percentages use all selected publications.</p>'))
     # Keep the original five panes and navigation; unsupported analytics explain exactly what is missing.
     for ident,title,detail in [
-        ('ai-risk','AI Risk Insights','The real publications are connected. Predictions need a representative historical incident series and forward validation. No production model or accuracy claim is available.'),
-        ('hotspots','Crime Hotspots','Cluster and heatmap controls remain on the map. This snapshot has no verified incident coordinates; publication reporting units must not be plotted as incident locations.')]:
+        ('ai-risk','AI Risk Insights','Predictions need a representative history of incidents and testing against later data. Neither exists yet, so this view has no model or accuracy figure.'),
+        ('hotspots','Crime Hotspots','This snapshot has no verified incident coordinates, so there are no hotspots to show. The police unit that published a report is not treated as the place it happened.')]:
         pane=soup.find(id='tab-pane-'+ident)
-        set_content(pane, f'<h2 class="text-xl font-bold">{title}</h2><div class="p-5 rounded-2xl bg-surface-container border border-white/10"><b>Awaiting sufficient real incident data</b><p class="text-sm mt-2 text-on-surface-variant">{detail}</p></div>')
+        set_content(pane, f'<h2 class="text-xl font-bold">{title}</h2><div class="p-5 rounded-2xl bg-surface-container border border-white/10"><b>Not enough verified incident data yet</b><p class="text-sm mt-2 text-on-surface-variant">{detail}</p></div>')
     sources=soup.find(id='tab-pane-sources')
     links=''.join(f'<li class="py-2"><a class="text-primary underline" target="_blank" rel="noopener noreferrer" href="{html.escape(r["source_url"],quote=True)}">Publication #{r["source_post_id"]} · {r["publication_date"]} · {html.escape(r["reporting_unit"])}</a></li>' for r in rows)
     set_content(sources,f'''<h2 class="text-xl font-bold">Data Sources &amp; Quality</h2><p>{len(rows)} reviewed official publications are selected historical records, not a complete crime register. Related updates retain case-group IDs in CSV export. Locality, occurrence-time and legal-section facts are checked against the original report text on refresh; source inconsistencies stay flagged. Missing data never means zero crime.</p><p>Snapshot fetched: {html.escape(payload.get('retrieved_at') or 'Unavailable')}</p><p>{len(facilities)} real public police facilities from the map embedded by <a class="text-primary underline" href="https://bhopal.mppolice.gov.in/" target="_blank" rel="noopener">Bhopal Police</a>. Facility markers are not incident locations. Some facilities lie outside the urban commissionerate; this is the scope of the published map.</p><p>Contacts: <a class="text-primary underline" href="https://bhopal.mppolice.gov.in/contact/" target="_blank" rel="noopener">Official directory</a>. Safe-corridor claims have no verified source and are not drawn.</p><ul>{links}</ul>''')
@@ -153,8 +187,8 @@ def generate_dashboard(payload=None):
         card=charts.find_parent(class_=lambda v:v and 'rounded-[24px]' in v)
         set_content(card,'<h3 class="font-bold mb-3">Publications by source-named locality</h3><div id="sector-bar-container"></div>')
     for marker,title,detail in [
-        ('chart2-day-pct','Time of occurrence · source evidence','Selected event/action times in IST. Publication dates do not determine occurrence times; unknown and conflicting values stay visible.'),
-        ('sev-count-2','Incident severity · source evidence','The police reports publish no numeric severity scores. Reported legal sections are shown below as evidence, not converted into a 1–5 rating.'),
+        ('chart2-day-pct','Time of occurrence · source evidence','Event times are in IST. A post\'s date does not say when the event happened, so unknown and conflicting times stay listed.'),
+        ('sev-count-2','Incident severity · source evidence','Police reports give no severity score. The legal sections they cite are listed below and are not turned into a rating.'),
         ('modalities-container','Publication categories','')]:
         node=soup.find(id=marker)
         if node:
@@ -185,6 +219,9 @@ def generate_dashboard(payload=None):
     .official-report-tooltip{font-size:11px;font-weight:600}
     """
     soup.head.append(style)
+    design_style = soup.new_tag('style',id='design-system')
+    design_style.string = (Path(__file__).resolve().parent/'static/design-system.css').read_text()
+    soup.head.append(design_style)
     # The sector risk table stays in place as a coverage table, with no invented score.
     heading=soup.find(string=lambda s:s and 'Sector Safety' in s)
     if heading: heading.replace_with('Locality coverage · risk scores unavailable')
@@ -194,7 +231,7 @@ def generate_dashboard(payload=None):
     table=soup.find(id='records-table-body').find_parent('table')
     set_content(table.find('thead'),'<tr>'+''.join('<th class="py-2 px-3 text-left">'+x+'</th>' for x in ['Publication ID','Published date','Source locality','Reporting police unit','Category','Occurrence / action time (IST)','Reported legal basis','Official source'])+'</tr>')
     notice=fragment('<div id="official-map-coverage" class="px-4 py-3 rounded-2xl bg-surface-container border border-white/10 text-xs">Real police facilities are mapped below. These are not crime locations. Crime/report pins use published locality reference points and link to official evidence. They are approximate area references, not incident GPS. Related reports share one pin. Women’s safety includes an unlocated source report; vandalism has no verified records loaded. Coverage is incomplete.</div>')
-    soup.find(id='map-frame-container').insert(0,notice)
+    soup.find(id='map-frame-container').append(notice)
     legend=soup.find(id='leaflet-map').find_parent(class_=lambda v:v and 'rounded-[24px]' in v)
     legend.insert(0,fragment('<div id="map-category-controls" class="flex flex-wrap gap-2 text-xs mb-3">'+''.join(f'<label class="px-2 py-1 rounded-full border border-white/10"><input type="checkbox" checked id="map-category-{key}" onchange="toggleMapCategory(\'{key}\',this.checked)"> {label} <span id="map-count-{key}"></span></label>' for key,label in [('property','Property'),('assault','Assault'),('women','Women’s safety'),('vandalism','Vandalism'),('other','Other official reports')])+'</div>'))
     date_select=soup.find(id='date-range-filter-select')
@@ -231,6 +268,10 @@ def generate_dashboard(payload=None):
     script=soup.new_tag('script')
     script.string=(Path(__file__).resolve().parent/'static/official-dashboard.js').read_text()
     soup.body.append(script)
+    apply_dashboard_shell(soup,len(records),len(facilities),pending)
+    motion = soup.new_tag('script',id='design-motion')
+    motion.string = (Path(__file__).resolve().parent/'static/design-motion.js').read_text()
+    soup.body.append(motion)
     for legacy_script in soup.find_all('script'):
         if legacy_script.string and '// Nightly Auto-Refresh:' in legacy_script.string:
             legacy_script.string = legacy_script.string[:legacy_script.string.index('// Nightly Auto-Refresh:')]

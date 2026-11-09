@@ -146,6 +146,6 @@ function updateFreshnessStatus(){
  const e=document.getElementById('official-update-status');if(!e)return;
  const checked=new Date(e.dataset.checkedAt),age=Date.now()-checked.getTime();
  let state=e.querySelector('.freshness-state');if(!state){state=officialElement('strong','','freshness-state block mt-1');e.append(state);}
- state.textContent=Number.isNaN(age)?'Refresh status unavailable.':age>48*60*60*1000?'Refresh overdue: last successful source check is over 48 hours old. Saved verified data remains available.':'Snapshot checked within the last 48 hours. Next automated check is scheduled daily at 12:00 a.m. IST.';
+ state.textContent=Number.isNaN(age)?'Refresh status unavailable.':age>48*60*60*1000?'Refresh overdue. The last source check was more than 48 hours ago, so this is the last verified data.':'Checked in the last 48 hours. The next check runs at 12:00 a.m. IST.';
 }
 window.addEventListener('DOMContentLoaded',()=>{updateFreshnessStatus();setInterval(updateFreshnessStatus,60000);});
