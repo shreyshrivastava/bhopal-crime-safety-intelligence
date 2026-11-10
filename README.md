@@ -1,13 +1,33 @@
 # Bhopal Safety Intelligence
 
-An interactive Bhopal safety dashboard built with Streamlit and Leaflet. The default app uses reviewed public police publications and published geographic references. It does not generate synthetic incidents or run the demonstration forecasting model.
+A map of what Bhopal Police have published about crime in the city. Each report links back to its original post. Built with Streamlit and Leaflet.
 
+<p align="center">
+  <img src="docs/media/dashboard-demo.gif" width="860" alt="Walkthrough: opening a pin's source, turning off a category, filtering by report type, and viewing analytics and records">
+</p>
+
+<p align="center"><a href="https://bhopalcrimesafety.streamlit.app/">Open the live app</a> · <a href="docs/media/dashboard-demo.mp4">Watch the video</a></p>
+
+The app uses reviewed public police publications and published map references. It does not generate incidents or run the demonstration forecasting model.
+
+## How it works
+
+1. A GitHub Actions job checks the official Bhopal Police site once a day. It is scheduled for 12:00 a.m. IST, and GitHub often starts it a few hours later.
+2. New posts go into a review queue. They are counted, but they stay out of the map and charts until someone reviews them.
+3. Each reviewed post is recorded with its locality, event time, legal sections and category, as stated by the source.
+4. On the map, a pin marks the published area or landmark for a report. Click it to read the details and open the official post.
+5. Category switches, filters and search change the map, the top figures, the charts and the records together.
+
+<p align="center">
+  <img src="preview.png" width="860" alt="Overview screen with the Bhopal map behind panels for filters, key figures and the latest publications">
+</p>
 
 ## What the dashboard shows
 
-- An interactive map with OpenStreetMap, Civic and Satellite basemaps, dark/light themes, and independent police-facility visibility.
+- A full-screen map with Civic, OpenStreetMap and Satellite basemaps, dark and light themes, and a switch for police facilities (thanas).
+- A legend that lists every category with its count, and a Show everything button.
 - Source-linked locality pins, colored by property, assault and other reported offenses/enforcement actions. Related recovery updates share a pin.
-- Women's/girls' safety and vandalism filters that retain missing-data states instead of inventing records.
+- Women's and girls' safety and vandalism filters.
 - A rotatable 3D chart and bars based on source-named localities and publication counts. Police units such as Bhopal Crime Branch are kept as reporting metadata, not area nodes. Chart positions are illustrative layout, not geographic coordinates.
 - Search, category/locality/date filters, source records, and CSV export with provenance and missing values preserved.
 - Occurrence-time evidence distinguishing exact times, reported windows, unspecified times and conflicting chronology.
@@ -34,7 +54,7 @@ Map category tags can overlap. Publication counts, grouped reference pins and po
 
 ## Sources and provenance
 
-Crime/report content comes from the [Commissionerate of Police Bhopal](https://bhopal.mppolice.gov.in/) through its public publication pages and WordPress endpoint. The snapshot covers publications dated April 16–October 10, 2026; selected events can predate publication.
+Crime/report content comes from the [Commissionerate of Police Bhopal](https://bhopal.mppolice.gov.in/) through its public publication pages and WordPress endpoint. The snapshot covers publications dated April 16 to October 10, 2026; selected events can predate publication.
 
 - [`data/official/publications.json`](data/official/publications.json): source IDs, exact publication URLs, publication dates, related-case groups, response checksums and reviewed facts.
 - [`data/reviewed_facts.py`](data/reviewed_facts.py): manually reviewed locality, time and legal-section facts with short source evidence snippets. An explicit refresh checks these snippets against the official article text and stops if the evidence changes.
@@ -105,7 +125,7 @@ With the local app running on port 8507, run the browser checks:
 
 21 automated tests passed, plus browser checks at 1400 × 900 and 390 × 844. Checks cover source validation, changed-source rejection, missing-data behavior, model isolation, 3D locality semantics, map categories, real facility toggles, occurrence-time filters, basemaps, theme controls, navigation and CSV exports. Both viewports had no JavaScript page errors or horizontal page overflow.
 
-See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artifacts/browser-results.json) and [unit-test log](artifacts/unit-tests.txt). Screenshots and downloaded source-review material remain local and are excluded from Git.
+See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artifacts/browser-results.json) and [unit-test log](artifacts/unit-tests.txt). Test screenshots and downloaded source-review material stay local and are excluded from Git.
 
 ## Architecture and development
 
@@ -126,7 +146,7 @@ See the [local test report](docs/LOCAL_TEST_RESULTS.md), [browser results](artif
 | `scripts/` | Refresh and HTML export commands |
 | `tests/` | Automated source/data checks and browser verification |
 
-Preserve the existing interface, search, navigation, responsive layout and CSV export when changing data connections. Keep publication dates, occurrence dates, reporting police units, source localities and reference coordinates separate. Check desktop and mobile screenshots after frontend changes. Do not reintroduce simulated data fallbacks, unsupported live-feed badges, named unverified person profiles or fixed accuracy claims.
+Read [DESIGN.md](DESIGN.md) before changing the interface. Keep search, navigation, the phone layouts and CSV export working when you change data connections. Keep publication dates, occurrence dates, reporting police units, source localities and reference coordinates separate. Check desktop and mobile screenshots after frontend changes. Do not reintroduce simulated data fallbacks, unsupported live-feed badges, named unverified person profiles or fixed accuracy claims.
 
 ## Synthetic training/demo experiments
 

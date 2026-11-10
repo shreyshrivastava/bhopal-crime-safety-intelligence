@@ -38,7 +38,7 @@ function renderSphericalGraph() {
   if (!sphereCtx || !sphereCanvas) return;
   const ctx = sphereCtx, w = sphereWidth, h = sphereHeight, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.4;
   const project = dsProjector(cx, cy, R, sphereYaw, spherePitch);
-  const accent = dsThemeColor('--accent'), ink = dsThemeColor('--ink');
+  const ink = dsThemeColor('--ink');
   ctx.clearRect(0, 0, w, h);
   dsDrawLattice(ctx, project, R, 1.15);
   const nodes = SPHERE_SECTORS.map(sector => {
@@ -48,17 +48,20 @@ function renderSphericalGraph() {
   }).sort((a, b) => a.projected.z - b.projected.z);
   for (const node of nodes) {
     const p = node.projected, front = p.z >= 0, radius = (node.nodeRadius || 8) * p.scale * (node === hoveredSphereNode ? 1.18 : 1);
-    ctx.fillStyle = `rgba(${accent},${front ? 0.92 : 0.22})`;
+    ctx.globalAlpha = front ? 0.95 : 0.25;
+    ctx.fillStyle = node.color;
     ctx.beginPath();
     ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
     ctx.fill();
     if (front && node.count) {
-      ctx.strokeStyle = `rgba(${accent},.35)`;
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = node.color;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(p.x, p.y, radius + 4, 0, Math.PI * 2);
       ctx.stroke();
     }
+    ctx.globalAlpha = 1;
     if (front) {
       ctx.fillStyle = `rgba(${ink},${node === hoveredSphereNode ? 1 : 0.82})`;
       ctx.font = '600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
@@ -230,6 +233,20 @@ function dsShowEverything() {
   dsFitPoints(points, !DS_REDUCED.matches);
 }
 
+// A report category keeps its map color in every chart; localities cycle through a bright set.
+const DS_BAR_COLORS = ['#fb7185', '#2fcf9a', '#fb923c', '#a78bfa', '#f472b6', '#22d3ee', '#facc15', '#f87171'];
+function dsCategoryColor(category) {
+  const record = ALL_CRIMES.find(item => item.category === category);
+  return record ? mapCategoryColors[record.map_categories.includes('assault') ? 'assault' : record.map_categories[0]] : DS_BAR_COLORS[0];
+}
+const dsLegacyBars = window.officialBars;
+window.officialBars = function (id, key) {
+  dsLegacyBars(id, key);
+  document.querySelectorAll(`#${id} .official-bar-row`).forEach((row, index) => {
+    row.querySelector('.official-bar-fill').style.background = key === 'category' ? dsCategoryColor(row.querySelector('.official-bar-label').textContent) : DS_BAR_COLORS[index % DS_BAR_COLORS.length];
+  });
+};
+
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
 const DS_VIEW_TITLES = { overview: 'Overview', analytics: 'Analytics', records: 'Records', sources: 'Data sources', hotspots: 'Hotspots', 'ai-risk': 'AI risk' };
 // Fits keep markers clear of the floating panels.
@@ -337,7 +354,9 @@ function dsRenderFeed() {
   const rows = [...currentFiltered].sort((a, b) => b.date.localeCompare(a.date));
   feed.replaceChildren(...rows.map(record => {
     const item = document.createElement('li');
-    item.append(officialElement('time', record.date), officialElement('strong', record.neighborhood || 'Locality not established'), officialElement('span', record.category));
+    const category = officialElement('span', record.category);
+    category.style.setProperty('--dot', dsCategoryColor(record.category));
+    item.append(officialElement('time', record.date), officialElement('strong', record.neighborhood || 'Locality not established'), category);
     const actions = officialElement('div', '', 'ds-feed-actions');
     if (record.map_reference) {
       const show = officialElement('button', 'Show on map');

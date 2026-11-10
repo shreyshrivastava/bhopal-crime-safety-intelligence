@@ -1,31 +1,32 @@
-# Bhopal Safety Intelligence — Style Reference
+# Bhopal Safety Intelligence style reference
 
-**Direction: glass over the city.** This is a dashboard application. The map fills the screen and every panel floats over it as Apple-style glass, as in Apple Maps. Structure follows open dashboard patterns from shadcn/ui and listings on 21st.dev.
+This is a dashboard application. The map fills the screen and every panel floats over it as glass, similar to Apple Maps. The layout borrows common dashboard patterns seen on shadcn/ui and 21st.dev; no code was copied from them.
 
-**Anchor:** the full-bleed map under glass panels.
 
 Implementation: tokens and components in `static/design-system.css`, motion and 3D in `static/design-motion.js`. `dashboard.py` injects both. Regenerate `index.html` with `scripts/export_official_html.py`.
 
-## Tokens — Colors
+## Colors
 
 Values are RGB triples on `:root` (light) and `html.dark` (dark), used as `rgb(var(--token) / alpha)`. Tailwind's Material role names are mapped onto them in `dashboard.py`, so utility classes follow the theme.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--canvas` | 242 242 247 | 14 14 16 | Behind the map while it loads |
-| `--glass` | white at 76% | 24 24 28 at 64% | Every floating panel |
+| `--canvas` | 242 242 247 | 16 14 15 | Behind the map while it loads |
+| `--glass` | white at 76% | 26 22 24 at 58% | Every floating panel |
 | `--glass-edge` | white | white | Panel rim, at 16% and 20% alpha |
 | `--ink` | 29 29 31 | 245 245 247 | Primary text |
 | `--ink-2` | 82 82 88 | 190 190 196 | Secondary text on glass |
 | `--hairline` | 29 29 31 | 245 245 247 | Dividers and control fills, at 6 to 14% alpha |
-| `--accent` | 0 102 214 | 100 175 255 | Selected state, links, the one primary action |
-| `--on-accent` | 255 255 255 | 3 24 48 | Text on accent fills |
+| `--accent` | 190 24 44 | 255 118 118 | Selected state, links, the one primary action |
+| `--on-accent` | 255 255 255 | 42 5 8 | Text on accent fills |
 | `--warning` | 170 90 0 | 255 179 64 | Stale data |
 | `--danger` | 215 40 38 | 215 40 38 | Dial 112 only |
 
-Map category colors (property, assault, women's safety, vandalism, facility) are data colors. Do not reuse them for interface chrome.
+Red is the only interface color: selected states, links, KPI tints and primary actions (`--cta`). Do not use blue in interface elements. The map stays untinted, and map markers keep their own colors.
 
-## Tokens — Typography
+Map category colors (property, assault, women's safety, vandalism, facility) are data colors. Use them wherever a report category appears, including charts, chips and feed dots.
+
+## Typography
 
 - Text: `-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif` (`--font-text`).
 - Numbers in tables, stats and metadata use `font-variant-numeric: tabular-nums`. Do not use a monospace font for prose or labels.
@@ -39,7 +40,7 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 | Body | 13px / 1.45 | 400 |
 | Caption | 12px / 1.45 | 400 |
 
-## Tokens — Spacing & Shapes
+## Spacing and shapes
 
 - Spacing steps: 4, 8, 12, 16, 24, 32, 48.
 - Radii: `--r-card` 20px, `--r-well` 12px, full for chips and buttons.
@@ -92,15 +93,15 @@ Map category colors (property, assault, women's safety, vandalism, facility) are
 - The map's full-screen button hides the panels. Native fullscreen is blocked in the Streamlit embed and on iPhones.
 - Under Streamlit, `app.py` reserves a 40px bottom strip with the "Built with Streamlit" mark. Keep its right 170px clear for the Community Cloud badge, and never overlap it or hide the badge.
 
-## Do's and Don'ts
+## Rules
 
 - Do label coverage limits next to the figures they qualify.
 - Do use "publications" for counts. A publication count is not an incident count.
-- Do use the accent for selection and action only.
+- Do use color to identify a category, a KPI or a view.
 - Don't show AI, accuracy or risk claims without validated data behind them.
 - Don't plot or imply incident coordinates. Sphere positions are layout only and must say so.
-- Don't add neon glows or a second accent. Don't put glass on glass with blur.
-- Don't animate anything that does not explain state, hierarchy or direct manipulation.
+- Don't add neon glows. Don't put glass on glass with blur. Text sits on tints, never on saturated color.
+- Animate only to show a change of state or respond to a drag or click.
 
 ## Agent Prompt Guide
 

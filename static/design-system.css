@@ -2,7 +2,8 @@
 :root{
   --canvas:242 242 247;--surface:255 255 255;--surface-2:236 236 240;--surface-3:226 226 232;
   --ink:29 29 31;--ink-2:82 82 88;--ink-3:104 104 110;--hairline:29 29 31;
-  --accent:0 102 214;--on-accent:255 255 255;--positive:30 120 84;--warning:170 90 0;--danger:215 40 38;
+  --accent:190 24 44;--on-accent:255 255 255;--positive:30 120 84;--warning:170 90 0;--danger:215 40 38;
+  --cta:linear-gradient(135deg,#c8102e,#9f1239);--cta-ink:#fff;
   --glass-alpha:.76;--glass:255 255 255/var(--glass-alpha);--glass-edge:255 255 255;
   --font-text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
   --r-card:20px;--r-well:12px;
@@ -11,10 +12,11 @@
   --ease-spring:cubic-bezier(.22,1,.36,1);--t-fast:160ms;--t-slow:620ms;
 }
 html.dark{
-  --canvas:14 14 16;--surface:28 28 30;--surface-2:38 38 42;--surface-3:50 50 54;
+  --canvas:16 14 15;--surface:28 28 30;--surface-2:38 38 42;--surface-3:50 50 54;
   --ink:245 245 247;--ink-2:190 190 196;--ink-3:160 160 166;--hairline:245 245 247;
-  --accent:100 175 255;--on-accent:3 24 48;--positive:102 212 158;--warning:255 179 64;
-  --glass-alpha:.64;--glass:24 24 28/var(--glass-alpha);--glass-edge:255 255 255;
+  --accent:255 118 118;--on-accent:42 5 8;--positive:102 212 158;--warning:255 179 64;
+  --cta:linear-gradient(135deg,#ff8a8a,#f0525f);--cta-ink:#2a0508;
+  --glass-alpha:.58;--glass:26 22 24/var(--glass-alpha);--glass-edge:255 255 255;
   --shadow-1:0 1px 2px rgb(0 0 0/.3);
   --shadow-float:0 12px 40px -10px rgb(0 0 0/.65);
 }
@@ -194,6 +196,30 @@ html body #left-controls-wrapper input[type="checkbox"]:checked{background-color
 html body #left-controls-wrapper [class*="sm:grid-cols-2"]{grid-template-columns:minmax(0,1fr)!important}
 body:not([data-view="overview"]) #ds-overview{flex:0 0 0!important;min-height:0;gap:0}
 .leaflet-tile-pane .ds-map-labels{z-index:20}
+
+/* Color: red marks interface elements, and each report category keeps its map color everywhere */
+#ds-kpi-selected,#ds-kpi-pins,#ds-kpi-category,#ds-kpi-fresh{--hue:var(--accent)}
+html body .ds-kpi{background:linear-gradient(135deg,rgb(var(--hue)/.2),rgb(var(--hue)/.03) 70%),rgb(var(--glass));border-color:rgb(var(--hue)/.28)}
+#ds-spark i{background:rgb(var(--hue))}
+html.dark body .ds-kpi-label,html.dark body .ds-kpi-note{color:rgb(var(--ink))}
+html body .ds-brand>div:first-child{background:linear-gradient(135deg,#e5394f,#9f1239)!important;color:#fff!important}
+html body #ds-show-everything,html body #apply-filters-btn,html body #viz-btn-cluster.bg-primary-container{background:var(--cta)!important;color:var(--cta-ink)!important}
+html body #nav-tabs-bar .nav-tab-btn.active{background:rgb(var(--accent)/.2)!important;color:rgb(var(--ink))!important}
+html body #nav-tabs-bar .nav-tab-btn.active .material-symbols-outlined{color:rgb(var(--accent))}
+html body :is([class*="text-sky"],[class*="text-blue"],[class*="text-cyan"]){color:rgb(var(--accent))!important}
+html body :is([class*="bg-sky"],[class*="bg-blue"]){background-color:rgb(var(--accent)/.14)!important}
+html body [class*="border-sky"]{border-color:rgb(var(--accent)/.3)!important}
+.ds-category-chips label:has(#map-category-property){--c:245 158 11}
+.ds-category-chips label:has(#map-category-assault){--c:239 68 68}
+.ds-category-chips label:has(#map-category-women){--c:217 70 239}
+.ds-category-chips label:has(#map-category-vandalism){--c:16 185 129}
+.ds-category-chips label:has(#map-category-other){--c:139 92 246}
+html body #left-controls-wrapper .ds-category-chips input:checked{background-color:rgb(var(--c))!important;border-color:rgb(var(--c))!important}
+html body #spherical-distribution-card [class*="bg-surface-container"]{background:rgb(var(--hairline)/.07)!important;border-color:transparent!important}
+html body .ds-category-chips label:has(input:checked){background:rgb(var(--c)/.26)}
+#ds-feed span{display:flex;align-items:center;gap:6px}
+#ds-feed span::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dot,rgb(var(--accent)));flex:none}
+.ds-statusbar::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:rgb(var(--positive))}
 
 /* Metadata */
 html body #telemetry-node-count{margin-right:.35em}

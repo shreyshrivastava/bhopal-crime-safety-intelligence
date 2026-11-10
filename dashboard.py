@@ -99,7 +99,7 @@ def generate_dashboard(payload=None):
     page = page.replace('const ALL_CRIMES = [];', 'const ALL_CRIMES = '+_json(records)+';')
     # Graph coordinates are layout positions, explicitly not geographic locations.
     units = sorted({r['neighborhood'] for r in records if r['neighborhood']})
-    colors = ['#38bdf8','#c084fc','#f43f5e','#34d399','#fbbf24','#fb7185']
+    colors = ['#fca5a5','#c084fc','#f43f5e','#34d399','#fbbf24','#fb7185']
     nodes = [dict(name=name,lat=45-i*16,lon=-55+i*24,color=colors[i%6],count=0,dominant='Unknown',avgSev='Unknown') for i,name in enumerate(units)]
     page = re.sub(r'const SPHERE_SECTORS = \[.*?\];', lambda m:'const SPHERE_SECTORS = '+_json(nodes)+';', page, flags=re.S)
     page = re.sub(r'const SPHERE_CHORDS = \[.*?\];', 'const SPHERE_CHORDS = [];', page, flags=re.S)
@@ -107,6 +107,7 @@ def generate_dashboard(payload=None):
     page = page.replace('`${sec.count} cases`','`${sec.count} publications`')
     page = page.replace('`Avg Severity: Lv ${found.avgSev}/5`', "'Numeric severity is not published; see source evidence below'")
     page = page.replace("document.getElementById('telemetry-node-count').innerText = currentFiltered.length;", "document.getElementById('telemetry-node-count').innerText = currentFiltered.filter(c => Number.isFinite(c.lat) && Number.isFinite(c.lon)).length;")
+    page = page.replace("'Zone: All Bhopal' : ('Zone: ' + zone)", "'Area: All Bhopal' : ('Area: ' + zone)")
     particle_start = page.index('  const AMBIENT_PARTICLES =')
     particle_end = page.index('  function initSphericalGraph', particle_start)
     page = page[:particle_start] + '  const AMBIENT_PARTICLES = [];\n' + page[particle_end:]

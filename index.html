@@ -412,7 +412,8 @@ tailwind.config = {
 :root{
   --canvas:242 242 247;--surface:255 255 255;--surface-2:236 236 240;--surface-3:226 226 232;
   --ink:29 29 31;--ink-2:82 82 88;--ink-3:104 104 110;--hairline:29 29 31;
-  --accent:0 102 214;--on-accent:255 255 255;--positive:30 120 84;--warning:170 90 0;--danger:215 40 38;
+  --accent:190 24 44;--on-accent:255 255 255;--positive:30 120 84;--warning:170 90 0;--danger:215 40 38;
+  --cta:linear-gradient(135deg,#c8102e,#9f1239);--cta-ink:#fff;
   --glass-alpha:.76;--glass:255 255 255/var(--glass-alpha);--glass-edge:255 255 255;
   --font-text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
   --r-card:20px;--r-well:12px;
@@ -421,10 +422,11 @@ tailwind.config = {
   --ease-spring:cubic-bezier(.22,1,.36,1);--t-fast:160ms;--t-slow:620ms;
 }
 html.dark{
-  --canvas:14 14 16;--surface:28 28 30;--surface-2:38 38 42;--surface-3:50 50 54;
+  --canvas:16 14 15;--surface:28 28 30;--surface-2:38 38 42;--surface-3:50 50 54;
   --ink:245 245 247;--ink-2:190 190 196;--ink-3:160 160 166;--hairline:245 245 247;
-  --accent:100 175 255;--on-accent:3 24 48;--positive:102 212 158;--warning:255 179 64;
-  --glass-alpha:.64;--glass:24 24 28/var(--glass-alpha);--glass-edge:255 255 255;
+  --accent:255 118 118;--on-accent:42 5 8;--positive:102 212 158;--warning:255 179 64;
+  --cta:linear-gradient(135deg,#ff8a8a,#f0525f);--cta-ink:#2a0508;
+  --glass-alpha:.58;--glass:26 22 24/var(--glass-alpha);--glass-edge:255 255 255;
   --shadow-1:0 1px 2px rgb(0 0 0/.3);
   --shadow-float:0 12px 40px -10px rgb(0 0 0/.65);
 }
@@ -604,6 +606,30 @@ html body #left-controls-wrapper input[type="checkbox"]:checked{background-color
 html body #left-controls-wrapper [class*="sm:grid-cols-2"]{grid-template-columns:minmax(0,1fr)!important}
 body:not([data-view="overview"]) #ds-overview{flex:0 0 0!important;min-height:0;gap:0}
 .leaflet-tile-pane .ds-map-labels{z-index:20}
+
+/* Color: red marks interface elements, and each report category keeps its map color everywhere */
+#ds-kpi-selected,#ds-kpi-pins,#ds-kpi-category,#ds-kpi-fresh{--hue:var(--accent)}
+html body .ds-kpi{background:linear-gradient(135deg,rgb(var(--hue)/.2),rgb(var(--hue)/.03) 70%),rgb(var(--glass));border-color:rgb(var(--hue)/.28)}
+#ds-spark i{background:rgb(var(--hue))}
+html.dark body .ds-kpi-label,html.dark body .ds-kpi-note{color:rgb(var(--ink))}
+html body .ds-brand>div:first-child{background:linear-gradient(135deg,#e5394f,#9f1239)!important;color:#fff!important}
+html body #ds-show-everything,html body #apply-filters-btn,html body #viz-btn-cluster.bg-primary-container{background:var(--cta)!important;color:var(--cta-ink)!important}
+html body #nav-tabs-bar .nav-tab-btn.active{background:rgb(var(--accent)/.2)!important;color:rgb(var(--ink))!important}
+html body #nav-tabs-bar .nav-tab-btn.active .material-symbols-outlined{color:rgb(var(--accent))}
+html body :is([class*="text-sky"],[class*="text-blue"],[class*="text-cyan"]){color:rgb(var(--accent))!important}
+html body :is([class*="bg-sky"],[class*="bg-blue"]){background-color:rgb(var(--accent)/.14)!important}
+html body [class*="border-sky"]{border-color:rgb(var(--accent)/.3)!important}
+.ds-category-chips label:has(#map-category-property){--c:245 158 11}
+.ds-category-chips label:has(#map-category-assault){--c:239 68 68}
+.ds-category-chips label:has(#map-category-women){--c:217 70 239}
+.ds-category-chips label:has(#map-category-vandalism){--c:16 185 129}
+.ds-category-chips label:has(#map-category-other){--c:139 92 246}
+html body #left-controls-wrapper .ds-category-chips input:checked{background-color:rgb(var(--c))!important;border-color:rgb(var(--c))!important}
+html body #spherical-distribution-card [class*="bg-surface-container"]{background:rgb(var(--hairline)/.07)!important;border-color:transparent!important}
+html body .ds-category-chips label:has(input:checked){background:rgb(var(--c)/.26)}
+#ds-feed span{display:flex;align-items:center;gap:6px}
+#ds-feed span::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dot,rgb(var(--accent)));flex:none}
+.ds-statusbar::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:rgb(var(--positive))}
 
 /* Metadata */
 html body #telemetry-node-count{margin-right:.35em}
@@ -1487,7 +1513,7 @@ html body .official-analytics-card:has(#modalities-container){display:none}
     currentZone = zone;
     const select = document.getElementById('zone-filter-select');
     if (select) select.value = zone;
-    document.getElementById('ribbon-active-zone').innerText = zone === 'ALL' ? 'Zone: All Bhopal' : ('Zone: ' + zone);
+    document.getElementById('ribbon-active-zone').innerText = zone === 'ALL' ? 'Area: All Bhopal' : ('Area: ' + zone);
     applyFilters();
   }
 
@@ -1795,7 +1821,7 @@ html body .official-analytics-card:has(#modalities-container){display:none}
   let hoveredSphereNode = null;
   let sphereWidth = 320, sphereHeight = 300;
 
-  const SPHERE_SECTORS = [{"name": "Budhwara, Talaiya", "lat": 45, "lon": -55, "color": "#38bdf8", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Danish Kunj", "lat": 29, "lon": -31, "color": "#c084fc", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Khajuri Sadak", "lat": 13, "lon": -7, "color": "#f43f5e", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Lalwani Gali, KN Market", "lat": -3, "lon": 17, "color": "#34d399", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "MP Nagar Zone 1", "lat": -19, "lon": 41, "color": "#fbbf24", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "MP Nagar Zone 2", "lat": -35, "lon": 65, "color": "#fb7185", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Mata Mandir", "lat": -51, "lon": 89, "color": "#38bdf8", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Near Kilol Park", "lat": -67, "lon": 113, "color": "#c084fc", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}];
+  const SPHERE_SECTORS = [{"name": "Budhwara, Talaiya", "lat": 45, "lon": -55, "color": "#fca5a5", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Danish Kunj", "lat": 29, "lon": -31, "color": "#c084fc", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Khajuri Sadak", "lat": 13, "lon": -7, "color": "#f43f5e", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Lalwani Gali, KN Market", "lat": -3, "lon": 17, "color": "#34d399", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "MP Nagar Zone 1", "lat": -19, "lon": 41, "color": "#fbbf24", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "MP Nagar Zone 2", "lat": -35, "lon": 65, "color": "#fb7185", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Mata Mandir", "lat": -51, "lon": 89, "color": "#fca5a5", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}, {"name": "Near Kilol Park", "lat": -67, "lon": 113, "color": "#c084fc", "count": 0, "dominant": "Unknown", "avgSev": "Unknown"}];
 
   const SPHERE_CHORDS = [];
 
@@ -2390,7 +2416,7 @@ function renderSphericalGraph() {
   if (!sphereCtx || !sphereCanvas) return;
   const ctx = sphereCtx, w = sphereWidth, h = sphereHeight, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.4;
   const project = dsProjector(cx, cy, R, sphereYaw, spherePitch);
-  const accent = dsThemeColor('--accent'), ink = dsThemeColor('--ink');
+  const ink = dsThemeColor('--ink');
   ctx.clearRect(0, 0, w, h);
   dsDrawLattice(ctx, project, R, 1.15);
   const nodes = SPHERE_SECTORS.map(sector => {
@@ -2400,17 +2426,20 @@ function renderSphericalGraph() {
   }).sort((a, b) => a.projected.z - b.projected.z);
   for (const node of nodes) {
     const p = node.projected, front = p.z >= 0, radius = (node.nodeRadius || 8) * p.scale * (node === hoveredSphereNode ? 1.18 : 1);
-    ctx.fillStyle = `rgba(${accent},${front ? 0.92 : 0.22})`;
+    ctx.globalAlpha = front ? 0.95 : 0.25;
+    ctx.fillStyle = node.color;
     ctx.beginPath();
     ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
     ctx.fill();
     if (front && node.count) {
-      ctx.strokeStyle = `rgba(${accent},.35)`;
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = node.color;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(p.x, p.y, radius + 4, 0, Math.PI * 2);
       ctx.stroke();
     }
+    ctx.globalAlpha = 1;
     if (front) {
       ctx.fillStyle = `rgba(${ink},${node === hoveredSphereNode ? 1 : 0.82})`;
       ctx.font = '600 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
@@ -2582,6 +2611,20 @@ function dsShowEverything() {
   dsFitPoints(points, !DS_REDUCED.matches);
 }
 
+// A report category keeps its map color in every chart; localities cycle through a bright set.
+const DS_BAR_COLORS = ['#fb7185', '#2fcf9a', '#fb923c', '#a78bfa', '#f472b6', '#22d3ee', '#facc15', '#f87171'];
+function dsCategoryColor(category) {
+  const record = ALL_CRIMES.find(item => item.category === category);
+  return record ? mapCategoryColors[record.map_categories.includes('assault') ? 'assault' : record.map_categories[0]] : DS_BAR_COLORS[0];
+}
+const dsLegacyBars = window.officialBars;
+window.officialBars = function (id, key) {
+  dsLegacyBars(id, key);
+  document.querySelectorAll(`#${id} .official-bar-row`).forEach((row, index) => {
+    row.querySelector('.official-bar-fill').style.background = key === 'category' ? dsCategoryColor(row.querySelector('.official-bar-label').textContent) : DS_BAR_COLORS[index % DS_BAR_COLORS.length];
+  });
+};
+
 // Dashboard shell: views, live KPIs and the publication feed all read the same filtered selection.
 const DS_VIEW_TITLES = { overview: 'Overview', analytics: 'Analytics', records: 'Records', sources: 'Data sources', hotspots: 'Hotspots', 'ai-risk': 'AI risk' };
 // Fits keep markers clear of the floating panels.
@@ -2689,7 +2732,9 @@ function dsRenderFeed() {
   const rows = [...currentFiltered].sort((a, b) => b.date.localeCompare(a.date));
   feed.replaceChildren(...rows.map(record => {
     const item = document.createElement('li');
-    item.append(officialElement('time', record.date), officialElement('strong', record.neighborhood || 'Locality not established'), officialElement('span', record.category));
+    const category = officialElement('span', record.category);
+    category.style.setProperty('--dot', dsCategoryColor(record.category));
+    item.append(officialElement('time', record.date), officialElement('strong', record.neighborhood || 'Locality not established'), category);
     const actions = officialElement('div', '', 'ds-feed-actions');
     if (record.map_reference) {
       const show = officialElement('button', 'Show on map');
