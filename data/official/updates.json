@@ -1,8 +1,13 @@
 {
-  "checked_at": "2026-11-18T01:13:08.193202+00:00",
+  "checked_at": "2026-11-19T00:41:53.040939+00:00",
   "status": "success",
-  "indexed_publications": 195,
+  "indexed_publications": 196,
   "pending_review": [
+    {
+      "source_post_id": 5525,
+      "publication_date": "2026-11-18",
+      "source_url": "https://bhopal.mppolice.gov.in/%e0%a4%95%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%87%e0%a4%ae-%e0%a4%ac%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%82%e0%a4%9a-%e0%a4%95%e0%a5%80-%e0%a4%a4%e0%a5%8d%e0%a4%b5%e0%a4%b0%e0%a4%bf%e0%a4%a4-%e0%a4%a6/"
+    },
     {
       "source_post_id": 5518,
       "publication_date": "2026-11-17",
